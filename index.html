@@ -70,6 +70,22 @@
         .auth-switch a { color: #e85d5d; text-decoration: none; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
         .auth-switch a:hover { text-decoration: underline; color: #d4a574; }
 
+        .auth-footer { 
+            text-align: center; 
+            margin-top: 30px; 
+            padding-top: 20px; 
+            border-top: 1px solid rgba(226, 232, 240, 0.3); 
+            color: rgba(148, 163, 184, 0.5); 
+            font-size: 0.8rem; 
+            font-weight: 400; 
+            letter-spacing: 0.5px; 
+            opacity: 0.6; 
+        }
+        .auth-footer strong { 
+            color: rgba(232, 93, 93, 0.6);
+            font-weight: 600;
+        }
+
         /* --- 5. APP LAYOUT --- */
         #main-app { max-width: 1400px; margin: 0 auto; padding: 20px; opacity: 0; transform: translateY(20px); transition: all 0.5s ease; }
         #main-app.active { opacity: 1; transform: translateY(0); }
@@ -166,8 +182,8 @@
             </div>
             
             <div class="auth-card">
+                <h2 id="auth-title">Login</h2>
                 <div id="login-form-container">
-                    <h2 style="margin-bottom: 20px;">Đăng Nhập</h2>
                     <form id="loginForm">
                         <div class="input-group">
                             <i class="fa-regular fa-envelope"></i>
@@ -182,7 +198,7 @@
                         </button>
                     </form>
                     <div class="auth-switch">
-                        Chưa có tài khoản? <a onclick="toggleAuth('register')">Đăng ký ngay</a>
+                        <span id="auth-switch-text">Don't have an account? <a onclick="switchAuthMode()">Sign Up</a></span>
                     </div>
                 </div>
 
@@ -208,6 +224,9 @@
                     <div class="auth-switch">
                         Đã có tài khoản? <a onclick="toggleAuth('login')">Đăng nhập</a>
                     </div>
+                </div>
+                <div class="auth-footer">
+                    By <strong>Benjamin Nguyen</strong>
                 </div>
             </div>
         </div>
@@ -588,6 +607,16 @@
                 regCont.classList.add('hidden');
                 loginCont.classList.remove('hidden');
             }
+        }
+
+        function switchAuthMode() {
+            const titleEl = document.getElementById('auth-title');
+            const loginCont = document.getElementById('login-form-container');
+            const regCont = document.getElementById('register-form-container');
+            const isLogin = !loginCont.classList.contains('hidden');
+            if(titleEl) titleEl.innerText = isLogin ? "Đăng Ký" : "Đăng Nhập";
+            if(loginCont) loginCont.classList.toggle('hidden', !isLogin);
+            if(regCont) regCont.classList.toggle('hidden', isLogin);
         }
 
         const loginForm = document.getElementById('loginForm');
