@@ -1,1534 +1,948 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piano & Flashcards Study App</title>
+    <title>Spartan Learning Ecosystem (Final v5.2)</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #ffffff;
-            min-height: 100vh;
-            color: #2c3e50;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            background: linear-gradient(135deg, #e85d5d 0%, #d4b942 100%);
-            box-shadow: 0 4px 12px rgba(232, 93, 93, 0.15);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(232, 93, 93, 0.2);
-        }
-
-        header h1 {
-            font-size: 2.5em;
-            text-align: center;
-            margin-bottom: 10px;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .tab-navigation {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            background: white;
-            padding: 10px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 15px 30px;
-            background: #fafafa;
-            color: #2c3e50;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1.1em;
-            transition: all 0.3s;
-        }
-
-        .tab-btn:hover {
-            background: #fff5f5;
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, #e85d5d 0%, #d4b942 100%);
-            color: white;
-            box-shadow: 0 4px 12px rgba(232, 93, 93, 0.3);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Piano Styles */
-        .piano-section {
-            background: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid #f0f0f0;
-        }
-
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #fafafa;
-            border-radius: 15px;
-        }
-
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .control-group label {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .control-group input[type="range"] {
-            width: 150px;
-        }
-
-        .control-group select {
-            padding: 8px 15px;
-            border: 2px solid #f0f0f0;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-        }
-
-        #keybind-btn {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #e85d5d 0%, #d4b942 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .piano-container {
-            display: flex;
-            justify-content: center;
-            margin: 40px 0;
-            overflow-x: auto;
-            padding: 20px;
-        }
-
-        .piano {
-            position: relative;
-            height: 250px;
-            display: flex;
-        }
-
-        .key {
-            border: 2px solid #333;
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.1s;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            padding-bottom: 10px;
-        }
-
-        .white-key {
-            width: 50px;
-            height: 250px;
-            background: white;
-            z-index: 1;
-        }
-
-        .white-key:hover {
-            background: #f0f0f0;
-        }
-
-        .white-key.active {
-            background: linear-gradient(135deg, #e85d5d 0%, #d4b942 100%);
-            color: white;
-        }
-
-        .black-key {
-            width: 32px;
-            height: 160px;
-            background: #333;
-            color: white;
-            z-index: 2;
-            position: absolute;
-        }
-
-        .black-key:hover {
-            background: #555;
-        }
-
-        .black-key.active {
-            background: linear-gradient(135deg, #e85d5d 0%, #d4b942 100%);
-        }
-
-        .key-label {
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .info {
-            background: #fafafa;
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 30px;
-        }
-
-        .info h3 {
-            margin-bottom: 15px;
-            color: #2c3e50;
-        }
-
-        .info p {
-            margin: 8px 0;
-            color: #555;
-        }
-
-        /* Flashcard Styles */
-        .app-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 20px;
-        }
-
-        .sidebar {
-            background: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            border-radius: 20px;
-            padding: 25px;
-            border: 1px solid #f0f0f0;
-            height: fit-content;
-        }
-
-        .sidebar h2 {
-            font-size: 1.3em;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #2c3e50;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px 20px;
-            background: linear-gradient(135deg, #e85d5d 0%, #d4b942 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1em;
-            transition: all 0.3s;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 12px rgba(232, 93, 93, 0.2);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(232, 93, 93, 0.3);
-        }
-
-        .folder-list {
-            margin-top: 20px;
-        }
-
-        .folder-item {
-            background: #fafafa;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s;
-            border: 1px solid #f0f0f0;
-        }
-
-        .folder-item:hover {
-            background: #fff5f5;
-            transform: translateX(5px);
-            border-color: #ffcccb;
-        }
-
-        .folder-item.active {
-            background: linear-gradient(135deg, #e85d5d 0%, #d4b942 100%);
-            border-color: transparent;
-            color: white;
-        }
-
-        .folder-name {
-            font-weight: 500;
-        }
-
-        .folder-count {
-            font-size: 0.9em;
-            opacity: 0.8;
-        }
-
-        .delete-btn {
-            background: rgba(255, 59, 48, 0.8);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85em;
-            transition: all 0.3s;
-        }
-
-        .delete-btn:hover {
-            background: rgba(255, 59, 48, 1);
-        }
-
-        .main-content {
-            background: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid #f0f0f0;
-        }
-
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .content-header h2 {
-            font-size: 2em;
-            color: #2c3e50;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .action-btn {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #e85d5d 0%, #d4b942 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(232, 93, 93, 0.2);
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(232, 93, 93, 0.3);
-        }
-
-        .action-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .flashcard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .flashcard {
-            background: white;
-            border: 2px solid #f0f0f0;
-            border-radius: 16px;
-            padding: 25px;
-            min-height: 200px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .flashcard::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #e85d5d, #d4b942);
-        }
-
-        .flashcard:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(232, 93, 93, 0.15);
-            border-color: #ffcccb;
-        }
-
-        .flashcard.flipped {
-            background: linear-gradient(135deg, #e85d5d 0%, #d4b942 100%);
-            color: white;
-        }
-
-        .flashcard-content {
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 15px;
-            min-height: 100px;
-        }
-
-        .flashcard-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: auto;
-        }
-
-        .flashcard-actions button {
-            flex: 1;
-            padding: 8px;
-            background: rgba(255, 59, 48, 0.8);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.3s;
-        }
-
-        .flashcard-actions button:hover {
-            background: rgba(255, 59, 48, 1);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);
-            padding: 40px;
-            border-radius: 20px;
-            max-width: 600px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(255, 107, 107, 0.3);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-content h3 {
-            font-size: 1.8em;
-            margin-bottom: 25px;
-            color: white;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .modal-header h2 {
-            color: white;
-            font-size: 1.8em;
-        }
-
-        .close-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 1.5em;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .close-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: white;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-radius: 10px;
-            font-size: 1em;
-            font-family: inherit;
-        }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 25px;
-        }
-
-        .modal-buttons button {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1em;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: white;
-            color: #ff6b6b;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            color: #95a5a6;
-        }
-
-        .empty-state h3 {
-            font-size: 1.8em;
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-
-        .empty-state p {
-            font-size: 1.1em;
-            opacity: 0.8;
-        }
-
-        .quiz-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .quiz-progress {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 1.3em;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .quiz-question {
-            background: white;
-            border: 2px solid #f0f0f0;
-            border-radius: 16px;
-            padding: 40px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .quiz-question h3 {
-            font-size: 1.5em;
-            margin-bottom: 30px;
-            line-height: 1.6;
-            color: #2c3e50;
-        }
-
-        .quiz-answer {
-            background: #fafafa;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            border: 2px solid #f0f0f0;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #2c3e50;
-        }
-
-        .quiz-answer:hover {
-            background: #fff5f5;
-            border-color: #ffcccb;
-        }
-
-        .quiz-answer.revealed {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);
-            border-color: transparent;
-            color: white;
-        }
-
-        .quiz-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .quiz-buttons button {
-            padding: 15px 40px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1.1em;
-            transition: all 0.3s;
-        }
-
-        .correct-btn {
-            background: rgba(40, 167, 69, 0.9);
-            color: white;
-        }
-
-        .correct-btn:hover {
-            background: rgba(40, 167, 69, 1);
-            transform: translateY(-2px);
-        }
-
-        .incorrect-btn {
-            background: rgba(255, 59, 48, 0.9);
-            color: white;
-        }
-
-        .incorrect-btn:hover {
-            background: rgba(255, 59, 48, 1);
-            transform: translateY(-2px);
-        }
-
-        .quiz-results {
-            text-align: center;
-            padding: 40px;
-        }
-
-        .quiz-score {
-            font-size: 4em;
-            font-weight: 700;
-            margin: 30px 0;
-            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .quiz-percentage {
-            font-size: 2em;
-            margin-bottom: 40px;
-            color: #2c3e50;
-        }
-
-        .keybind-list {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-        }
-
-        .keybind-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-        }
-
-        .keybind-item label {
-            color: white;
-            font-weight: 600;
-        }
-
-        .keybind-input {
-            width: 60px;
-            padding: 8px;
-            text-align: center;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        .keybind-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
+        /* --- 1. SYSTEM VARIABLES --- */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff4757 0%, #ffa502 100%);
+            --secondary-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --bg-body: #f0f2f5;
+            --text-main: #0a0e27;
+            --text-light: #4a5568;
+            --white: #ffffff;
+            --radius-xl: 20px;
+            --radius-md: 12px;
+            --shadow-card: 0 10px 30px -10px rgba(255, 71, 87, 0.25);
+            --shadow-hover: 0 20px 40px -10px rgba(255, 71, 87, 0.35);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { background: var(--bg-body); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
+        .hidden { display: none !important; }
+
+        /* --- 2. ANIMATIONS --- */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(232, 93, 93, 0.3); } 50% { box-shadow: 0 0 40px rgba(232, 93, 93, 0.6); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+
+        /* --- 3. UI COMPONENTS --- */
+        .btn-primary { background: var(--primary-gradient); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; position: relative; overflow: hidden; }
+        .btn-primary:before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255,255,255,0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s; }
+        .btn-primary:hover:before { width: 300px; height: 300px; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+        .btn-secondary { background: white; border: 1px solid #e2e8f0; color: var(--text-main); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-secondary:hover { background: #f1f5f9; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .btn-danger { background: #fee2e2; color: #ef4444; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; }
+        .btn-danger:hover { background: #fecaca; transform: translateY(-2px); }
+        .btn-icon { padding: 8px; border-radius: 6px; cursor: pointer; border: 1px solid #e2e8f0; background: white; color: var(--text-light); transition: all 0.3s ease; }
+        .btn-icon:hover { background: var(--primary-gradient); color: white; border-color: transparent; transform: scale(1.1); }
+        .btn-icon.small { padding: 4px 8px; font-size: 0.8rem; margin-left: 4px; }
+
+        /* --- 4. LANDING & AUTH --- */
+        #landing-page { min-height: 100vh; display: flex; flex-direction: column; background: radial-gradient(circle at 10% 10%, rgba(255, 71, 87, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(255, 165, 2, 0.1) 0%, transparent 40%); transition: opacity 0.5s ease, transform 0.5s ease; animation: fadeInUp 0.8s ease; }
+        .navbar { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; animation: slideInDown 0.6s ease; }
+        .logo { font-size: 1.5rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: pulse 2s infinite; }
+        .hero { flex: 1; display: flex; align-items: center; justify-content: center; gap: 50px; padding: 0 5%; }
+        .hero-text { animation: slideInLeft 0.8s ease 0.2s both; }
+        .hero-text h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px; color: #ff4757; font-weight: 900; text-shadow: 0 2px 8px rgba(255, 71, 87, 0.2); letter-spacing: -1px; }
+        .hero-text p { font-size: 1.2rem; color: #4a5568; margin-bottom: 30px; max-width: 500px; font-weight: 500; }
+        
+        .auth-card { background: white; padding: 40px; border-radius: var(--radius-xl); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; transition: height 0.3s ease; animation: slideInRight 0.8s ease 0.2s both; }
+        .input-group { margin-bottom: 15px; position: relative; animation: fadeInUp 0.6s ease; }
+        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; transition: all 0.3s ease; }
+        .input-group input { width: 100%; padding: 12px 12px 12px 40px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; transition: all 0.3s ease; }
+        .input-group input:focus { border-color: #e85d5d; box-shadow: 0 0 0 3px rgba(232,93,93,0.1); transform: translateX(5px); }
+        .input-group input:focus ~ i { color: #e85d5d; transform: translateY(-50%) scale(1.2); }
+        .auth-switch { text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--text-light); animation: fadeInUp 0.6s ease 0.4s both; }
+        .auth-switch a { color: #e85d5d; text-decoration: none; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .auth-switch a:hover { text-decoration: underline; color: #d4a574; }
+
+        /* --- 5. APP LAYOUT --- */
+        #main-app { max-width: 1400px; margin: 0 auto; padding: 20px; opacity: 0; transform: translateY(20px); transition: all 0.5s ease; }
+        #main-app.active { opacity: 1; transform: translateY(0); }
+        .app-header { background: var(--primary-gradient); border-radius: var(--radius-xl); padding: 20px 30px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(255, 71, 87, 0.25); animation: slideInDown 0.6s ease; position: relative; overflow: hidden; }
+        .app-header > div:first-child { font-size: 1.3rem; font-weight: 900; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        .user-info { font-weight: 700; letter-spacing: 0.3px; }
+        
+        .nav-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; animation: fadeInUp 0.6s ease; }
+        .nav-tabs button { padding: 12px 30px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; font-weight: 600; color: var(--text-light); cursor: pointer; transition: all 0.3s ease; position: relative; }
+        .nav-tabs button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .nav-tabs button.active { background: linear-gradient(135deg, #ff4757 0%, #ffa502 100%); color: white; border: none; box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4); animation: glow 2s infinite; }
+
+        /* --- 6. PIANO STYLES --- */
+        .piano-container { background: white; padding: 30px; border-radius: var(--radius-xl); box-shadow: var(--shadow-card); text-align: center; overflow: hidden; animation: fadeInUp 0.6s ease; }
+        .piano-controls { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 15px; border-radius: 12px; animation: slideInUp 0.6s ease; }
+        .piano-scroll-wrapper { overflow-x: auto; padding-bottom: 20px; display: flex; justify-content: center; }
+        .piano-keys-wrapper { display: inline-flex; position: relative; height: 260px; user-select: none; padding: 0 20px; animation: fadeInUp 0.8s ease 0.2s both; }
+        .key { border: 1px solid #94a3b8; border-radius: 0 0 5px 5px; cursor: pointer; position: relative; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 15px; font-weight: bold; font-size: 11px; color: #94a3b8; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.1); transition: all 0.1s ease; }
+        .white-key { width: 44px; height: 100%; background: white; z-index: 1; }
+        .white-key:hover { box-shadow: inset 0 -5px 0 rgba(232,93,93,0.2); transform: translateY(-3px); }
+        .white-key.active { background: linear-gradient(135deg, #fbbf24, #f59e0b); border-color: #d97706; color: #78350f; box-shadow: inset 0 -5px 0 rgba(0,0,0,0.1), 0 5px 15px rgba(232,93,93,0.3); transform: scaleY(0.98); transform-origin: top; animation: bounce 0.3s ease; }
+        .black-key { width: 28px; height: 65%; background: #0f172a; position: absolute; z-index: 2; margin-left: -14px; color: white; border-bottom: 3px solid #000; transition: all 0.1s ease; }
+        .black-key:hover { box-shadow: 0 0 15px rgba(232,93,93,0.2); }
+        .black-key.active { background: linear-gradient(135deg, #e85d5d, #d4574d); border-color: #b91c1c; transform: scaleY(0.98); transform-origin: top; animation: bounce 0.3s ease; box-shadow: 0 0 20px rgba(232,93,93,0.5); }
+
+        /* --- 7. FLASHCARD STYLES --- */
+        .flashcard-layout { display: grid; grid-template-columns: 280px 1fr; gap: 30px; animation: fadeInUp 0.6s ease; }
+        .sidebar { background: white; padding: 20px; border-radius: var(--radius-xl); box-shadow: var(--shadow-card); height: fit-content; animation: slideInLeft 0.6s ease; }
+        
+        .folder-item { 
+            padding: 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; 
+            display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease;
+            border: 1px solid transparent; animation: slideInLeft 0.4s ease;
+        }
+        .folder-item:hover { background: #f1f5f9; border-color: #e2e8f0; transform: translateX(5px); }
+        .folder-item.active { background: linear-gradient(135deg, #ffe8e0, #fff3e0); color: #ff4757; font-weight: 700; border-color: #ff9d7b; animation: glow 2s infinite; }
+        .folder-info { display: flex; flex-direction: column; overflow: hidden; }
+        .folder-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .folder-count { font-size: 0.8rem; opacity: 0.7; font-weight: 400; }
+        .folder-actions { display: flex; opacity: 0.5; transition: opacity 0.3s ease; }
+        .folder-item:hover .folder-actions { opacity: 1; }
+
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .flashcard { background: white; height: 200px; border-radius: 16px; perspective: 1000px; cursor: pointer; position: relative; box-shadow: var(--shadow-card); border: 1px solid #e2e8f0; transition: all 0.3s ease; animation: fadeInUp 0.6s ease; }
+        .flashcard:hover { transform: translateY(-8px) rotateY(-5deg); box-shadow: 0 20px 40px rgba(232,93,93,0.2); }
+        .card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; display: flex; align-items: center; justify-content: center; }
+        .flashcard.flipped .card-inner { transform: rotateY(180deg); }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border-radius: 16px; animation: fadeInUp 0.4s ease; }
+        .card-front { background: linear-gradient(135deg, #ffffff, #f8fafc); color: var(--text-main); font-size: 1.2rem; font-weight: 600; }
+        .card-back { background: var(--primary-gradient); color: white; transform: rotateY(180deg); font-size: 1.2rem; }
+        .card-actions { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 5px; opacity: 0; transition: all 0.3s ease; transform: translateY(-10px); }
+        .flashcard:hover .card-actions { opacity: 1; transform: translateY(0); }
+
+        /* --- 8. QUIZ MODE & MODALS --- */
+        .quiz-container { background: white; padding: 40px; border-radius: var(--radius-xl); box-shadow: var(--shadow-card); text-align: center; max-width: 700px; margin: 0 auto; animation: slideInUp 0.6s ease; }
+        .quiz-card-display { height: 300px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; margin: 30px 0; border: 2px dashed #cbd5e1; border-radius: 16px; cursor: pointer; transition: all 0.3s ease; background: linear-gradient(135deg, #f8fafc, #f1f5f9); animation: fadeInUp 0.6s ease; }
+        .quiz-card-display:hover { border-color: #e85d5d; transform: scale(1.02); box-shadow: 0 10px 30px rgba(232,93,93,0.1); }
+        .quiz-card-display.revealed { background: linear-gradient(135deg, #f0fdf4, #dcfce7); color: #15803d; border-style: solid; border-color: #16a34a; animation: glow 1s ease; }
+        .input-wrapper { position: relative; }
+        .suggestions-box { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #e2e8f0; border-radius: 8px; max-height: 150px; overflow-y: auto; z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; animation: slideInUp 0.3s ease; }
+        .suggestion-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: all 0.2s ease; }
+        .suggestion-item:hover { background: #f8fafc; color: #e85d5d; transform: translateX(5px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; animation: fadeIn 0.3s ease; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: white; padding: 30px; border-radius: var(--radius-xl); width: 90%; max-width: 500px; animation: slideUp 0.4s ease; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; margin: 10px 0; outline: none; transition: all 0.3s ease; animation: fadeInUp 0.4s ease; }
+        input:focus, textarea:focus { border-color: #e85d5d; box-shadow: 0 0 0 3px rgba(232,93,93,0.1); transform: translateX(3px); }
+        .keybind-list { max-height: 300px; overflow-y: auto; margin: 15px 0; border: 1px solid #f1f5f9; padding: 10px; border-radius: 8px; }
+        .keybind-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; transition: all 0.2s ease; animation: slideInLeft 0.3s ease; }
+        .keybind-row:hover { background: #f8fafc; padding-left: 5px; }
+        .kb-input { width: 50px; text-align: center; font-weight: 700; text-transform: uppercase; margin: 0; }
+
+        /* Responsive Fix */
         @media (max-width: 768px) {
-            .app-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .flashcard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .action-btn {
-                width: 100%;
-            }
-
-            .piano {
-                transform: scale(0.8);
-                transform-origin: left center;
-            }
-
-            .tab-btn {
-                font-size: 0.9em;
-                padding: 12px 15px;
-            }
+            .flashcard-layout { grid-template-columns: 1fr; }
+            .hero { flex-direction: column; text-align: center; }
+            .hero-text h1 { font-size: 2.5rem; }
+            .hero-text { animation: slideInDown 0.8s ease 0.2s both; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🎹📚 Piano & Flashcards Study App</h1>
+
+    <section id="landing-page">
+        <nav class="navbar">
+            <div class="logo"><i class="fa-solid fa-layer-group"></i> Spartan.Edu</div>
+        </nav>
+        <div class="hero">
+            <div class="hero-text">
+                <h1>Học Piano & Từ Vựng<br><span style="color: #e85d5d">Hiệu Quả Gấp Đôi</span></h1>
+                <p>Nền tảng tích hợp dành cho những kẻ tham vọng. Lưu trữ dữ liệu riêng tư. Đăng ký ngay để bắt đầu.</p>
+            </div>
+            
+            <div class="auth-card">
+                <div id="login-form-container">
+                    <h2 style="margin-bottom: 20px;">Đăng Nhập</h2>
+                    <form id="loginForm">
+                        <div class="input-group">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" id="loginEmail" placeholder="Email" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="loginPass" placeholder="Mật khẩu" required>
+                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                            Vào Hệ Thống <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+                    <div class="auth-switch">
+                        Chưa có tài khoản? <a onclick="toggleAuth('register')">Đăng ký ngay</a>
+                    </div>
+                </div>
+
+                <div id="register-form-container" class="hidden">
+                    <h2 style="margin-bottom: 20px;">Đăng Ký Mới</h2>
+                    <form id="registerForm">
+                        <div class="input-group">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" id="regName" placeholder="Tên hiển thị" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" id="regEmail" placeholder="Email" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="regPass" placeholder="Mật khẩu" required>
+                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; background: var(--secondary-gradient);">
+                            Tạo Tài Khoản
+                        </button>
+                    </form>
+                    <div class="auth-switch">
+                        Đã có tài khoản? <a onclick="toggleAuth('login')">Đăng nhập</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="main-app" class="hidden">
+        <header class="app-header">
+            <div style="font-size: 1.2rem; font-weight: 700;"><i class="fa-solid fa-terminal"></i> Workstation</div>
+            <div class="user-info">
+                <span id="user-display-name">User</span>
+                <button onclick="logout()" class="btn-secondary" style="background: rgba(255,255,255,0.2); border: none; color: white;">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
         </header>
 
-        <div class="tab-navigation">
-            <button class="tab-btn active" onclick="switchTab('piano')">🎹 Interactive Piano</button>
-            <button class="tab-btn" onclick="switchTab('flashcards')">📚 Flashcards</button>
+        <div class="nav-tabs">
+            <button class="active" onclick="switchTab('piano')">🎹 Interactive Piano</button>
+            <button onclick="switchTab('flashcards')">📚 Flashcards System</button>
         </div>
 
-        <div id="pianoTab" class="tab-content active">
-            <div class="piano-section">
-                <h2 style="margin-bottom: 20px; color: #2c3e50;">Interactive Piano</h2>
-                <h4 style="margin-bottom: 20px; color: #666;">By Benjamin Nguyen</h4>
-                
-                <div class="controls">
-                    <div class="control-group">
-                        <label for="volume">Volume:</label>
-                        <input type="range" id="volume" min="0" max="100" value="50">
-                        <span id="volume-value">50%</span>
+        <div id="piano-view" class="tab-content">
+            <div class="piano-container">
+                <div class="piano-controls">
+                    <div>
+                        <label>Volume</label>
+                        <input type="range" id="vol-control" min="0" max="100" value="50">
                     </div>
-                    <div class="control-group">
-                        <label for="sound-type">Sound:</label>
-                        <select id="sound-type">
-                            <option value="sine">Acoustic Piano</option>
-                            <option value="triangle">Electric Piano</option>
-                            <option value="square">Synth Lead</option>
-                            <option value="sawtooth">EDM Synth</option>
-                            <option value="warm-keys">Warm Keys</option>
-                            <option value="soft-pad">Soft Pad</option>
+                    <div>
+                        <label>Sound</label>
+                        <select id="sound-type" style="padding: 5px; border-radius: 5px;">
+                            <option value="sine">Sine Wave</option>
+                            <option value="triangle">Triangle Wave</option>
+                            <option value="square">Square Wave</option>
+                            <option value="sawtooth">Sawtooth Wave</option>
+                            <option value="fm">FM E-Piano</option>
+                            <option value="pad">Warm Pad</option>
+                            <option value="harpsichord">Harpsichord</option>
+                            <option value="rhodes">Rhodes Piano (Warm)</option>
                         </select>
                     </div>
-                    <div class="control-group">
-                        <label for="octave">Octave:</label>
-                        <select id="octave">
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4" selected>4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                        </select>
+                    <button onclick="openKeybindModal()" class="btn-secondary"><i class="fa-regular fa-keyboard"></i> Edit Keybinds</button>
+                </div>
+                <div class="piano-scroll-wrapper">
+                    <div class="piano-keys-wrapper" id="piano-keys"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="flashcards-view" class="tab-content hidden">
+            <div class="flashcard-layout">
+                <div class="sidebar">
+                    <h3 style="margin-bottom: 15px;">📁 Folders</h3>
+                    <div id="folder-list"></div>
+                    <button onclick="openModal('folderModal')" class="btn-secondary" style="width: 100%; margin-top: 10px;">+ New Folder</button>
+                </div>
+                <div class="content-area">
+                    <div id="study-mode">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2 id="current-folder-title">Select a Folder</h2>
+                            <div style="display: flex; gap: 10px;">
+                                <button onclick="startQuiz()" id="quiz-btn" class="btn-secondary" disabled><i class="fa-solid fa-brain"></i> Start Quiz</button>
+                                <button onclick="openCardModal()" class="btn-primary" id="add-card-btn" disabled>+ Add Card</button>
+                            </div>
+                        </div>
+                        <div id="card-grid" class="card-grid">
+                            <div style="text-align: center; color: #94a3b8; grid-column: 1/-1; padding: 50px;">Chọn thư mục để bắt đầu.</div>
+                        </div>
                     </div>
-                    <div class="control-group">
-                        <button id="keybind-btn">⌨️ Custom Keybinds</button>
+                    <div id="quiz-mode" class="hidden">
+                        <div class="quiz-container">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                                <span id="quiz-progress" style="font-weight: 600; color: #64748b;">Question 1/10</span>
+                                <button onclick="exitQuiz()" class="btn-secondary">Thoát</button>
+                            </div>
+                            <div class="quiz-card-display" id="quiz-card-face" onclick="revealQuizCard()">???</div>
+                            <div id="quiz-actions" class="hidden" style="display: flex; gap: 15px; justify-content: center;">
+                                <button onclick="answerQuiz(false)" class="btn-danger" style="padding: 15px 30px;">Sai</button>
+                                <button onclick="answerQuiz(true)" class="btn-primary" style="background: #22c55e; padding: 15px 30px;">Đúng</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="quiz-results" class="hidden">
+                        <div class="quiz-container">
+                            <h2>Kết quả</h2>
+                            <div class="quiz-score-display" id="final-score">80%</div>
+                            <button onclick="exitQuiz()" class="btn-primary" style="margin-top: 20px;">Quay lại</button>
+                        </div>
                     </div>
                 </div>
-
-                <div class="piano-container">
-                    <div class="piano" id="piano-keys"></div>
-                </div>
-
-                <div class="info">
-                    <h3>How to Play:</h3>
-                    <p>🖱️ Click on keys to play notes</p>
-                    <p>⌨️ Use keyboard keys to play (see labels on keys)</p>
-                    <p>🔊 Adjust volume, sound type, and octave with the controls above</p>
-                    <p>⌨️ Click "Custom Keybinds" to set your own key mappings!</p>
-                </div>
             </div>
         </div>
+    </section>
 
-        <div id="flashcardsTab" class="tab-content">
-            <div class="app-layout">
-                <div class="sidebar" id="sidebar"></div>
-                <div class="main-content" id="mainContent"></div>
+    <div class="modal-overlay" id="folderModal">
+        <div class="modal-content">
+            <h3 id="folderModalTitle">Tạo thư mục mới</h3>
+            <input type="text" id="newFolderName" placeholder="Tên thư mục...">
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                <button onclick="closeModal('folderModal')" class="btn-secondary">Hủy</button>
+                <button onclick="saveFolder()" class="btn-primary">Lưu</button>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="keybind-modal">
+    <div class="modal-overlay" id="cardModal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Custom Keybindings</h2>
-                <button class="close-btn" id="close-modal">×</button>
+            <h3 id="cardModalTitle">Thẻ ghi nhớ mới</h3>
+            <div class="input-wrapper">
+                <textarea id="cardQuestion" placeholder="Mặt trước (Câu hỏi)"></textarea>
+                <div class="suggestions-box" id="suggestions"></div>
             </div>
-            <div class="keybind-list" id="keybind-list"></div>
-            <div class="modal-buttons">
-                <button class="btn-secondary" id="reset-keybinds">Reset to Default</button>
-                <button class="btn-primary" id="save-keybinds">Save Keybinds</button>
-            </div>
+            <textarea id="cardAnswer" placeholder="Mặt sau (Đáp án)"></textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                <button onclick="closeModal('cardModal')" class="btn-secondary">Hủy</button>
+                <button onclick="saveCard()" class="btn-primary">Lưu thẻ</button>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="folderModal">
+    <div class="modal-overlay" id="keybindModal">
         <div class="modal-content">
-            <h3>Create New Folder</h3>
-            <div class="form-group">
-                <label>Folder Name</label>
-                <input type="text" id="folderNameInput" placeholder="e.g., History, Biology, Math...">
-            </div>
-            <div class="modal-buttons">
-                <button class="btn-secondary" onclick="closeFlashcardModal()">Cancel</button>
-                <button class="btn-primary" onclick="saveFolderName()">Create</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="flashcardModal">
-        <div class="modal-content">
-            <h3 id="flashcardModalTitle">Create New Flashcard</h3>
-            <div class="form-group">
-                <label>Question (Front)</label>
-                <textarea id="questionInput" placeholder="Enter your question..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>Answer (Back)</label>
-                <textarea id="answerInput" placeholder="Enter the answer..."></textarea>
-            </div>
-            <div class="modal-buttons">
-                <button class="btn-secondary" onclick="closeFlashcardModal()">Cancel</button>
-                <button class="btn-primary" onclick="saveFlashcard()">Save</button>
+            <h3>Cài đặt phím tắt</h3>
+            <div class="keybind-list" id="kb-list"></div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                <button onclick="closeModal('keybindModal')" class="btn-secondary">Đóng</button>
+                <button onclick="saveKeybinds()" class="btn-primary">Lưu</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Tab switching
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            if (tab === 'piano') {
-                document.querySelector('.tab-btn:first-child').classList.add('active');
-                document.getElementById('pianoTab').classList.add('active');
-            } else {
-                document.querySelector('.tab-btn:last-child').classList.add('active');
-                document.getElementById('flashcardsTab').classList.add('active');
+        // --- SAFE STORAGE WRAPPER (ONLY ONCE) ---
+        const SafeStorage = {
+            memory: {},
+            setItem: function(key, value) {
+                try { localStorage.setItem(key, value); }
+                catch(e) { this.memory[key] = value; console.warn('LocalStorage unavailable, using RAM'); }
+            },
+            getItem: function(key) {
+                try { return localStorage.getItem(key); }
+                catch(e) { return this.memory[key] || null; }
+            },
+            clear: function() {
+                try { localStorage.clear(); }
+                catch(e) { this.memory = {}; }
             }
-        }
-
-        // Piano Code
-        function isPianoActive() {
-        const pianoTab = document.getElementById("pianoTab"); 
-        const pianoContent = document.getElementById("piano"); 
-        return pianoContent?.classList.contains("active") || pianoTab?.classList.contains("active");
-        }
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        let masterVolume = 0.5;
-        let currentOctave = 4;
-        let soundType = 'sine';
-
-        const noteFrequencies = {
-            'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13,
-            'E': 329.63, 'F': 349.23, 'F#': 369.99, 'G': 392.00,
-            'G#': 415.30, 'A': 440.00, 'A#': 466.16, 'B': 493.88
         };
 
-        const defaultKeys = [
-            { note: 'C', type: 'white', key: 'Z', octaveShift: 0 },
-            { note: 'C#', type: 'black', key: 'S', octaveShift: 0 },
-            { note: 'D', type: 'white', key: 'X', octaveShift: 0 },
-            { note: 'D#', type: 'black', key: 'D', octaveShift: 0 },
-            { note: 'E', type: 'white', key: 'C', octaveShift: 0 },
-            { note: 'F', type: 'white', key: 'V', octaveShift: 0 },
-            { note: 'F#', type: 'black', key: 'G', octaveShift: 0 },
-            { note: 'G', type: 'white', key: 'B', octaveShift: 0 },
-            { note: 'G#', type: 'black', key: 'H', octaveShift: 0 },
-            { note: 'A', type: 'white', key: 'N', octaveShift: 0 },
-            { note: 'A#', type: 'black', key: 'J', octaveShift: 0 },
-            { note: 'B', type: 'white', key: 'M', octaveShift: 0 },
-            
-            { note: 'C', type: 'white', key: 'A', octaveShift: 1 },
-            { note: 'C#', type: 'black', key: 'W', octaveShift: 1 },
-            { note: 'D', type: 'white', key: 'S', octaveShift: 1 },
-            { note: 'D#', type: 'black', key: 'E', octaveShift: 1 },
-            { note: 'E', type: 'white', key: 'D', octaveShift: 1 },
-            { note: 'F', type: 'white', key: 'F', octaveShift: 1 },
-            { note: 'F#', type: 'black', key: 'T', octaveShift: 1 },
-            { note: 'G', type: 'white', key: 'G', octaveShift: 1 },
-            { note: 'G#', type: 'black', key: 'Y', octaveShift: 1 },
-            { note: 'A', type: 'white', key: 'H', octaveShift: 1 },
-            { note: 'A#', type: 'black', key: 'U', octaveShift: 1 },
-            { note: 'B', type: 'white', key: 'J', octaveShift: 1 },
-            
-            { note: 'C', type: 'white', key: 'K', octaveShift: 2 },
-            { note: 'C#', type: 'black', key: 'O', octaveShift: 2 },
-            { note: 'D', type: 'white', key: 'L', octaveShift: 2 },
-            { note: 'D#', type: 'black', key: 'P', octaveShift: 2 },
-            { note: 'E', type: 'white', key: ';', octaveShift: 2 },
-            { note: 'F', type: 'white', key: "'", octaveShift: 2 },
-            { note: 'F#', type: 'black', key: ']', octaveShift: 2 },
-            { note: 'G', type: 'white', key: '1', octaveShift: 2 },
-            { note: 'G#', type: 'black', key: '3', octaveShift: 2 },
-            { note: 'A', type: 'white', key: '2', octaveShift: 2 },
-            { note: 'A#', type: 'black', key: '5', octaveShift: 2 },
-            { note: 'B', type: 'white', key: '4', octaveShift: 2 }
+        // --- CORE DATA ---
+        const COMMON_WORDS = ["Strategy", "Architecture", "Ambition", "Discipline", "Focus", "High-Ticket", "Agency", "Conversion", "System", "Process", "Automation", "Leverage", "Capital", "Investment", "Asset"];
+        const DEFAULT_KEYS = [
+            { n: 'C', t: 'w', k: 'Z', o: -1 }, { n: 'C#', t: 'b', k: 'S', o: -1 }, { n: 'D', t: 'w', k: 'X', o: -1 }, { n: 'D#', t: 'b', k: 'D', o: -1 }, { n: 'E', t: 'w', k: 'C', o: -1 }, { n: 'F', t: 'w', k: 'V', o: -1 }, { n: 'F#', t: 'b', k: 'G', o: -1 }, { n: 'G', t: 'w', k: 'B', o: -1 }, { n: 'G#', t: 'b', k: 'H', o: -1 }, { n: 'A', t: 'w', k: 'N', o: -1 }, { n: 'A#', t: 'b', k: 'J', o: -1 }, { n: 'B', t: 'w', k: 'M', o: -1 },
+            { n: 'C', t: 'w', k: 'Q', o: 0 }, { n: 'C#', t: 'b', k: '2', o: 0 }, { n: 'D', t: 'w', k: 'W', o: 0 }, { n: 'D#', t: 'b', k: '3', o: 0 }, { n: 'E', t: 'w', k: 'E', o: 0 }, { n: 'F', t: 'w', k: 'R', o: 0 }, { n: 'F#', t: 'b', k: '5', o: 0 }, { n: 'G', t: 'w', k: 'T', o: 0 }, { n: 'G#', t: 'b', k: '6', o: 0 }, { n: 'A', t: 'w', k: 'Y', o: 0 }, { n: 'A#', t: 'b', k: '7', o: 0 }, { n: 'B', t: 'w', k: 'U', o: 0 },
+            { n: 'C', t: 'w', k: 'I', o: 1 }, { n: 'C#', t: 'b', k: '9', o: 1 }, { n: 'D', t: 'w', k: 'O', o: 1 }, { n: 'D#', t: 'b', k: '0', o: 1 }, { n: 'E', t: 'w', k: 'P', o: 1 }, { n: 'F', t: 'w', k: '[', o: 1 }, { n: 'F#', t: 'b', k: '=', o: 1 }, { n: 'G', t: 'w', k: ']', o: 1 }, { n: 'G#', t: 'b', k: 'A', o: 1 }, { n: 'A', t: 'w', k: '\\', o: 1 }, { n: 'A#', t: 'b', k: '', o: 1 }, { n: 'B', t: 'w', k: '', o: 1 }
         ];
+        const NOTE_FREQUENCIES = { 'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13, 'E': 329.63, 'F': 349.23, 'F#': 369.99, 'G': 392.00, 'G#': 415.30, 'A': 440.00, 'A#': 466.16, 'B': 493.88 };
 
-        let keys = JSON.parse(JSON.stringify(defaultKeys));
+        let AppState = {
+            currentUser: null,
+            folders: [],
+            keys: DEFAULT_KEYS.slice(),
+            currentFolderId: null,
+            editingCardId: null,
+            editingFolderId: null,
+            quiz: { active: false, cards: [], index: 0, score: 0 },
+            audioCtx: null
+        };
 
-        function playNote(frequency, duration = 0.5) {
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            const filterNode = audioContext.createBiquadFilter();
-
-            oscillator.connect(filterNode);
-            filterNode.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-
-            oscillator.frequency.value = frequency;
-
-            if (soundType === 'sine') {
-                oscillator.type = 'sine';
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(masterVolume, audioContext.currentTime + 0.01);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-            } else if (soundType === 'triangle') {
-                oscillator.type = 'triangle';
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(masterVolume * 0.8, audioContext.currentTime + 0.02);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration * 0.8);
-            } else if (soundType === 'square') {
-                oscillator.type = 'square';
-                gainNode.gain.setValueAtTime(masterVolume * 0.6, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(masterVolume * 0.4, audioContext.currentTime + duration * 0.5);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-            } else if (soundType === 'sawtooth') {
-                oscillator.type = 'sawtooth';
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(masterVolume * 0.7, audioContext.currentTime + 0.005);
-                gainNode.gain.linearRampToValueAtTime(masterVolume * 0.5, audioContext.currentTime + 0.1);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-            } else if (soundType === 'warm-keys') {
-                oscillator.type = 'triangle';
-                filterNode.type = 'lowpass';
-                filterNode.frequency.value = 2000;
-                filterNode.Q.value = 1;
-                
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(masterVolume * 0.7, audioContext.currentTime + 0.03);
-                gainNode.gain.linearRampToValueAtTime(masterVolume * 0.5, audioContext.currentTime + 0.15);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration * 1.2);
-            } else if (soundType === 'soft-pad') {
-                oscillator.type = 'sine';
-                filterNode.type = 'lowpass';
-                filterNode.frequency.value = 1500;
-                filterNode.Q.value = 2;
-                
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(masterVolume * 0.6, audioContext.currentTime + 0.08);
-                gainNode.gain.linearRampToValueAtTime(masterVolume * 0.5, audioContext.currentTime + 0.3);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration * 1.5);
+        /* --- AUTHENTICATION --- */
+        const Auth = {
+            getUsers: () => {
+                try { return JSON.parse(SafeStorage.getItem('spartan_users')) || []; }
+                catch(e) { return []; }
+            },
+            register: (name, email, pass) => {
+                let users = Auth.getUsers();
+                if(users.find(u => u.email === email)) return alert("Email đã tồn tại!");
+                const newUser = { id: 'u' + Date.now(), name, email, pass };
+                users.push(newUser);
+                SafeStorage.setItem('spartan_users', JSON.stringify(users));
+                const userData = { folders: [], keys: DEFAULT_KEYS };
+                SafeStorage.setItem('spartan_data_' + newUser.id, JSON.stringify(userData));
+                alert("Đăng ký thành công!");
+                toggleAuth('login');
+            },
+            login: (email, pass) => {
+                let users = Auth.getUsers();
+                const user = users.find(u => u.email === email && u.pass === pass);
+                if(user) Auth.loadUserSession(user);
+                else alert("Sai email hoặc mật khẩu!");
+            },
+            loadUserSession: (user) => {
+                AppState.currentUser = user;
+                const rawData = SafeStorage.getItem('spartan_data_' + user.id);
+                const userData = rawData ? JSON.parse(rawData) : { folders: [], keys: DEFAULT_KEYS };
+                AppState.folders = userData.folders || [];
+                AppState.keys = userData.keys || DEFAULT_KEYS.slice();
+                const nameEl = document.getElementById('user-display-name');
+                if(nameEl) nameEl.innerText = user.name;
+                document.getElementById('landing-page').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                setTimeout(() => document.getElementById('main-app').classList.add('active'), 50);
+                initAudioContext();
+                initSystem();
+            },
+            logout: () => {
+                AppState.currentUser = null;
+                document.getElementById('main-app').classList.remove('active');
+                document.getElementById('main-app').classList.add('hidden');
+                document.getElementById('landing-page').classList.remove('hidden');
+                const lf = document.getElementById('loginForm');
+                if(lf) lf.reset();
             }
+        };
 
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + duration);
+        // --- AUDIO INIT ---
+        function initAudioContext() {
+            if (!AppState.audioCtx) {
+                const AudioCtor = window.AudioContext || window.webkitAudioContext;
+                if(AudioCtor) AppState.audioCtx = new AudioCtor();
+            }
+            if(AppState.audioCtx && AppState.audioCtx.state === 'suspended') {
+                AppState.audioCtx.resume();
+            }
         }
+        document.addEventListener('click', initAudioContext);
+        document.addEventListener('keydown', initAudioContext);
 
-        function getFrequency(note, octave) {
-            const baseFreq = noteFrequencies[note];
-            const octaveMultiplier = Math.pow(2, octave - 4);
-            return baseFreq * octaveMultiplier;
-        }
-
-        function createPiano() {
-            const piano = document.getElementById('piano-keys');
-            piano.innerHTML = '';
-            let whiteKeyIndex = 0;
-
-            keys.forEach((keyData, index) => {
-                const keyElement = document.createElement('div');
-                keyElement.className = `key ${keyData.type}-key`;
-                keyElement.dataset.note = keyData.note;
-                keyElement.dataset.key = keyData.key;
-                keyElement.dataset.octaveShift = keyData.octaveShift || 0;
-
-                const label = document.createElement('span');
-                label.className = 'key-label';
-                label.textContent = keyData.key || '';
-                keyElement.appendChild(label);
-
-                if (keyData.type === 'black') {
-                    keyElement.style.left = `${(whiteKeyIndex * 50) - 16}px`;
+        // --- SOUND ENGINE: sampler + synth presets ---
+        const SoundEngine = {
+            samples: {},
+            async loadSampleBase(preset) {
+                try {
+                    const url = `assets/sounds/${preset}/C4.wav`;
+                    const resp = await fetch(url);
+                    if (!resp.ok) throw new Error('missing');
+                    const ab = await resp.arrayBuffer();
+                    const buf = await AppState.audioCtx.decodeAudioData(ab);
+                    this.samples[preset] = { buffer: buf, baseFreq: 261.63 };
+                    return true;
+                } catch (e) {
+                    console.warn('Sample load failed for', preset, e);
+                    return false;
+                }
+            },
+            async ensurePresetLoaded(preset) {
+                if (!AppState.audioCtx) initAudioContext();
+                if (this.samples[preset]) return true;
+                return await this.loadSampleBase(preset);
+            },
+            async playPresetSample(preset, freq, element) {
+                const ok = await this.ensurePresetLoaded(preset);
+                if (!ok) return Promise.reject('no-sample');
+                const s = this.samples[preset];
+                const src = AppState.audioCtx.createBufferSource();
+                src.buffer = s.buffer;
+                const gain = AppState.audioCtx.createGain();
+                const vol = (parseInt(document.getElementById('vol-control').value || '50') / 100);
+                gain.gain.setValueAtTime(0, AppState.audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(Math.max(0.001, vol), AppState.audioCtx.currentTime + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.0001, AppState.audioCtx.currentTime + 2.0);
+                src.playbackRate.value = freq / s.baseFreq;
+                src.connect(gain); gain.connect(AppState.audioCtx.destination);
+                src.start();
+                src.stop(AppState.audioCtx.currentTime + 2.2);
+            },
+                        synthPlay(type, freq, element) {
+                const now = AppState.audioCtx.currentTime;
+                const vol = (parseInt(document.getElementById('vol-control').value || '50') / 100);
+                if (type === 'fm') {
+                    const carrier = AppState.audioCtx.createOscillator();
+                    const mod = AppState.audioCtx.createOscillator();
+                    const modGain = AppState.audioCtx.createGain();
+                    const gain = AppState.audioCtx.createGain();
+                    carrier.frequency.value = freq;
+                    mod.frequency.value = freq * 2;
+                    modGain.gain.value = freq * 0.0025;
+                    carrier.connect(gain);
+                    mod.connect(modGain);
+                    modGain.connect(carrier.frequency);
+                    gain.connect(AppState.audioCtx.destination);
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(vol, now + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.6);
+                    carrier.start(); mod.start();
+                    carrier.stop(now + 1.6); mod.stop(now + 1.6);
+                } else if (type === 'pad') {
+                    const osc1 = AppState.audioCtx.createOscillator();
+                    const osc2 = AppState.audioCtx.createOscillator();
+                    const gain = AppState.audioCtx.createGain();
+                    osc1.frequency.value = freq;
+                    osc2.frequency.value = freq * 1.01;
+                    osc1.type = 'sawtooth';
+                    osc2.type = 'sine';
+                    osc1.connect(gain); osc2.connect(gain);
+                    gain.connect(AppState.audioCtx.destination);
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(vol * 0.8, now + 0.2);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 4.0);
+                    osc1.start(); osc2.start();
+                    osc1.stop(now + 4.0); osc2.stop(now + 4.0);
+                } else if (type === 'harpsichord') {
+                    const osc = AppState.audioCtx.createOscillator();
+                    const gain = AppState.audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.value = freq;
+                    osc.connect(gain); gain.connect(AppState.audioCtx.destination);
+                    gain.gain.setValueAtTime(0.001, now);
+                    gain.gain.exponentialRampToValueAtTime(vol, now + 0.005);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(); osc.stop(now + 0.5);
+                                } else if (type === 'rhodes') {
+                    const osc1 = AppState.audioCtx.createOscillator();
+                    const osc2 = AppState.audioCtx.createOscillator();
+                    const osc3 = AppState.audioCtx.createOscillator();
+                    const gain = AppState.audioCtx.createGain();
+                    const filter = AppState.audioCtx.createBiquadFilter();
+                    
+                    osc1.type = 'sine';
+                    osc2.type = 'sine';
+                    osc3.type = 'triangle';
+                    osc1.frequency.value = freq;
+                    osc2.frequency.value = freq * 0.5;
+                    osc3.frequency.value = freq * 2.03;
+                    
+                    filter.type = 'lowpass';
+                    filter.frequency.value = 3500;
+                    filter.Q.value = 3;
+                    
+                    osc1.connect(gain);
+                    osc2.connect(gain);
+                    osc3.connect(gain);
+                    gain.connect(filter);
+                    filter.connect(AppState.audioCtx.destination);
+                    
+                    gain.gain.setValueAtTime(0, now);
+-                   gain.gain.linearRampToValueAtTime(vol * 0.85, now + 0.08);
++                   gain.gain.linearRampToValueAtTime(vol, now + 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.0);
+                    
+                    osc1.start(); osc2.start(); osc3.start();
+                    osc1.stop(now + 3.0); osc2.stop(now + 3.0); osc3.stop(now + 3.0);
                 } else {
-                    whiteKeyIndex++;
+                    // basic oscillator: sine / triangle / sawtooth / square
+                    const osc = AppState.audioCtx.createOscillator();
+                    const gain = AppState.audioCtx.createGain();
+                    osc.type = type || 'sine';
+                    osc.frequency.value = freq;
+                    osc.connect(gain); gain.connect(AppState.audioCtx.destination);
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(Math.max(0.001, vol), now + 0.01);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                    osc.start(); osc.stop(now + 0.8);
                 }
+            }
+        };
 
-                keyElement.addEventListener('mousedown', () => pressKey(keyElement));
-                keyElement.addEventListener('mouseup', () => releaseKey(keyElement));
-                keyElement.addEventListener('mouseleave', () => releaseKey(keyElement));
-
-                keyElement.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    pressKey(keyElement);
-                });
-                keyElement.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    releaseKey(keyElement);
-                });
-
-                piano.appendChild(keyElement);
+        const soundSelect = document.getElementById('sound-type');
+        if (soundSelect) {
+            soundSelect.addEventListener('change', (e) => {
+                const val = e.target.value;
+                if (val && val.endsWith('-sampler')) {
+                    SoundEngine.ensurePresetLoaded(val);
+                }
             });
         }
 
-        function pressKey(keyElement) {
-            if (keyElement.classList.contains('active')) return;
-            
-            keyElement.classList.add('active');
-            const note = keyElement.dataset.note;
-            const octaveShift = parseInt(keyElement.dataset.octaveShift);
-            const octave = currentOctave + octaveShift;
-            const frequency = getFrequency(note, octave);
-            playNote(frequency);
+        // --- UI HANDLERS ---
+        function toggleAuth(mode) {
+            const loginCont = document.getElementById('login-form-container');
+            const regCont = document.getElementById('register-form-container');
+            if(!loginCont || !regCont) return;
+            if(mode === 'register') {
+                loginCont.classList.add('hidden');
+                regCont.classList.remove('hidden');
+            } else {
+                regCont.classList.add('hidden');
+                loginCont.classList.remove('hidden');
+            }
         }
 
-        function releaseKey(keyElement) {
-            keyElement.classList.remove('active');
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', e => {
+                e.preventDefault();
+                Auth.login(document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
+            });
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (!isPianoActive()) return; // <-- ignore keys if piano tab not active
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.addEventListener('submit', e => {
+                e.preventDefault();
+                Auth.register(document.getElementById('regName').value, document.getElementById('regEmail').value, document.getElementById('regPass').value);
+            });
+        }
+
+        function logout() { Auth.logout(); }
+
+        function saveData() {
+            if(!AppState.currentUser) return;
+            const data = { folders: AppState.folders, keys: AppState.keys };
+            SafeStorage.setItem('spartan_data_' + AppState.currentUser.id, JSON.stringify(data));
+        }
+
+        function resetData() {
+            if(confirm("Reset dữ liệu (chỉ trên trình duyệt này)?")) {
+                SafeStorage.clear();
+                location.reload();
+            }
+        }
+
+        // --- PIANO LOGIC ---
+        function renderPiano() {
+            const container = document.getElementById('piano-keys');
+            if(!container) return;
+            container.innerHTML = '';
+            let whiteCount = 0;
+            AppState.keys.forEach((k) => {
+                const div = document.createElement('div');
+                div.className = 'key ' + (k.t === 'w' ? 'white-key' : 'black-key');
+                if (k.k) {
+                    const span = document.createElement('span');
+                    span.style.position = 'absolute';
+                    span.style.bottom = '5px';
+                    span.style.pointerEvents = 'none';
+                    span.textContent = k.k;
+                    div.appendChild(span);
+                }
+                if (k.t === 'b') {
+                    div.style.left = `${(whiteCount * 44) - 14}px`;
+                } else {
+                    whiteCount++;
+                }
+                div.onmousedown = () => playNote(k, div);
+                container.appendChild(div);
+            });
+            container.style.width = `${whiteCount * 44}px`;
+        }
+
+        function playNote(keyObj, element) {
+            if (!AppState.audioCtx) return;
+            element.classList.add('active');
+            const baseFreq = NOTE_FREQUENCIES[keyObj.n] || 440;
+            const freq = baseFreq * Math.pow(2, (keyObj.o || 0));
+            const soundType = (document.getElementById('sound-type') || {}).value || 'sine';
+
+            if (soundType.endsWith('-sampler')) {
+                SoundEngine.playPresetSample(soundType, freq, element).catch(() => {
+                    SoundEngine.synthPlay('sine', freq, element);
+                });
+            } else {
+                SoundEngine.synthPlay(soundType, freq, element);
+            }
+            setTimeout(() => element.classList.remove('active'), 200);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            const pianoView = document.getElementById('piano-view');
+            if (!pianoView || pianoView.classList.contains('hidden')) return;
             if (e.repeat) return;
-            const key = e.key.toUpperCase();
-            const keyElement = document.querySelector(`[data-key="${key}"]`);
-            
-            if (keyElement) {
-                e.preventDefault();
-                pressKey(keyElement);
+            const tgt = e.target;
+            const tag = (tgt && tgt.tagName) || '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || tgt.isContentEditable) return;
+            const modalIds = ['keybindModal', 'cardModal', 'folderModal'];
+            for (const id of modalIds) {
+                const m = document.getElementById(id);
+                if (m && m.classList.contains('active')) return;
+            }
+            const keyObj = AppState.keys.find(k => (k.k || '').toUpperCase() === e.key.toUpperCase());
+            if (keyObj) {
+                const index = AppState.keys.indexOf(keyObj);
+                const els = document.querySelectorAll('.key');
+                if(els[index]) playNote(keyObj, els[index]);
             }
         });
 
-        document.addEventListener('keyup', (e) => {
-            if (!isPianoActive()) return; // <-- ignore keys if piano tab not active
-            const key = e.key.toUpperCase();
-            const keyElement = document.querySelector(`[data-key="${key}"]`);
-            
-            if (keyElement) {
-                e.preventDefault();
-                releaseKey(keyElement);
+        function openKeybindModal() {
+            const list = document.getElementById('kb-list');
+            if(!list) return;
+            list.innerHTML = AppState.keys.map((k, i) => `
+                <div class="keybind-row"><span>${k.n} (Octave ${k.o})</span><input type="text" class="kb-input" value="${k.k || ''}" oninput="updateKey(${i}, this.value)" maxlength="1"></div>
+            `).join('');
+            openModal('keybindModal');
+        }
+        function updateKey(index, val) { AppState.keys[index].k = (val || '').toUpperCase(); }
+        function saveKeybinds() { saveData(); renderPiano(); closeModal('keybindModal'); }
+
+        // --- FLASHCARD ENGINE ---
+        function renderFolders() {
+            const list = document.getElementById('folder-list');
+            if(!list) return;
+            list.innerHTML = AppState.folders.map(f => `
+                <div class="folder-item ${AppState.currentFolderId === f.id ? 'active' : ''}" onclick="selectFolder(${f.id})">
+                    <div class="folder-info">
+                        <span class="folder-name">📁 ${f.name}</span>
+                        <span class="folder-count">${(f.cards || []).length} cards</span>
+                    </div>
+                    <div class="folder-actions">
+                        <button class="btn-icon small" onclick="event.stopPropagation(); openEditFolder(${f.id})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-icon small" onclick="event.stopPropagation(); deleteFolder(${f.id})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectFolder(id) {
+            AppState.currentFolderId = id;
+            renderFolders(); renderCards();
+            const f = AppState.folders.find(f => f.id === id);
+            if (f) {
+                const titleEl = document.getElementById('current-folder-title');
+                if (titleEl) titleEl.textContent = f.name;
+                const addBtn = document.getElementById('add-card-btn');
+                if(addBtn) addBtn.disabled = false;
+                const quizBtn = document.getElementById('quiz-btn');
+                if(quizBtn) quizBtn.disabled = !(f.cards && f.cards.length > 0);
+                document.getElementById('study-mode').classList.remove('hidden');
+                document.getElementById('quiz-mode').classList.add('hidden');
+                document.getElementById('quiz-results').classList.add('hidden');
             }
-        });
+        }
 
-        document.getElementById('sound-type').addEventListener('change', (e) => {
-            soundType = e.target.value;
-        });
-
-        const volumeSlider = document.getElementById('volume');
-        const volumeValue = document.getElementById('volume-value');
-
-        volumeSlider.addEventListener('input', (e) => {
-            const value = e.target.value;
-            masterVolume = value / 100;
-            volumeValue.textContent = `${value}%`;
-        });
-
-        document.getElementById('octave').addEventListener('change', (e) => {
-            currentOctave = parseInt(e.target.value);
-        });
-
-        const keybindBtn = document.getElementById('keybind-btn');
-        const keybindModal = document.getElementById('keybind-modal');
-        const closeModal = document.getElementById('close-modal');
-        const saveKeybinds = document.getElementById('save-keybinds');
-        const resetKeybinds = document.getElementById('reset-keybinds');
-        const keybindList = document.getElementById('keybind-list');
-
-        keybindBtn.addEventListener('click', () => {
-            keybindModal.classList.add('active');
-            renderKeybindList();
-        });
-
-        closeModal.addEventListener('click', () => {
-            keybindModal.classList.remove('active');
-        });
-
-        keybindModal.addEventListener('click', (e) => {
-            if (e.target === keybindModal) {
-                keybindModal.classList.remove('active');
+        function openModal(id) {
+            if(id === 'folderModal') {
+                AppState.editingFolderId = null;
+                const title = document.getElementById('folderModalTitle');
+                if(title) title.innerText = "Tạo thư mục mới";
+                const name = document.getElementById('newFolderName');
+                if(name) name.value = '';
             }
-        });
+            const el = document.getElementById(id);
+            if(el) el.classList.add('active');
+        }
 
-        function renderKeybindList() {
-            keybindList.innerHTML = '';
-            keys.forEach((keyData, index) => {
-                const item = document.createElement('div');
-                item.className = 'keybind-item';
-                
-                const label = document.createElement('label');
-                label.textContent = `${keyData.note} (Octave ${keyData.octaveShift >= 0 ? '+' : ''}${keyData.octaveShift})`;
-                
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.className = 'keybind-input';
-                input.value = keyData.key || '';
-                input.maxLength = 1;
-                input.dataset.index = index;
-                
-                input.addEventListener('keydown', (e) => {
-                    e.preventDefault();
-                    const newKey = e.key.toUpperCase();
-                    if (newKey.length === 1) {
-                        input.value = newKey;
+        function openEditFolder(id) {
+            AppState.editingFolderId = id;
+            const f = AppState.folders.find(f => f.id === id);
+            const title = document.getElementById('folderModalTitle');
+            const name = document.getElementById('newFolderName');
+            if(f) {
+                if(title) title.innerText = "Đổi tên thư mục";
+                if(name) name.value = f.name;
+                const modal = document.getElementById('folderModal');
+                if(modal) modal.classList.add('active');
+            }
+        }
+
+        function saveFolder() {
+            const nameEl = document.getElementById('newFolderName');
+            const name = nameEl ? nameEl.value.trim() : '';
+            if (!name) return alert("Nhập tên thư mục!");
+            if (AppState.editingFolderId) {
+                const f = AppState.folders.find(f => f.id === AppState.editingFolderId);
+                if(f) {
+                    f.name = name;
+                    if(AppState.currentFolderId === AppState.editingFolderId) {
+                        const t = document.getElementById('current-folder-title');
+                        if(t) t.textContent = name;
                     }
-                });
-                
-                input.addEventListener('input', (e) => {
-                    e.target.value = e.target.value.toUpperCase();
-                });
-                
-                item.appendChild(label);
-                item.appendChild(input);
-                keybindList.appendChild(item);
-            });
-        }
-
-        saveKeybinds.addEventListener('click', () => {
-            const inputs = keybindList.querySelectorAll('.keybind-input');
-            inputs.forEach(input => {
-                const index = parseInt(input.dataset.index);
-                keys[index].key = input.value || null;
-            });
-            
-            createPiano();
-            keybindModal.classList.remove('active');
-        });
-
-        resetKeybinds.addEventListener('click', () => {
-            keys = JSON.parse(JSON.stringify(defaultKeys));
-            createPiano();
-            renderKeybindList();
-        });
-
-        // Flashcard Code
-        let folders = [];
-        let currentFolderId = null;
-        let currentView = 'folders';
-        let quizState = null;
-        let editingCardId = null;
-
-        function initFlashcards() {
-            renderSidebar();
-            renderMainContent();
-        }
-
-        function renderSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            
-            sidebar.innerHTML = `
-                <h2>📁 My Folders</h2>
-                <button class="btn" onclick="openFolderModal()">+ New Folder</button>
-                <div class="folder-list">
-                    ${folders.length === 0 ? '<p style="text-align: center; opacity: 0.7; margin-top: 20px;">No folders yet</p>' : 
-                    folders.map(folder => `
-                        <div class="folder-item ${currentFolderId === folder.id ? 'active' : ''}" 
-                             onclick="selectFolder('${folder.id}')">
-                            <div>
-                                <div class="folder-name">${folder.name}</div>
-                                <div class="folder-count">${folder.cards.length} cards</div>
-                            </div>
-                            <button class="delete-btn" onclick="event.stopPropagation(); deleteFolder('${folder.id}')">Delete</button>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function renderMainContent() {
-            const mainContent = document.getElementById('mainContent');
-
-            if (currentView === 'quiz') {
-                mainContent.innerHTML = renderQuiz();
-                return;
-            }
-
-            if (currentView === 'results') {
-                mainContent.innerHTML = renderResults();
-                return;
-            }
-
-            if (!currentFolderId) {
-                mainContent.innerHTML = `
-                    <div class="empty-state">
-                        <h3>Welcome to Flashcards!</h3>
-                        <p>Create a folder to start organizing your study materials</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const folder = folders.find(f => f.id === currentFolderId);
-            if (!folder) return;
-
-            mainContent.innerHTML = `
-                <div class="content-header">
-                    <h2>${folder.name}</h2>
-                    <div class="action-buttons">
-                        <button class="action-btn" onclick="openFlashcardModal()">+ Add Card</button>
-                        <button class="action-btn" onclick="startQuiz()" ${folder.cards.length === 0 ? 'disabled' : ''}>
-                            🎯 Start Quiz
-                        </button>
-                    </div>
-                </div>
-                ${folder.cards.length === 0 ? 
-                    '<div class="empty-state"><h3>No flashcards yet</h3><p>Add your first flashcard to get started</p></div>' :
-                    `<div class="flashcard-grid">
-                        ${folder.cards.map(card => `
-                            <div class="flashcard" id="card-${card.id}">
-                                <div class="flashcard-content" onclick="toggleCard('${card.id}')">
-                                    ${card.question}
-                                </div>
-                                <div class="flashcard-actions">
-                                    <button onclick="editFlashcard('${card.id}')">Edit</button>
-                                    <button onclick="deleteFlashcard('${card.id}')">Delete</button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>`
-                }
-            `;
-        }
-
-        function renderQuiz() {
-            const question = quizState.questions[quizState.currentIndex];
-            
-            return `
-                <div class="quiz-container">
-                    <div class="quiz-progress">
-                        Question ${quizState.currentIndex + 1} of ${quizState.questions.length}
-                    </div>
-                    <div class="quiz-question">
-                        <h3>${question.question}</h3>
-                        <div class="quiz-answer" id="quizAnswer" onclick="revealAnswer()">
-                            Click to reveal answer
-                        </div>
-                        <div class="quiz-buttons" id="quizButtons" style="display: none;">
-                            <button class="correct-btn" onclick="answerQuestion(true)">✓ Got it right</button>
-                            <button class="incorrect-btn" onclick="answerQuestion(false)">✗ Got it wrong</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderResults() {
-            const percentage = Math.round((quizState.score / quizState.questions.length) * 100);
-            
-            return `
-                <div class="quiz-results">
-                    <h2>Quiz Complete! 🎉</h2>
-                    <div class="quiz-score">${quizState.score}/${quizState.questions.length}</div>
-                    <div class="quiz-percentage">${percentage}%</div>
-                    <div class="quiz-buttons">
-                        <button class="correct-btn" onclick="startQuiz()">Try Again</button>
-                        <button class="btn-secondary" style="padding: 15px 40px;" onclick="backToCards()">Back to Cards</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function openFolderModal() {
-            document.getElementById('folderModal').classList.add('active');
-            document.getElementById('folderNameInput').value = '';
-            document.getElementById('folderNameInput').focus();
-        }
-
-        function openFlashcardModal() {
-            editingCardId = null;
-            document.getElementById('flashcardModalTitle').textContent = 'Create New Flashcard';
-            document.getElementById('flashcardModal').classList.add('active');
-            document.getElementById('questionInput').value = '';
-            document.getElementById('answerInput').value = '';
-            document.getElementById('questionInput').focus();
-        }
-
-        function closeFlashcardModal() {
-            document.getElementById('folderModal').classList.remove('active');
-            document.getElementById('flashcardModal').classList.remove('active');
-            editingCardId = null;
-        }
-
-        function saveFolderName() {
-            const name = document.getElementById('folderNameInput').value.trim();
-            if (!name) return;
-
-            folders.push({
-                id: Date.now().toString(),
-                name: name,
-                cards: []
-            });
-
-            closeFlashcardModal();
-            renderSidebar();
-        }
-
-        function saveFlashcard() {
-            const question = document.getElementById('questionInput').value.trim();
-            const answer = document.getElementById('answerInput').value.trim();
-            
-            if (!question || !answer) return;
-
-            const folder = folders.find(f => f.id === currentFolderId);
-            if (!folder) return;
-
-            if (editingCardId) {
-                const card = folder.cards.find(c => c.id === editingCardId);
-                if (card) {
-                    card.question = question;
-                    card.answer = answer;
                 }
             } else {
-                folder.cards.push({
-                    id: Date.now().toString(),
-                    question: question,
-                    answer: answer
-                });
+                AppState.folders.push({ id: Date.now(), name, cards: [] });
             }
-
-            closeFlashcardModal();
-            renderSidebar();
-            renderMainContent();
+            saveData();
+            closeModal('folderModal');
+            renderFolders();
         }
 
-        function selectFolder(folderId) {
-            currentFolderId = folderId;
-            currentView = 'folders';
-            renderSidebar();
-            renderMainContent();
-        }
-
-        function deleteFolder(folderId) {
-            if (!confirm('Delete this folder and all its flashcards?')) return;
-            
-            folders = folders.filter(f => f.id !== folderId);
-            if (currentFolderId === folderId) {
-                currentFolderId = null;
+        function deleteFolder(id) {
+            if(confirm('Xóa thư mục này và toàn bộ thẻ bên trong?')) {
+                AppState.folders = AppState.folders.filter(f => f.id !== id);
+                if(AppState.currentFolderId === id) {
+                    AppState.currentFolderId = null;
+                    const title = document.getElementById('current-folder-title');
+                    if(title) title.textContent = "Select a Folder";
+                    const grid = document.getElementById('card-grid');
+                    if(grid) grid.innerHTML = '<div style="text-align: center; color: #94a3b8; grid-column: 1/-1; padding: 50px;">Chọn thư mục để bắt đầu.</div>';
+                    const addBtn = document.getElementById('add-card-btn'); if(addBtn) addBtn.disabled = true;
+                    const quizBtn = document.getElementById('quiz-btn'); if(quizBtn) quizBtn.disabled = true;
+                }
+                saveData();
+                renderFolders();
             }
-            renderSidebar();
-            renderMainContent();
         }
 
-        function deleteFlashcard(cardId) {
-            if (!confirm('Delete this flashcard?')) return;
-            
-            const folder = folders.find(f => f.id === currentFolderId);
-            if (!folder) return;
-            
-            folder.cards = folder.cards.filter(c => c.id !== cardId);
-            renderSidebar();
-            renderMainContent();
+        function renderCards() {
+            if(!AppState.currentFolderId) return;
+            const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
+            const grid = document.getElementById('card-grid');
+            if(!grid) return;
+            if (!folder || !folder.cards || folder.cards.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; color: #94a3b8; grid-column: 1/-1; padding: 50px;">Chưa có thẻ nào.</div>';
+                return;
+            }
+            grid.innerHTML = folder.cards.map(c => `
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="card-actions" onclick="event.stopPropagation()">
+                        <button class="btn-icon" onclick="openEditCard(${c.id})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-icon" style="color: #ef4444;" onclick="deleteCard(${c.id})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    <div class="card-inner"><div class="card-front">${escapeHtml(c.q)}</div><div class="card-back">${escapeHtml(c.a)}</div></div>
+                </div>
+            `).join('');
         }
 
-        function editFlashcard(cardId) {
-            const folder = folders.find(f => f.id === currentFolderId);
-            if (!folder) return;
-            
+        function openCardModal() {
+            AppState.editingCardId = null;
+            const title = document.getElementById('cardModalTitle'); if(title) title.innerText = "Thêm thẻ mới";
+            const q = document.getElementById('cardQuestion'); if(q) q.value = '';
+            const a = document.getElementById('cardAnswer'); if(a) a.value = '';
+            openModal('cardModal');
+        }
+
+        function openEditCard(cardId) {
+            AppState.editingCardId = cardId;
+            const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
+            if(!folder) return;
             const card = folder.cards.find(c => c.id === cardId);
-            if (!card) return;
-
-            editingCardId = cardId;
-            document.getElementById('flashcardModalTitle').textContent = 'Edit Flashcard';
-            document.getElementById('flashcardModal').classList.add('active');
-            document.getElementById('questionInput').value = card.question;
-            document.getElementById('answerInput').value = card.answer;
+            if(!card) return;
+            const title = document.getElementById('cardModalTitle'); if(title) title.innerText = "Chỉnh sửa thẻ";
+            const q = document.getElementById('cardQuestion'); if(q) q.value = card.q;
+            const a = document.getElementById('cardAnswer'); if(a) a.value = card.a;
+            openModal('cardModal');
         }
 
-        function toggleCard(cardId) {
-            const folder = folders.find(f => f.id === currentFolderId);
-            if (!folder) return;
-            
-            const card = folder.cards.find(c => c.id === cardId);
-            if (!card) return;
-
-            const cardElement = document.getElementById(`card-${cardId}`);
-            const contentElement = cardElement.querySelector('.flashcard-content');
-            
-            cardElement.classList.toggle('flipped');
-            
-            if (cardElement.classList.contains('flipped')) {
-                contentElement.textContent = card.answer;
+        function saveCard() {
+            const qEl = document.getElementById('cardQuestion');
+            const aEl = document.getElementById('cardAnswer');
+            const q = qEl ? qEl.value.trim() : '';
+            const a = aEl ? aEl.value.trim() : '';
+            if (!q || !a) return alert("Nhập đủ thông tin!");
+            const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
+            if(!folder) return alert("Chọn thư mục trước!");
+            if (AppState.editingCardId) {
+                const card = folder.cards.find(c => c.id === AppState.editingCardId);
+                if(card) { card.q = q; card.a = a; }
             } else {
-                contentElement.textContent = card.question;
+                folder.cards.push({ id: Date.now(), q, a });
             }
+            saveData(); selectFolder(AppState.currentFolderId); closeModal('cardModal');
         }
+
+        function deleteCard(id) {
+            if(!confirm('Xóa thẻ này?')) return;
+            const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
+            if(!folder) return;
+            folder.cards = folder.cards.filter(c => c.id !== id);
+            saveData(); selectFolder(AppState.currentFolderId);
+        }
+
+        const qInput = document.getElementById('cardQuestion');
+        const sugBox = document.getElementById('suggestions');
+        if(qInput && sugBox) {
+            qInput.addEventListener('input', (e) => {
+                const val = e.target.value.toLowerCase();
+                if(val.length < 1) { sugBox.style.display = 'none'; return; }
+                const matches = COMMON_WORDS.filter(w => w.toLowerCase().includes(val));
+                if(matches.length > 0) {
+                    sugBox.innerHTML = matches.map(w => `<div class="suggestion-item" onclick="applySug('${escapeAttr(w)}')">${escapeHtml(w)}</div>`).join('');
+                    sugBox.style.display = 'block';
+                } else sugBox.style.display = 'none';
+            });
+        }
+        function applySug(w) { if(qInput) { qInput.value = w; } if(sugBox) sugBox.style.display = 'none'; }
 
         function startQuiz() {
-            const folder = folders.find(f => f.id === currentFolderId);
-            if (!folder || folder.cards.length === 0) return;
-
-            quizState = {
-                questions: [...folder.cards].sort(() => Math.random() - 0.5),
-                currentIndex: 0,
-                score: 0
-            };
-
-            currentView = 'quiz';
-            renderMainContent();
+            const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
+            if(!folder || !folder.cards || folder.cards.length === 0) return alert('Không có thẻ trong thư mục này.');
+            AppState.quiz = { active: true, cards: [...folder.cards].sort(() => Math.random() - 0.5), index: 0, score: 0 };
+            const study = document.getElementById('study-mode');
+            const quiz = document.getElementById('quiz-mode');
+            if(study) study.classList.add('hidden');
+            if(quiz) quiz.classList.remove('hidden');
+            renderQuizCard();
         }
 
-        function revealAnswer() {
-            const question = quizState.questions[quizState.currentIndex];
-            const answerDiv = document.getElementById('quizAnswer');
-            const buttonsDiv = document.getElementById('quizButtons');
-            
-            answerDiv.textContent = question.answer;
-            answerDiv.classList.add('revealed');
-            answerDiv.onclick = null;
-            buttonsDiv.style.display = 'flex';
+        function renderQuizCard() {
+            const q = AppState.quiz;
+            const progressEl = document.getElementById('quiz-progress');
+            if(progressEl) progressEl.innerText = `Question ${q.index + 1}/${q.cards.length}`;
+            const cardUI = document.getElementById('quiz-card-face');
+            if(!cardUI) return;
+            cardUI.className = 'quiz-card-display';
+            cardUI.innerText = q.cards[q.index].q;
+            const actions = document.getElementById('quiz-actions');
+            if(actions) actions.classList.add('hidden');
         }
 
-        function answerQuestion(correct) {
-            if (correct) {
-                quizState.score++;
-            }
-
-            quizState.currentIndex++;
-
-            if (quizState.currentIndex < quizState.questions.length) {
-                renderMainContent();
-            } else {
-                currentView = 'results';
-                renderMainContent();
-            }
+        function revealQuizCard() {
+            const cardUI = document.getElementById('quiz-card-face');
+            if(!cardUI) return;
+            cardUI.classList.add('revealed');
+            cardUI.innerText = AppState.quiz.cards[AppState.quiz.index].a;
+            const actions = document.getElementById('quiz-actions');
+            if(actions) actions.classList.remove('hidden');
         }
 
-        function backToCards() {
-            currentView = 'folders';
-            quizState = null;
-            renderMainContent();
+        function answerQuiz(isCorrect) {
+            if (isCorrect) AppState.quiz.score++;
+            AppState.quiz.index++;
+            if (AppState.quiz.index >= AppState.quiz.cards.length) {
+                const qm = document.getElementById('quiz-mode');
+                const res = document.getElementById('quiz-results');
+                if(qm) qm.classList.add('hidden');
+                if(res) res.classList.remove('hidden');
+                const percent = Math.round((AppState.quiz.score / AppState.quiz.cards.length) * 100);
+                const finalEl = document.getElementById('final-score');
+                if(finalEl) finalEl.innerText = `${percent}%`;
+            } else { renderQuizCard(); }
         }
 
-        createPiano();
-        initFlashcards();
+        function exitQuiz() { if(AppState.currentFolderId) selectFolder(AppState.currentFolderId); }
 
-        document.addEventListener('click', () => {
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
-        }, { once: true });
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+            const btn = Array.from(document.querySelectorAll('.nav-tabs button')).find(b => (b.getAttribute('onclick') || '').includes("'" + tabName + "'"));
+            if(btn) btn.classList.add('active');
+            document.getElementById('piano-view').classList.add('hidden');
+            document.getElementById('flashcards-view').classList.add('hidden');
+            if (tabName === 'piano') document.getElementById('piano-view').classList.remove('hidden');
+            else document.getElementById('flashcards-view').classList.remove('hidden');
+        }
+
+        function closeModal(id) { const el = document.getElementById(id); if(el) el.classList.remove('active'); }
+        function initSystem() { renderPiano(); renderFolders(); }
+
+        function escapeHtml(s) {
+            if(!s && s !== 0) return '';
+            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+        function escapeAttr(s) { return (String(s || '')).replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+        initSystem();
     </script>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
 </body>
 </html>
