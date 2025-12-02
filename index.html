@@ -179,8 +179,8 @@
         </nav>
         <div class="hero">
             <div class="hero-text">
-                <h1>Học Piano & Từ Vựng<br><span style="color: #e85d5d">Hiệu Quả Gấp Đôi</span></h1>
-                <p>Nền tảng tích hợp dành cho những kẻ tham vọng. Lưu trữ dữ liệu riêng tư. Đăng ký ngay để bắt đầu.</p>
+                <h1>Learn Piano & Vocabulary<br><span style="color: #e85d5d">Double The Effectiveness</span></h1>
+                <p>Integrated platform for ambitious learners. Private data storage. Sign up now to get started.</p>
             </div>
             
             <div class="auth-card">
@@ -193,10 +193,10 @@
                         </div>
                         <div class="input-group">
                             <i class="fa-solid fa-lock"></i>
-                            <input type="password" id="loginPass" placeholder="Mật khẩu" required>
+                            <input type="password" id="loginPass" placeholder="Password" required>
                         </div>
                         <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
-                            Vào Hệ Thống <i class="fa-solid fa-arrow-right"></i>
+                            Enter System <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </form>
                     <div class="auth-switch">
@@ -205,11 +205,11 @@
                 </div>
 
                 <div id="register-form-container" class="hidden">
-                    <h2 id="auth-title-register" style="margin-bottom: 20px;">Đăng Ký Mới</h2>
+                    <h2 id="auth-title-register" style="margin-bottom: 20px;">Create New Account</h2>
                     <form id="registerForm">
                         <div class="input-group">
                             <i class="fa-regular fa-user"></i>
-                            <input type="text" id="regName" placeholder="Tên hiển thị" autocomplete="off" required>
+                            <input type="text" id="regName" placeholder="Display Name" autocomplete="off" required>
                         </div>
                         <div class="input-group">
                             <i class="fa-regular fa-envelope"></i>
@@ -217,14 +217,14 @@
                         </div>
                         <div class="input-group">
                             <i class="fa-solid fa-lock"></i>
-                            <input type="password" id="regPass" placeholder="Mật khẩu" autocomplete="new-password" required>
+                            <input type="password" id="regPass" placeholder="Password" autocomplete="new-password" required>
                         </div>
                         <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
-                            Tạo Tài Khoản
+                            Create Account
                         </button>
                     </form>
                     <div class="auth-switch">
-                        Đã có tài khoản? <a onclick="switchAuthMode()">Đăng nhập</a>
+                        Already have an account? <a onclick="switchAuthMode()">Login</a>
                     </div>
                 </div>
                 <div class="auth-footer">
@@ -295,27 +295,27 @@
                             </div>
                         </div>
                         <div id="card-grid" class="card-grid">
-                            <div style="text-align: center; color: #94a3b8; grid-column: 1/-1; padding: 50px;">Chọn thư mục để bắt đầu.</div>
+                            <div style="text-align: center; color: #94a3b8; grid-column: 1/-1; padding: 50px;">Select a folder to get started.</div>
                         </div>
                     </div>
                     <div id="quiz-mode" class="hidden">
                         <div class="quiz-container">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
                                 <span id="quiz-progress" style="font-weight: 600; color: #64748b;">Question 1/10</span>
-                                <button onclick="exitQuiz()" class="btn-secondary">Thoát</button>
+                                <button onclick="exitQuiz()" class="btn-secondary">Exit</button>
                             </div>
                             <div class="quiz-card-display" id="quiz-card-face" onclick="revealQuizCard()">???</div>
                             <div id="quiz-actions" class="hidden" style="display: flex; gap: 15px; justify-content: center;">
-                                <button onclick="answerQuiz(false)" class="btn-danger" style="padding: 15px 30px;">Sai</button>
-                                <button onclick="answerQuiz(true)" class="btn-primary" style="background: #22c55e; padding: 15px 30px;">Đúng</button>
+                                <button onclick="answerQuiz(false)" class="btn-danger" style="padding: 15px 30px;">Wrong</button>
+                                <button onclick="answerQuiz(true)" class="btn-primary" style="background: #22c55e; padding: 15px 30px;">Correct</button>
                             </div>
                         </div>
                     </div>
                     <div id="quiz-results" class="hidden">
                         <div class="quiz-container">
-                            <h2>Kết quả</h2>
+                            <h2>Results</h2>
                             <div class="quiz-score-display" id="final-score">80%</div>
-                            <button onclick="exitQuiz()" class="btn-primary" style="margin-top: 20px;">Quay lại</button>
+                            <button onclick="exitQuiz()" class="btn-primary" style="margin-top: 20px;">Back</button>
                         </div>
                     </div>
                 </div>
@@ -325,37 +325,37 @@
 
     <div class="modal-overlay" id="folderModal">
         <div class="modal-content">
-            <h3 id="folderModalTitle">Tạo thư mục mới</h3>
-            <input type="text" id="newFolderName" placeholder="Tên thư mục...">
+            <h3 id="folderModalTitle">Create New Folder</h3>
+            <input type="text" id="newFolderName" placeholder="Folder name...">
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
-                <button onclick="closeModal('folderModal')" class="btn-secondary">Hủy</button>
-                <button onclick="saveFolder()" class="btn-primary">Lưu</button>
+                <button onclick="closeModal('folderModal')" class="btn-secondary">Cancel</button>
+                <button onclick="saveFolder()" class="btn-primary">Save</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="cardModal">
         <div class="modal-content">
-            <h3 id="cardModalTitle">Thẻ ghi nhớ mới</h3>
+            <h3 id="cardModalTitle">New Flashcard</h3>
             <div class="input-wrapper">
-                <textarea id="cardQuestion" placeholder="Mặt trước (Câu hỏi)"></textarea>
+                <textarea id="cardQuestion" placeholder="Front (Question)"></textarea>
                 <div class="suggestions-box" id="suggestions"></div>
             </div>
-            <textarea id="cardAnswer" placeholder="Mặt sau (Đáp án)"></textarea>
+            <textarea id="cardAnswer" placeholder="Back (Answer)"></textarea>
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
-                <button onclick="closeModal('cardModal')" class="btn-secondary">Hủy</button>
-                <button onclick="saveCard()" class="btn-primary">Lưu thẻ</button>
+                <button onclick="closeModal('cardModal')" class="btn-secondary">Cancel</button>
+                <button onclick="saveCard()" class="btn-primary">Save Card</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="keybindModal">
         <div class="modal-content">
-            <h3>Cài đặt phím tắt</h3>
+            <h3>Keybind Settings</h3>
             <div class="keybind-list" id="kb-list"></div>
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
-                <button onclick="closeModal('keybindModal')" class="btn-secondary">Đóng</button>
-                <button onclick="saveKeybinds()" class="btn-primary">Lưu</button>
+                <button onclick="closeModal('keybindModal')" class="btn-secondary">Close</button>
+                <button onclick="saveKeybinds()" class="btn-primary">Save</button>
             </div>
         </div>
     </div>
@@ -406,20 +406,20 @@
             },
             register: (name, email, pass) => {
                 let users = Auth.getUsers();
-                if(users.find(u => u.email === email)) return alert("Email đã tồn tại!");
+                if(users.find(u => u.email === email)) return alert("Email already exists!");
                 const newUser = { id: 'u' + Date.now(), name, email, pass };
                 users.push(newUser);
                 SafeStorage.setItem('spartan_users', JSON.stringify(users));
                 const userData = { folders: [], keys: DEFAULT_KEYS };
                 SafeStorage.setItem('spartan_data_' + newUser.id, JSON.stringify(userData));
-                alert("Đăng ký thành công!");
-                toggleAuth('login');
+                alert("Registration successful!");
+                switchAuthMode();
             },
             login: (email, pass) => {
                 let users = Auth.getUsers();
                 const user = users.find(u => u.email === email && u.pass === pass);
                 if(user) Auth.loadUserSession(user);
-                else alert("Sai email hoặc mật khẩu!");
+                else alert("Invalid email or password!");
             },
             loadUserSession: (user) => {
                 AppState.currentUser = user;
@@ -647,9 +647,9 @@
                 const email = document.getElementById('regEmail').value.trim();
                 const pass = document.getElementById('regPass').value;
                 
-                if (!name) return alert("Vui lòng nhập tên!");
-                if (!email) return alert("Vui lòng nhập email!");
-                if (pass.length < 6) return alert("Mật khẩu phải có ít nhất 6 ký tự!");
+                if (!name) return alert("Please enter your name!");
+                if (!email) return alert("Please enter your email!");
+                if (pass.length < 6) return alert("Password must be at least 6 characters!");
                 
                 Auth.register(name, email, pass);
             });
@@ -664,7 +664,7 @@
         }
 
         function resetData() {
-            if(confirm("Reset dữ liệu (chỉ trên trình duyệt này)?")) {
+           if(confirm("Reset data (only on this browser)?")) {
                 SafeStorage.clear();
                 location.reload();
             }
@@ -799,7 +799,7 @@
             const title = document.getElementById('folderModalTitle');
             const name = document.getElementById('newFolderName');
             if(f) {
-                if(title) title.innerText = "Đổi tên thư mục";
+                if(title) title.innerText = "Rename Folder";
                 if(name) name.value = f.name;
                 const modal = document.getElementById('folderModal');
                 if(modal) modal.classList.add('active');
@@ -809,7 +809,7 @@
         function saveFolder() {
             const nameEl = document.getElementById('newFolderName');
             const name = nameEl ? nameEl.value.trim() : '';
-            if (!name) return alert("Nhập tên thư mục!");
+           if (!name) return alert("Enter folder name!");
             if (AppState.editingFolderId) {
                 const f = AppState.folders.find(f => f.id === AppState.editingFolderId);
                 if(f) {
@@ -828,14 +828,14 @@
         }
 
         function deleteFolder(id) {
-            if(confirm('Xóa thư mục này và toàn bộ thẻ bên trong?')) {
+           if(confirm('Delete this folder and all cards inside?')) {
                 AppState.folders = AppState.folders.filter(f => f.id !== id);
                 if(AppState.currentFolderId === id) {
                     AppState.currentFolderId = null;
                     const title = document.getElementById('current-folder-title');
                     if(title) title.textContent = "Select a Folder";
                     const grid = document.getElementById('card-grid');
-                    if(grid) grid.innerHTML = '<div style="text-align: center; color: #94a3b8; grid-column: 1/-1; padding: 50px;">Chọn thư mục để bắt đầu.</div>';
+                    if(grid) grid.innerHTML = '<div style="text-align: center; color: #94a3b8; grid-column: 1/-1; padding: 50px;">Select a folder to get started.</div>';
                     const addBtn = document.getElementById('add-card-btn'); if(addBtn) addBtn.disabled = true;
                     const quizBtn = document.getElementById('quiz-btn'); if(quizBtn) quizBtn.disabled = true;
                 }
@@ -850,7 +850,7 @@
             const grid = document.getElementById('card-grid');
             if(!grid) return;
             if (!folder || !folder.cards || folder.cards.length === 0) {
-                grid.innerHTML = '<div style="text-align: center; color: #94a3b8; grid-column: 1/-1; padding: 50px;">Chưa có thẻ nào.</div>';
+                grid.innerHTML = '<div style="text-align: center; color: #94a3b8; grid-column: 1/-1; padding: 50px;">No cards yet.</div>';
                 return;
             }
             grid.innerHTML = folder.cards.map(c => `
@@ -866,7 +866,7 @@
 
         function openCardModal() {
             AppState.editingCardId = null;
-            const title = document.getElementById('cardModalTitle'); if(title) title.innerText = "Thêm thẻ mới";
+            const title = document.getElementById('cardModalTitle'); if(title) title.innerText = "Add New Card";
             const q = document.getElementById('cardQuestion'); if(q) q.value = '';
             const a = document.getElementById('cardAnswer'); if(a) a.value = '';
             openModal('cardModal');
@@ -878,7 +878,7 @@
             if(!folder) return;
             const card = folder.cards.find(c => c.id === cardId);
             if(!card) return;
-            const title = document.getElementById('cardModalTitle'); if(title) title.innerText = "Chỉnh sửa thẻ";
+            const title = document.getElementById('cardModalTitle'); if(title) title.innerText = "Edit Card";
             const q = document.getElementById('cardQuestion'); if(q) q.value = card.q;
             const a = document.getElementById('cardAnswer'); if(a) a.value = card.a;
             openModal('cardModal');
@@ -889,9 +889,9 @@
             const aEl = document.getElementById('cardAnswer');
             const q = qEl ? qEl.value.trim() : '';
             const a = aEl ? aEl.value.trim() : '';
-            if (!q || !a) return alert("Nhập đủ thông tin!");
+            if (!q || !a) return alert("Fill in all fields!");
             const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
-            if(!folder) return alert("Chọn thư mục trước!");
+            if(!folder) return alert("Select a folder first!");
             if (AppState.editingCardId) {
                 const card = folder.cards.find(c => c.id === AppState.editingCardId);
                 if(card) { card.q = q; card.a = a; }
@@ -902,7 +902,7 @@
         }
 
         function deleteCard(id) {
-            if(!confirm('Xóa thẻ này?')) return;
+           if(!confirm('Delete this card?')) return;
             const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
             if(!folder) return;
             folder.cards = folder.cards.filter(c => c.id !== id);
@@ -926,7 +926,7 @@
 
         function startQuiz() {
             const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
-            if(!folder || !folder.cards || folder.cards.length === 0) return alert('Không có thẻ trong thư mục này.');
+            if(!folder || !folder.cards || folder.cards.length === 0) return alert('No cards in this folder.');
             AppState.quiz = { active: true, cards: [...folder.cards].sort(() => Math.random() - 0.5), index: 0, score: 0 };
             const study = document.getElementById('study-mode');
             const quiz = document.getElementById('quiz-mode');
