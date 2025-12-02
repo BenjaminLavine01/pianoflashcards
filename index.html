@@ -61,6 +61,8 @@
         .hero-text p { font-size: 1.2rem; color: #4a5568; margin-bottom: 30px; max-width: 500px; font-weight: 500; }
         
         .auth-card { background: white; padding: 40px; border-radius: var(--radius-xl); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; transition: height 0.3s ease; animation: slideInRight 0.8s ease 0.2s both; }
+        .auth-card h2 { color: #ff4757; font-weight: 900; margin-bottom: 20px; }
+        #auth-title-register { color: #ff4757; font-weight: 900; margin-bottom: 20px; }
         .input-group { margin-bottom: 15px; position: relative; animation: fadeInUp 0.6s ease; }
         .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; transition: all 0.3s ease; }
         .input-group input { width: 100%; padding: 12px 12px 12px 40px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; transition: all 0.3s ease; }
@@ -203,26 +205,26 @@
                 </div>
 
                 <div id="register-form-container" class="hidden">
-                    <h2 style="margin-bottom: 20px;">Đăng Ký Mới</h2>
+                    <h2 id="auth-title-register" style="margin-bottom: 20px;">Đăng Ký Mới</h2>
                     <form id="registerForm">
                         <div class="input-group">
                             <i class="fa-regular fa-user"></i>
-                            <input type="text" id="regName" placeholder="Tên hiển thị" required>
+                            <input type="text" id="regName" placeholder="Tên hiển thị" autocomplete="off" required>
                         </div>
                         <div class="input-group">
                             <i class="fa-regular fa-envelope"></i>
-                            <input type="email" id="regEmail" placeholder="Email" required>
+                            <input type="email" id="regEmail" placeholder="Email" autocomplete="off" required>
                         </div>
                         <div class="input-group">
                             <i class="fa-solid fa-lock"></i>
-                            <input type="password" id="regPass" placeholder="Mật khẩu" required>
+                            <input type="password" id="regPass" placeholder="Mật khẩu" autocomplete="new-password" required>
                         </div>
-                        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; background: var(--secondary-gradient);">
+                        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
                             Tạo Tài Khoản
                         </button>
                     </form>
                     <div class="auth-switch">
-                        Đã có tài khoản? <a onclick="toggleAuth('login')">Đăng nhập</a>
+                        Đã có tài khoản? <a onclick="switchAuthMode()">Đăng nhập</a>
                     </div>
                 </div>
                 <div class="auth-footer">
@@ -611,12 +613,22 @@
 
         function switchAuthMode() {
             const titleEl = document.getElementById('auth-title');
+            const titleRegEl = document.getElementById('auth-title-register');
             const loginCont = document.getElementById('login-form-container');
             const regCont = document.getElementById('register-form-container');
             const isLogin = !loginCont.classList.contains('hidden');
-            if(titleEl) titleEl.innerText = isLogin ? "Đăng Ký" : "Đăng Nhập";
-            if(loginCont) loginCont.classList.toggle('hidden', !isLogin);
-            if(regCont) regCont.classList.toggle('hidden', isLogin);
+            
+            if(isLogin) {
+                titleEl.classList.add('hidden');
+                if(titleRegEl) titleRegEl.classList.remove('hidden');
+                loginCont.classList.add('hidden');
+                regCont.classList.remove('hidden');
+            } else {
+                titleEl.classList.remove('hidden');
+                if(titleRegEl) titleRegEl.classList.add('hidden');
+                regCont.classList.add('hidden');
+                loginCont.classList.remove('hidden');
+            }
         }
 
         const loginForm = document.getElementById('loginForm');
@@ -631,7 +643,15 @@
         if (registerForm) {
             registerForm.addEventListener('submit', e => {
                 e.preventDefault();
-                Auth.register(document.getElementById('regName').value, document.getElementById('regEmail').value, document.getElementById('regPass').value);
+                const name = document.getElementById('regName').value.trim();
+                const email = document.getElementById('regEmail').value.trim();
+                const pass = document.getElementById('regPass').value;
+                
+                if (!name) return alert("Vui lòng nhập tên!");
+                if (!email) return alert("Vui lòng nhập email!");
+                if (pass.length < 6) return alert("Mật khẩu phải có ít nhất 6 ký tự!");
+                
+                Auth.register(name, email, pass);
             });
         }
 
