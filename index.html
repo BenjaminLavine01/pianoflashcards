@@ -427,6 +427,7 @@
                 const userData = rawData ? JSON.parse(rawData) : { folders: [], keys: DEFAULT_KEYS };
                 AppState.folders = userData.folders || [];
                 AppState.keys = userData.keys || DEFAULT_KEYS.slice();
+                ensureBuiltinVocab();   // <-- add this line
                 const nameEl = document.getElementById('user-display-name');
                 if(nameEl) nameEl.innerText = user.name;
                 document.getElementById('landing-page').classList.add('hidden');
@@ -991,7 +992,75 @@
         }
         function escapeAttr(s) { return (String(s || '')).replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
-        initSystem();
+        // --- Built-in vocabulary (expanded B2/C1) ---
+        const BUILTIN_VOCAB_CARDS = [
+          { q: "Proficient", a: "Skilled and experienced" },
+          { q: "Cohesive", a: "Forming a united whole" },
+          { q: "Sustainable", a: "Capable of being maintained over time" },
+          { q: "Ambiguous", a: "Open to more than one interpretation" },
+          { q: "Consequence", a: "A result or effect of an action" },
+          { q: "Negotiate", a: "To try to reach an agreement" },
+          { q: "Implement", a: "To put into effect" },
+          { q: "Paradigm", a: "A typical example or pattern" },
+          { q: "Mitigate", a: "To make less severe" },
+          { q: "Facilitate", a: "To make an action or process easier" },
+          { q: "Pragmatic", a: "Dealing with things sensibly and realistically" },
+          { q: "Tenacious", a: "Persistent and determined" },
+          { q: "Conscientious", a: "Wishing to do what is right; diligent" },
+          { q: "Articulate", a: "Able to express ideas clearly" },
+          { q: "Evaluate", a: "Assess the value or significance of something" },
+          { q: "Interpret", a: "Explain the meaning of" },
+          { q: "Hypothesis", a: "A proposed explanation made on limited evidence" },
+          { q: "Corroborate", a: "Provide evidence to support or confirm" },
+          { q: "Empirical", a: "Based on observation or experience rather than theory" },
+          { q: "Salient", a: "Most noticeable or important" },
+          { q: "Viable", a: "Capable of working successfully; feasible" },
+          { q: "Intrinsic", a: "Belonging naturally; essential" },
+          { q: "Extrinsic", a: "Not part of the essential nature; external" },
+          { q: "Allocate", a: "Distribute resources or duties for a purpose" },
+          { q: "Consensus", a: "General agreement among a group" },
+          { q: "Redundant", a: "Not or no longer needed; superfluous" },
+          { q: "Pivotal", a: "Of crucial importance in relation to the success of something" },
+          { q: "Discrepancy", a: "A lack of compatibility or similarity between facts" },
+          { q: "Exacerbate", a: "Make a problem or situation worse" },
+          { q: "Prevalent", a: "Widespread in a particular area or at a particular time" },
+          { q: "Ubiquitous", a: "Present, appearing, or found everywhere" },
+          { q: "Conducive", a: "Making a certain situation or outcome likely" },
+          { q: "Discern", a: "Perceive or recognize something" },
+          { q: "Retrospect", a: "Reviewing or looking back on past events" },
+          { q: "Augment", a: "Make something greater by adding to it" },
+          { q: "Curtail", a: "Reduce in extent or quantity; impose a restriction on" },
+          { q: "Propensity", a: "A natural inclination or tendency" },
+          { q: "Immutable", a: "Unchanging over time; unable to be changed" },
+          { q: "Ambivalent", a: "Having mixed feelings or contradictory ideas" },
+          { q: "Disparate", a: "Essentially different in kind; not allowing comparison" }
+        ];
+
+        function ensureBuiltinVocab() {
+          if (!AppState || !AppState.currentUser) return;
+          // find or create the built-in folder
+          let builtinFolder = AppState.folders.find(f => f && f.name === 'Built-in: English B2/C1');
+          if (!builtinFolder) {
+            builtinFolder = { id: Date.now() + 1, name: 'Built-in: English B2/C1', cards: [] };
+            AppState.folders.unshift(builtinFolder);
+          }
+          // collect existing question texts to avoid duplicates
+          const existingQs = new Set((builtinFolder.cards || []).map(c => (c.q || '').toString().trim()));
+          BUILTIN_VOCAB_CARDS.forEach(card => {
+            const q = (card.q || '').toString().trim();
+            if (!existingQs.has(q)) {
+              builtinFolder.cards.push({
+                id: Date.now() + Math.floor(Math.random() * 10000),
+                q,
+                a: card.a || ''
+              });
+              existingQs.add(q);
+            }
+          });
+          // persist & refresh UI
+          try { saveData(); } catch(e) { console.warn('saveData failed', e); }
+          try { renderFolders(); } catch(e) { /* ignore if UI not ready */ }
+        }
     </script>
 </body>
 </html>
