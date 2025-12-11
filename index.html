@@ -1059,8 +1059,66 @@
           });
           // persist & refresh UI
           try { saveData(); } catch(e) { console.warn('saveData failed', e); }
-          try { renderFolders(); } catch(e) { /* ignore if UI not ready */ }
+          try { renderFolders(); } catch(e) {
+ /* ignore */ }
         }
+
+        // --- AI Definition Placeholders ---
+        // Creates one placeholder "AI Definition: <term>" card for each existing card.
+        function addAIDefPlaceholders(opts = {}) {
+          if (!window.AppState || !Array.isArray(AppState.folders)) {
+            console.warn('AppState or folders not available yet.');
+            return { added: 0, message: 'AppState not ready' };
+          }
+          const { onlyBuiltin = false, onlyCurrent = false } = opts;
+          const results = { added: 0, foldersProcessed: 0 };
+          const nowBase = Date.now();
+
+          function addToFolder(folder) {
+            if (!folder || !Array.isArray(folder.cards)) return 0;
+            results.foldersProcessed++;
+            const existingQs = new Set(folder.cards.map(c => (c.q || '').toString().trim()));
+            let addedHere = 0;
+            // iterate over snapshot of cards (so we don't loop newly added placeholders)
+            const snapshot = (folder.cards || []).slice();
+            snapshot.forEach((c) => {
+              const term = (c.q || '').toString().trim();
+              if (!term) return;
+              const aiQ = `AI Definition: ${term}`;
+              if (!existingQs.has(aiQ)) {
+                const newCard = {
+                  id: nowBase + Math.floor(Math.random() * 100000) + addedHere,
+                  q: aiQ,
+                  a: '',
+                  __aiPlaceholder: true
+                };
+                folder.cards.push(newCard);
+                existingQs.add(aiQ);
+                addedHere++;
+              }
+            });
+            return addedHere;
+          }
+
+          if (onlyCurrent && AppState.currentFolderId) {
+            const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
+            results.added += addToFolder(folder);
+          } else if (onlyBuiltin) {
+            const builtin = AppState.folders.find(f => f && f.name === 'Built-in: English B2/C1');
+            results.added += addToFolder(builtin);
+          } else {
+            AppState.folders.forEach(f => { results.added += addToFolder(f); });
+          }
+
+          try { saveData(); } catch (e) { console.warn('saveData failed', e); }
+          try { renderFolders(); if (AppState.currentFolderId) renderCards(); } catch (e) { /* ignore */ }
+
+          console.log(`AI placeholder creation: added=${results.added}, foldersProcessed=${results.foldersProcessed}`);
+          return results;
+        }
+        function addAIDefForBuiltIn() { return addAIDefPlaceholders({ onlyBuiltin: true }); }
+        function addAIDefForCurrent() { return addAIDefPlaceholders({ onlyCurrent: true }); }
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="RB-GhOWlWGCnxZOsizoFz";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
     </script>
 </body>
 </html>
