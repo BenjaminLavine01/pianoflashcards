@@ -1,1124 +1,1174 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spartan Learning Ecosystem (Final v5.2)</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        /* --- 1. SYSTEM VARIABLES --- */
-        :root {
-            --primary-gradient: linear-gradient(135deg, #ff4757 0%, #ffa502 100%);
-            --secondary-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            --bg-body: #f0f2f5;
-            --text-main: #0a0e27;
-            --text-light: #4a5568;
-            --white: #ffffff;
-            --radius-xl: 20px;
-            --radius-md: 12px;
-            --shadow-card: 0 10px 30px -10px rgba(255, 71, 87, 0.25);
-            --shadow-hover: 0 20px 40px -10px rgba(255, 71, 87, 0.35);
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Spartan.Edu | The Ultimate Ecosystem</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-        body { background: var(--bg-body); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
-        .hidden { display: none !important; }
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-        /* --- 2. ANIMATIONS --- */
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(232, 93, 93, 0.3); } 50% { box-shadow: 0 0 40px rgba(232, 93, 93, 0.6); } }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
-
-        /* --- 3. UI COMPONENTS --- */
-        .btn-primary { background: var(--primary-gradient); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; position: relative; overflow: hidden; }
-        .btn-primary:before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255,255,255,0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s; }
-        .btn-primary:hover:before { width: 300px; height: 300px; }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
-        .btn-secondary { background: white; border: 1px solid #e2e8f0; color: var(--text-main); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .btn-secondary:hover { background: #f1f5f9; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .btn-danger { background: #fee2e2; color: #ef4444; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; }
-        .btn-danger:hover { background: #fecaca; transform: translateY(-2px); }
-        .btn-icon { padding: 8px; border-radius: 6px; cursor: pointer; border: 1px solid #e2e8f0; background: white; color: var(--text-light); transition: all 0.3s ease; }
-        .btn-icon:hover { background: var(--primary-gradient); color: white; border-color: transparent; transform: scale(1.1); }
-        .btn-icon.small { padding: 4px 8px; font-size: 0.8rem; margin-left: 4px; }
-
-        /* --- 4. LANDING & AUTH --- */
-        #landing-page { min-height: 100vh; display: flex; flex-direction: column; background: radial-gradient(circle at 10% 10%, rgba(255, 71, 87, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(255, 165, 2, 0.1) 0%, transparent 40%); transition: opacity 0.5s ease, transform 0.5s ease; animation: fadeInUp 0.8s ease; }
-        .navbar { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; animation: slideInDown 0.6s ease; }
-        .logo { font-size: 1.5rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: pulse 2s infinite; }
-        .hero { flex: 1; display: flex; align-items: center; justify-content: center; gap: 50px; padding: 0 5%; }
-        .hero-text { animation: slideInLeft 0.8s ease 0.2s both; }
-        .hero-text h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px; color: #ff4757; font-weight: 900; text-shadow: 0 2px 8px rgba(255, 71, 87, 0.2); letter-spacing: -1px; }
-        .hero-text p { font-size: 1.2rem; color: #4a5568; margin-bottom: 30px; max-width: 500px; font-weight: 500; }
-        
-        .auth-card { background: white; padding: 40px; border-radius: var(--radius-xl); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; transition: height 0.3s ease; animation: slideInRight 0.8s ease 0.2s both; }
-        .auth-card h2 { color: #ff4757; font-weight: 900; margin-bottom: 20px; }
-        #auth-title-register { color: #ff4757; font-weight: 900; margin-bottom: 20px; }
-        .input-group { margin-bottom: 15px; position: relative; animation: fadeInUp 0.6s ease; }
-        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; transition: all 0.3s ease; }
-        .input-group input { width: 100%; padding: 12px 12px 12px 40px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; transition: all 0.3s ease; }
-        .input-group input:focus { border-color: #e85d5d; box-shadow: 0 0 0 3px rgba(232,93,93,0.1); transform: translateX(5px); }
-        .input-group input:focus ~ i { color: #e85d5d; transform: translateY(-50%) scale(1.2); }
-        .auth-switch { text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--text-light); animation: fadeInUp 0.6s ease 0.4s both; }
-        .auth-switch a { color: #e85d5d; text-decoration: none; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .auth-switch a:hover { text-decoration: underline; color: #d4a574; }
-
-        .auth-footer { 
-            text-align: center; 
-            margin-top: 30px; 
-            padding-top: 20px; 
-            border-top: 1px solid rgba(226, 232, 240, 0.3); 
-            color: rgba(148, 163, 184, 0.5); 
-            font-size: 0.8rem; 
-            font-weight: 400; 
-            letter-spacing: 0.5px; 
-            opacity: 0.6; 
-        }
-        .auth-footer strong { 
-            color: rgba(232, 93, 93, 0.6);
-            font-weight: 600;
-        }
-
-        /* --- 5. APP LAYOUT --- */
-        #main-app { max-width: 1400px; margin: 0 auto; padding: 20px; opacity: 0; transform: translateY(20px); transition: all 0.5s ease; }
-        #main-app.active { opacity: 1; transform: translateY(0); }
-        .app-header { background: var(--primary-gradient); border-radius: var(--radius-xl); padding: 20px 30px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(255, 71, 87, 0.25); animation: slideInDown 0.6s ease; position: relative; overflow: hidden; }
-        .app-header > div:first-child { font-size: 1.3rem; font-weight: 900; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-        .user-info { font-weight: 700; letter-spacing: 0.3px; }
-        
-        .nav-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; animation: fadeInUp 0.6s ease; }
-        .nav-tabs button { padding: 12px 30px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; font-weight: 600; color: var(--text-light); cursor: pointer; transition: all 0.3s ease; position: relative; }
-        .nav-tabs button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .nav-tabs button.active { background: linear-gradient(135deg, #ff4757 0%, #ffa502 100%); color: white; border: none; box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4); animation: glow 2s infinite; }
-
-        /* --- 6. PIANO STYLES --- */
-        .piano-container { background: white; padding: 30px; border-radius: var(--radius-xl); box-shadow: var(--shadow-card); text-align: center; overflow: hidden; animation: fadeInUp 0.6s ease; }
-        .piano-controls { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 15px; border-radius: 12px; animation: slideInUp 0.6s ease; }
-        .piano-scroll-wrapper { overflow-x: auto; padding-bottom: 20px; display: flex; justify-content: center; }
-        .piano-keys-wrapper { display: inline-flex; position: relative; height: 260px; user-select: none; padding: 0 20px; animation: fadeInUp 0.8s ease 0.2s both; }
-        .key { border: 1px solid #94a3b8; border-radius: 0 0 5px 5px; cursor: pointer; position: relative; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 15px; font-weight: bold; font-size: 11px; color: #94a3b8; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.1); transition: all 0.1s ease; }
-        .white-key { width: 44px; height: 100%; background: white; z-index: 1; }
-        .white-key:hover { box-shadow: inset 0 -5px 0 rgba(232,93,93,0.2); transform: translateY(-3px); }
-        .white-key.active { background: linear-gradient(135deg, #fbbf24, #f59e0b); border-color: #d97706; color: #78350f; box-shadow: inset 0 -5px 0 rgba(0,0,0,0.1), 0 5px 15px rgba(232,93,93,0.3); transform: scaleY(0.98); transform-origin: top; animation: bounce 0.3s ease; }
-        .black-key { width: 28px; height: 65%; background: #0f172a; position: absolute; z-index: 2; margin-left: -14px; color: white; border-bottom: 3px solid #000; transition: all 0.1s ease; }
-        .black-key:hover { box-shadow: 0 0 15px rgba(232,93,93,0.2); }
-        .black-key.active { background: linear-gradient(135deg, #e85d5d, #d4574d); border-color: #b91c1c; transform: scaleY(0.98); transform-origin: top; animation: bounce 0.3s ease; box-shadow: 0 0 20px rgba(232,93,93,0.5); }
-
-        /* --- 7. FLASHCARD STYLES --- */
-        .flashcard-layout { display: grid; grid-template-columns: 280px 1fr; gap: 30px; animation: fadeInUp 0.6s ease; }
-        .sidebar { background: white; padding: 20px; border-radius: var(--radius-xl); box-shadow: var(--shadow-card); height: fit-content; animation: slideInLeft 0.6s ease; }
-        
-        .folder-item { 
-            padding: 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; 
-            display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease;
-            border: 1px solid transparent; animation: slideInLeft 0.4s ease;
-        }
-        .folder-item:hover { background: #f1f5f9; border-color: #e2e8f0; transform: translateX(5px); }
-        .folder-item.active { background: linear-gradient(135deg, #ffe8e0, #fff3e0); color: #ff4757; font-weight: 700; border-color: #ff9d7b; animation: glow 2s infinite; }
-        .folder-info { display: flex; flex-direction: column; overflow: hidden; }
-        .folder-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .folder-count { font-size: 0.8rem; opacity: 0.7; font-weight: 400; }
-        .folder-actions { display: flex; opacity: 0.5; transition: opacity 0.3s ease; }
-        .folder-item:hover .folder-actions { opacity: 1; }
-
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .flashcard { background: white; height: 200px; border-radius: 16px; perspective: 1000px; cursor: pointer; position: relative; box-shadow: var(--shadow-card); border: 1px solid #e2e8f0; transition: all 0.3s ease; animation: fadeInUp 0.6s ease; }
-        .flashcard:hover { transform: translateY(-8px) rotateY(-5deg); box-shadow: 0 20px 40px rgba(232,93,93,0.2); }
-        .card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; display: flex; align-items: center; justify-content: center; }
-        .flashcard.flipped .card-inner { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border-radius: 16px; animation: fadeInUp 0.4s ease; }
-        .card-front { background: linear-gradient(135deg, #ffffff, #f8fafc); color: var(--text-main); font-size: 1.2rem; font-weight: 600; }
-        .card-back { background: var(--primary-gradient); color: white; transform: rotateY(180deg); font-size: 1.2rem; }
-        .card-actions { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 5px; opacity: 0; transition: all 0.3s ease; transform: translateY(-10px); }
-        .flashcard:hover .card-actions { opacity: 1; transform: translateY(0); }
-
-        /* --- 8. QUIZ MODE & MODALS --- */
-        .quiz-container { background: white; padding: 40px; border-radius: var(--radius-xl); box-shadow: var(--shadow-card); text-align: center; max-width: 700px; margin: 0 auto; animation: slideInUp 0.6s ease; }
-        .quiz-card-display { height: 300px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; margin: 30px 0; border: 2px dashed #cbd5e1; border-radius: 16px; cursor: pointer; transition: all 0.3s ease; background: linear-gradient(135deg, #f8fafc, #f1f5f9); animation: fadeInUp 0.6s ease; }
-        .quiz-card-display:hover { border-color: #e85d5d; transform: scale(1.02); box-shadow: 0 10px 30px rgba(232,93,93,0.1); }
-        .quiz-card-display.revealed { background: linear-gradient(135deg, #f0fdf4, #dcfce7); color: #15803d; border-style: solid; border-color: #16a34a; animation: glow 1s ease; }
-        .input-wrapper { position: relative; }
-        .suggestions-box { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #e2e8f0; border-radius: 8px; max-height: 150px; overflow-y: auto; z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; animation: slideInUp 0.3s ease; }
-        .suggestion-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: all 0.2s ease; }
-        .suggestion-item:hover { background: #f8fafc; color: #e85d5d; transform: translateX(5px); }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; animation: fadeIn 0.3s ease; }
-        .modal-overlay.active { display: flex; }
-        .modal-content { background: white; padding: 30px; border-radius: var(--radius-xl); width: 90%; max-width: 500px; animation: slideUp 0.4s ease; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2); }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; margin: 10px 0; outline: none; transition: all 0.3s ease; animation: fadeInUp 0.4s ease; }
-        input:focus, textarea:focus { border-color: #e85d5d; box-shadow: 0 0 0 3px rgba(232,93,93,0.1); transform: translateX(3px); }
-        .keybind-list { max-height: 300px; overflow-y: auto; margin: 15px 0; border: 1px solid #f1f5f9; padding: 10px; border-radius: 8px; }
-        .keybind-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; transition: all 0.2s ease; animation: slideInLeft 0.3s ease; }
-        .keybind-row:hover { background: #f8fafc; padding-left: 5px; }
-        .kb-input { width: 50px; text-align: center; font-weight: 700; text-transform: uppercase; margin: 0; }
-
-        /* Responsive Fix */
-        @media (max-width: 768px) {
-            .flashcard-layout { grid-template-columns: 1fr; }
-            .hero { flex-direction: column; text-align: center; }
-            .hero-text h1 { font-size: 2.5rem; }
-            .hero-text { animation: slideInDown 0.8s ease 0.2s both; }
-        }
-    </style>
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
 
-    <section id="landing-page">
-        <nav class="navbar">
-            <div class="logo"><i class="fa-solid fa-layer-group"></i> Spartan.Edu</div>
-        </nav>
-        <div class="hero">
-            <div class="hero-text">
-                <h1>Learn Piano & Vocabulary<br><span style="color: #e85d5d">Double The Effectiveness</span></h1>
-                <p>Integrated platform for ambitious learners. Private data storage. Sign up now to get started.</p>
+<body class="theme-light">
+    <div id="toast-container"></div>
+
+    <!-- AUTH SCREEN -->
+    <div id="auth-screen">
+        <div class="landing-container">
+            <div class="landing-hero">
+                <div class="logo-landing">
+                <img src="assets/logo/SpartanEdu_logo.png" alt="Spartan.Edu Logo" class="logo-img">
+                </div>
+                <h1 class="hero-title">
+                    Learn Academics & Arts<br>
+                    <span>Double The Effectiveness</span>
+                </h1>
+                <p class="hero-sub">
+                    Integrated platform for ambitious learners. Private data storage.
+                    Sign up now to get started building your legacy.
+                </p>
             </div>
-            
-            <div class="auth-card">
-                <h2 id="auth-title">Login</h2>
-                <div id="login-form-container">
-                    <form id="loginForm">
+
+            <div class="landing-form">
+                <!-- Login Form -->
+                <div id="form-login" class="auth-card">
+                    <div class="auth-header">
+                        <h2>Welcome Back</h2>
+                    </div>
+                    <form onsubmit="Auth.login(event)">
                         <div class="input-group">
                             <i class="fa-regular fa-envelope"></i>
-                            <input type="email" id="loginEmail" placeholder="Email" required>
+                            <input type="email" id="log-email" class="input-std" placeholder="Email Address" required>
                         </div>
                         <div class="input-group">
                             <i class="fa-solid fa-lock"></i>
-                            <input type="password" id="loginPass" placeholder="Password" required>
+                            <input type="password" id="log-pass" class="input-std" placeholder="Password" required>
                         </div>
-                        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
-                            Enter System <i class="fa-solid fa-arrow-right"></i>
-                        </button>
+                        <div style="text-align: right; margin-bottom: 25px;">
+                            <a href="#" style="color: var(--accent-color); font-weight: 600; font-size: 0.9rem;">Forgot
+                                Password?</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full">Login</button>
                     </form>
-                    <div class="auth-switch">
-                        <span id="auth-switch-text">Don't have an account? <a onclick="switchAuthMode()">Sign Up</a></span>
-                    </div>
+                    <p style="text-align: center; margin-top: 20px; color: var(--text-secondary);">
+                        No account? <a onclick="Auth.toggle('signup')"
+                            style="color: var(--accent-color); cursor: pointer; font-weight: 700;">Sign Up</a>
+                    </p>
                 </div>
 
-                <div id="register-form-container" class="hidden">
-                    <h2 id="auth-title-register" style="margin-bottom: 20px;">Create New Account</h2>
-                    <form id="registerForm">
+                <!-- Signup Form -->
+                <div id="form-signup" class="auth-card hidden">
+                    <div class="auth-header">
+                        <h2>Create Account</h2>
+                    </div>
+                    <form onsubmit="Auth.signup(event)">
                         <div class="input-group">
                             <i class="fa-regular fa-user"></i>
-                            <input type="text" id="regName" placeholder="Display Name" autocomplete="off" required>
+                            <input type="text" id="reg-name" class="input-std" placeholder="Display Name" required>
                         </div>
                         <div class="input-group">
                             <i class="fa-regular fa-envelope"></i>
-                            <input type="email" id="regEmail" placeholder="Email" autocomplete="off" required>
+                            <input type="email" id="reg-email" class="input-std" placeholder="Email" required>
                         </div>
                         <div class="input-group">
                             <i class="fa-solid fa-lock"></i>
-                            <input type="password" id="regPass" placeholder="Password" autocomplete="new-password" required>
+                            <input type="password" id="reg-pass" class="input-std" placeholder="Password" required>
                         </div>
-                        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
-                            Create Account
-                        </button>
+                        <button type="submit" class="btn btn-primary w-full" style="margin-top: 20px;">Create
+                            Account</button>
                     </form>
-                    <div class="auth-switch">
-                        Already have an account? <a onclick="switchAuthMode()">Login</a>
-                    </div>
-                </div>
-                <div class="auth-footer">
-                    By <strong>Benjamin Nguyen</strong>
+                    <p style="text-align: center; margin-top: 20px;">
+                        Already have an account? <a onclick="Auth.toggle('login')"
+                            style="color: var(--accent-color); cursor: pointer; font-weight: 700;">Login</a>
+                    </p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section id="main-app" class="hidden">
-        <header class="app-header">
-            <div style="font-size: 1.2rem; font-weight: 700;"><i class="fa-solid fa-terminal"></i> Workstation</div>
-            <div class="user-info">
-                <span id="user-display-name">User</span>
-                <button onclick="logout()" class="btn-secondary" style="background: rgba(255,255,255,0.2); border: none; color: white;">
-                    <i class="fa-solid fa-right-from-bracket"></i>
+    <!-- APP SHELL -->
+    <div id="app-shell" class="hidden w-full h-full">
+        <aside class="sidebar">
+            <div class="logo-landing"
+                style="margin-bottom: 35px; display: flex; align-items: center; justify-content: center; padding: 10px 0; font-size: 1.5rem; font-weight: 800; background: var(--brand-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: var(--font-head);">
+                Spartan.Edu
+            </div>
+
+            <nav class="flex-col">
+                <div class="nav-item active" onclick="Nav.to('piano', this)">
+                    <i class="fa-solid fa-music" style="width: 20px;"></i> <span>Piano Lab</span>
+                </div>
+                <div class="nav-item" onclick="Nav.to('flashcards', this)">
+                    <i class="fa-solid fa-layer-group" style="width: 20px;"></i> <span>Knowledge Hub</span>
+                </div>
+                <div class="nav-item" onclick="Nav.to('tasks', this)">
+                    <i class="fa-solid fa-list-check" style="width: 20px;"></i> <span>Task Arena</span>
+                </div>
+                <div class="nav-item" onclick="Nav.to('pathway', this)">
+                    <i class="fa-solid fa-route" style="width: 20px;"></i> <span>Learning Path</span>
+                </div>
+                <div class="nav-item" onclick="Nav.to('community', this)">
+                    <i class="fa-solid fa-comments" style="width: 20px;"></i> <span>Community</span>
+                </div>
+                <div class="nav-item" onclick="Nav.to('whiteboard', this)">
+                    <i class="fa-solid fa-pen-ruler" style="width: 20px;"></i> <span>Whiteboard</span>
+                </div>
+            </nav>
+
+            <div class="settings-widget">
+                <div class="settings-btn" onclick="Lang.toggle()" title="Switch Language">
+                    <i class="fa-solid fa-language"></i>
+                </div>
+                <div class="settings-btn" onclick="Theme.toggle()" title="Toggle Theme">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                </div>
+            </div>
+
+            <div class="user-widget">
+                <div class="user-avatar" id="app-avatar"
+                    style="width: 40px; height: 40px; border-radius: 50%; background: var(--brand-gradient); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                    U</div>
+                <div style="color:var(--text-primary);">
+                    <div style="font-weight: 700;" id="app-username">User</div>
+                    <div style="font-size: 0.75rem; opacity: 0.6;">Learner</div>
+                </div>
+                <i class="fa-solid fa-right-from-bracket"
+                    style="margin-left: auto; cursor: pointer; opacity: 0.5; color:var(--text-primary);"
+                    onclick="Auth.logout()"></i>
+            </div>
+        </aside>
+
+        <main style="flex: 1; height: 100%; overflow: hidden; background: var(--bg-main);">
+            <!-- PIANO MODULE -->
+            <div id="mod-piano" class="module-flex-column">
+                <div class="piano-header font-head">
+                    <div style="font-size: 1.2rem; font-weight: 700;">
+                        <i class="fa-solid fa-terminal"></i> AUDIO ENGINE
+                    </div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">
+                        WebAudio API Active <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+                <div class="piano-stage">
+                    <div class="piano-case">
+                        <div style="margin-bottom: 30px; display: flex; gap: 20px; align-items: center;">
+                            <label style="font-weight: 600; color: var(--text-secondary);">Volume</label>
+                            <input type="range" id="vol-slider" min="0" max="100" value="50">
+                            <label style="font-weight: 600; color: var(--text-secondary);">Waveform</label>
+                            <select id="wave-type" class="input-std" style="width: 120px; padding: 5px;">
+                                <option value="sine">Grand (Sine)</option>
+                                <option value="triangle">Soft (Tri)</option>
+                                <option value="sawtooth">Synth (Saw)</option>
+                            </select>
+                            <button class="btn btn-secondary" onclick="Piano.openBindEditor()">Keybinds</button>
+                        </div>
+                        <div class="keys-wrapper" id="piano-keys"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FLASHCARDS MODULE -->
+            <div id="mod-flashcards" class="hidden module-flex-column">
+                <div class="fc-header">
+                    <h2 class="font-head" style="color: var(--text-primary); font-size: 1.8rem;">Knowledge Hub</h2>
+                    <div class="flex gap-10">
+                        <button class="btn btn-secondary" onclick="Shared.openJoinUI()">
+                            <i class="fa-solid fa-download"></i> Join
+                        </button>
+                        <button class="btn btn-secondary btn-toggle" id="fc-shuffle-btn" onclick="FC.shuffleNow()"
+                            title="Shuffle Cards">
+                            <i class="fa-solid fa-shuffle"></i>
+                        </button>
+                        <button class="btn btn-primary"
+                            onclick="Modals.prompt('New Deck', 'Deck Name:', FC.createFolder)">
+                            + New Deck
+                        </button>
+                    </div>
+                </div>
+                <div class="folder-grid" id="folder-grid"></div>
+
+                <!-- Deck Overview Panel -->
+                <div id="fc-overview-panel" class="hidden">
+                    <div class="fc-header" style="border-bottom: 1px solid var(--border-color);">
+                        <div class="flex items-center gap-20">
+                            <button class="btn btn-secondary" style="border:none;" onclick="FC.closeOverview()">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                            <h2 class="font-head" style="color: var(--text-primary);" id="ov-title">Deck Name</h2>
+                            <span id="ov-role-badge" class="read-only-badge hidden">Read Only</span>
+                        </div>
+                        <div class="flex gap-10">
+                            <button class="btn btn-secondary" onclick="FC.editFolder()" id="btn-edit-folder">
+                                <i class="fa-solid fa-pen"></i> Edit Deck
+                            </button>
+                            <button class="btn btn-secondary" onclick="FC.jumpToTasks()">
+                                <i class="fa-solid fa-list-check"></i> Go to Tasks
+                            </button>
+                            <button class="btn btn-secondary btn-toggle" id="fc-shuffle-btn-ov"
+                                onclick="FC.shuffleNow()" title="Shuffle Cards">
+                                <i class="fa-solid fa-shuffle"></i>
+                            </button>
+                            <button class="btn btn-secondary" onclick="FC.shareCurrentDeck()">
+                                <i class="fa-solid fa-share-nodes"></i> Share
+                            </button>
+                            <button class="btn btn-secondary" onclick="FC.startQuiz()">
+                                <i class="fa-solid fa-brain"></i> Quiz
+                            </button>
+                            <button class="btn btn-primary" onclick="FC.startStudy()">Start Study</button>
+                            <button class="btn btn-secondary" onclick="Modals.open('modal-add-card')"
+                                id="btn-add-card">+ Add</button>
+                        </div>
+                    </div>
+                    <div class="folder-grid" id="word-list"
+                        style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));"></div>
+                </div>
+
+                <!-- Study Overlay -->
+                <div id="study-overlay" class="hidden">
+                    <div class="study-header">
+                        <button class="btn btn-secondary"
+                            style="background:rgba(255,255,255,0.1); color:white; border:none;"
+                            onclick="FC.closeStudy()">Exit</button>
+                        <div style="color: white; font-weight: 700;" id="st-count">1 / 10</div>
+                        <button class="btn btn-secondary"
+                            style="background:rgba(255,255,255,0.1); color:white; border:none;"
+                            onclick="FC.shareCurrentDeck()">Share</button>
+                    </div>
+
+                    <!-- Flip Mode -->
+                    <div id="mode-flip" class="flashcard-stage">
+                        <div style="position: relative; width: 100%; max-width: 600px;">
+                            <div class="card-3d" onclick="this.classList.toggle('flipped')">
+                                <div class="card-face face-front">
+                                    <div id="st-img-container"></div>
+                                    <div class="term-text" id="st-q">Question</div>
+                                    <div style="font-size:0.9rem; color:gray; margin-top:10px;">Click to flip</div>
+                                </div>
+                                <div class="card-face face-back">
+                                    <div class="term-text" id="st-a">Answer</div>
+                                </div>
+                            </div>
+                            <!-- Card Action Buttons -->
+                            <div id="study-card-actions"
+                                style="position: absolute; top: -50px; right: 0; display: flex; gap: 10px;">
+                                <button class="btn btn-secondary"
+                                    style="background:rgba(255,255,255,0.1); color:white; border:none; padding: 8px 12px;"
+                                    onclick="event.stopPropagation(); FC.editCurrentCard()">
+                                    <i class="fa-solid fa-pen"></i> Edit
+                                </button>
+                                <button class="btn btn-secondary"
+                                    style="background:rgba(255,68,68,0.2); color:#ff4444; border:none; padding: 8px 12px;"
+                                    onclick="event.stopPropagation(); FC.deleteCurrentCard()">
+                                    <i class="fa-solid fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex gap-20" style="margin-top: 40px;">
+                            <button class="btn btn-secondary"
+                                style="background:rgba(255,255,255,0.1); color:white; border:none;"
+                                onclick="FC.nav(-1)">Prev</button>
+                            <button class="btn btn-primary" onclick="FC.nav(1)">Next</button>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Mode -->
+                    <div id="mode-quiz" class="flashcard-stage hidden">
+                        <h2 class="font-head" style="font-size: 3rem; color: white; margin-bottom: 40px;" id="qz-q">?
+                        </h2>
+                        <div id="qz-reveal" class="hidden flex flex-col items-center">
+                            <p style="font-size: 1.5rem; color: var(--status-success); margin-bottom: 30px;" id="qz-a">
+                                ...</p>
+                            <div class="flex gap-20">
+                                <button class="btn btn-secondary"
+                                    style="color: var(--status-danger); border-color:var(--status-danger);"
+                                    onclick="FC.ans(false)">Forgot</button>
+                                <button class="btn btn-secondary"
+                                    style="color: var(--status-success); border-color:var(--status-success);"
+                                    onclick="FC.ans(true)">Recall</button>
+                            </div>
+                        </div>
+                        <button id="qz-btn-show" class="btn btn-primary" onclick="FC.showQuiz()">Reveal</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASKS MODULE -->
+            <div id="mod-tasks" class="hidden module-flex">
+                <div class="task-sidebar">
+                    <div
+                        style="font-size: 0.7rem; font-weight: 800; color: var(--text-secondary); margin-bottom: 15px; letter-spacing: 1px;">
+                        PROJECTS
+                    </div>
+                    <div id="project-list" style="flex:1; overflow-y:auto;"></div>
+                    <button class="btn btn-secondary w-full" style="margin-top: 15px; border-style: dashed;"
+                        onclick="Modals.prompt('New Project','Project Name:', Tasks.createProject)">
+                        + New Project
+                    </button>
+                </div>
+
+                <div class="task-main">
+                    <div class="task-board-header">
+                        <div>
+                            <h2 class="font-head" style="font-size: 1.8rem; color: var(--text-primary);"
+                                id="proj-header">Projects</h2>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Workspace: Main</p>
+                        </div>
+                        <div class="flex gap-10">
+                            <button class="btn btn-secondary" onclick="Tasks.jumpToFlashcards()">
+                                <i class="fa-solid fa-layer-group"></i> Go to Flashcards
+                            </button>
+                            <button class="btn btn-secondary" onclick="Tasks.share()">
+                                <i class="fa-solid fa-share-nodes"></i> Share Project
+                            </button>
+                            <button class="btn btn-primary" onclick="Tasks.addTask()">+ New Task</button>
+                        </div>
+                    </div>
+
+                    <div class="task-list-container">
+                        <div class="task-cols">
+                            <div></div>
+                            <div>Name</div>
+                            <div>Assignee</div>
+                            <div>Due Date</div>
+                            <div>Priority</div>
+                        </div>
+                        <div id="task-rows"></div>
+                    </div>
+
+                    <!-- Task Detail Panel -->
+                    <div id="task-panel" class="task-detail-panel">
+                        <div class="flex justify-between" style="margin-bottom: 30px;">
+                            <div class="flex gap-10">
+                                <button class="btn btn-secondary"
+                                    style="color: var(--status-success); border-color: var(--status-success);"
+                                    onclick="Tasks.complete()">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                                <button class="btn btn-danger"
+                                    onclick="Modals.confirm('Delete Task', 'Are you sure?', Tasks.deleteTask)">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                            <button class="btn btn-secondary" style="border:none;" onclick="Tasks.closePanel()">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <input type="text" id="edit-title" class="input-std"
+                            style="background: transparent; border: none; font-size: 1.5rem; font-weight: 700; padding: 0; margin-bottom: 20px;"
+                            placeholder="Task Name">
+
+                        <div class="input-wrapper">
+                            <input type="file" id="task-img" class="hidden-input" accept="image/*"
+                                onchange="Tasks.handleTaskImage(this)">
+                            <div class="file-upload-box" id="task-img-label"
+                                onclick="document.getElementById('task-img').click()">
+                                <i class="fa-solid fa-paperclip"></i><span>Attach Image</span>
+                            </div>
+                            <div class="image-preview-wrapper" id="task-preview-container" style="display:none;">
+                                <img id="task-img-preview" class="card-img-preview">
+                                <button class="btn-remove-image" onclick="Tasks.removeImage()" id="task-img-remove">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div
+                            style="display: grid; grid-template-columns: 100px 1fr; gap: 20px; align-items: center; margin-bottom:30px;">
+                            <span style="color: var(--text-secondary);">Assignee</span>
+                            <input type="text" id="edit-assignee" class="input-std" style="padding:6px;"
+                                placeholder="Assign to...">
+
+                            <span style="color: var(--text-secondary);">Due Date</span>
+                            <input type="date" id="edit-date" class="input-std" style="width: auto; padding: 6px;">
+
+                            <span style="color: var(--text-secondary);">Priority</span>
+                            <select id="edit-priority" class="input-std" style="width: auto; padding: 6px;">
+                                <option value="High">High</option>
+                                <option value="Med">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+
+                        <h4 style="color: var(--text-secondary); margin-bottom: 10px;">Description</h4>
+                        <textarea id="edit-desc" class="input-std" style="height: 120px; resize: none;"
+                            placeholder="Details..."></textarea>
+
+                        <div style="border-top: 1px solid var(--border-color); margin: 25px 0; padding-top: 25px;">
+                            <h4
+                                style="color: var(--text-secondary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-comments"></i> Comments
+                            </h4>
+
+                            <div id="task-comments-list"
+                                style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px;">
+                                <!-- Comments will be rendered here -->
+                            </div>
+
+                            <div style="display: flex; gap: 10px; align-items: flex-start;">
+                                <textarea id="task-comment-input" class="input-std" placeholder="Add a comment..."
+                                    style="flex: 1; height: 60px; resize: none;"
+                                    onkeydown="if(event.key==='Enter' && event.ctrlKey) Tasks.addComment()"></textarea>
+                                <button class="btn btn-primary" onclick="Tasks.addComment()" style="height: 60px;">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 5px;">
+                                Press Ctrl+Enter to send
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PATHWAY MODULE -->
+            <div id="mod-pathway" class="hidden module-flex">
+                <div class="pathway-sidebar">
+                    <div style="padding: 15px; border-bottom: 1px solid var(--border-color);">
+                        <h3
+                            style="font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                            <span>My Courses</span>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem;"
+                                    onclick="Pathway.createCourse()">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem;"
+                                    onclick="Shared.openJoinUI()">
+                                    <i class="fa-solid fa-download"></i>
+                                </button>
+                            </div>
+                        </h3>
+                        <div id="course-list"
+                            style="display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto;">
+                            <!-- Courses will be rendered here -->
+                        </div>
+                    </div>
+
+                    <div class="pathway-progress">
+                        <div class="progress-ring">
+                            <svg width="120" height="120" class="progress-circle">
+                                <defs>
+                                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#FF512F;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#DD2476;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <circle class="progress-bg" cx="60" cy="60" r="52"></circle>
+                                <circle class="progress-bar" cx="60" cy="60" r="52" stroke-dasharray="327"
+                                    stroke-dashoffset="230" id="progress-circle"></circle>
+                            </svg>
+                            <div class="progress-text">
+                                <div class="progress-percent" id="progress-percent">0%</div>
+                                <div class="progress-label">Complete</div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
+                            <strong style="color: var(--text-primary);" id="lessons-completed">0</strong> of
+                            <strong style="color: var(--text-primary);" id="lessons-total">0</strong> lessons
+                        </div>
+                    </div>
+                    <div class="chapter-list" id="chapter-list"></div>
+                </div>
+
+                <div class="pathway-main">
+                    <div class="lesson-header">
+                        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                            <h1 class="lesson-title-main" id="lesson-title-main" style="margin: 0; flex: 1;">Welcome to
+                                the Course</h1>
+                            <button class="btn btn-secondary" id="btn-upload-video" onclick="Pathway.uploadVideo()"
+                                style="display: none;">
+                                <i class="fa-solid fa-video"></i> Upload Video
+                            </button>
+                            <button class="btn btn-secondary" onclick="Pathway.shareCourse()">
+                                <i class="fa-solid fa-share-nodes"></i> Share
+                            </button>
+                        </div>
+                        <div class="lesson-nav" style="margin-top: 15px;">
+                            <button class="btn btn-secondary" onclick="Pathway.prevLesson()">
+                                <i class="fa-solid fa-arrow-left"></i> Previous
+                            </button>
+                            <button class="btn btn-primary" onclick="Pathway.nextLesson()">
+                                Next <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="lesson-content-area">
+                        <div class="lesson-tabs">
+                            <div class="lesson-tab active" onclick="Pathway.switchTab(this, 'content')">Content</div>
+                            <div class="lesson-tab" onclick="Pathway.switchTab(this, 'notes')">Notes</div>
+                        </div>
+
+                        <div id="lesson-tab-content">
+                            <div id="lesson-video-container" style="margin-bottom: 20px; display: none;">
+                                <!-- Video will be rendered here -->
+                            </div>
+                            <div id="lesson-text-content"
+                                style="padding: 20px; background: var(--bg-surface); border-radius: 10px; line-height: 1.8; color: var(--text-primary);">
+                                Loading content...
+                            </div>
+                        </div>
+                        <div class="lesson-description" id="lesson-description">
+                            <h3 style="margin-bottom: 15px;">About This Lesson</h3>
+                            <p>Welcome to your learning journey! This comprehensive course will guide you through
+                                essential concepts with hands-on practice and real-world examples.</p>
+                        </div>
+                    </div>
+
+                    <div id="lesson-tab-attachments" class="hidden"></div>
+
+                    <div id="lesson-tab-notes" class="hidden">
+                        <textarea class="input-std" id="lesson-notes" style="height: 300px; resize: vertical;"
+                            placeholder="Take notes here..."></textarea>
+                        <button class="btn btn-primary" onclick="Pathway.saveNotes()" style="margin-top: 15px;">
+                            <i class="fa-solid fa-save"></i> Save Notes
+                        </button>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <!-- COMMUNITY MODULE -->
+
+    <!-- COMMUNITY MODULE - FULLSCREEN OVERLAY -->
+    <div id="mod-community" class="hidden"
+        style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-main); z-index: 1000; display: flex;">
+
+        <!-- Logo Back Button - Bottom Left -->
+        <div onclick="Nav.back()"
+            style="position: fixed; bottom: 24px; left: 24px; z-index: 20; cursor: pointer; transition: all 0.3s ease; padding: 16px 18px; background: var(--bg-surface); border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); border: 1px solid var(--border-color); backdrop-filter: blur(10px);"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(0,0,0,0.18)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'">
+            <div
+                style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; font-weight: 600; letter-spacing: 0.5px;">
+                <i class="fa-solid fa-arrow-left" style="font-size: 0.7rem; margin-right: 4px;"></i>Back
+            </div>
+        </div>
+
+        <!-- Left sidebar: 280px fixed -->
+        <div
+            style="width: 280px; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;">
+            <div style="padding: 20px; border-bottom: 1px solid var(--border-color);">
+                <h2
+                    style="font-family: var(--font-head); font-size: 1.3rem; font-weight: 800; color: var(--text-primary);">
+                    Channels</h2>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;">Connect with learners</p>
+            </div>
+            <div id="channel-list" style="flex: 1; overflow-y: auto; padding: 10px 0;"></div>
+        </div>
+
+        <!-- Main chat area: flex: 1 -->
+        <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-main);">
+            <!-- Chat header -->
+            <div
+                style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: var(--bg-surface);">
+                <div>
+                    <h3 id="channel-name"
+                        style="font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 10px;">
+                        # general</h3>
+                    <div
+                        style="display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: var(--text-secondary); margin-top: 3px;">
+                        <div style="width: 8px; height: 8px; border-radius: 50%; background: #10B981;"></div>
+                        <span id="online-count">3 online</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-secondary" onclick="Community.shareChannel()">
+                        <i class="fa-solid fa-share-nodes"></i> Share
+                    </button>
+                    <button class="btn btn-secondary" onclick="Community.clearChannel()">
+                        <i class="fa-solid fa-broom"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messages area -->
+            <div id="chat-messages"
+                style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 2px;">
+            </div>
+
+            <!-- Input area -->
+            <div
+                style="padding: 20px; background: var(--bg-surface); border-top: 1px solid var(--border-color); flex-shrink: 0;">
+                <div
+                    style="display: flex; align-items: center; gap: 10px; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 15px;">
+                    <textarea class="chat-input" id="chat-input" placeholder="Message #general..." rows="1"
+                        onkeydown="Community.handleKeyDown(event)"
+                        style="flex: 1; background: transparent; border: none; outline: none; color: var(--text-primary); resize: none; font-size: 0.95rem; line-height: 1.5; max-height: 150px;"></textarea>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="Community.addEmoji()" title="Add Emoji"
+                            style="width: 32px; height: 32px; border-radius: 6px; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-regular fa-face-smile"></i>
+                        </button>
+                        <button onclick="Community.sendMessage()" title="Send"
+                            style="width: 32px; height: 32px; border-radius: 6px; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- WHITEBOARD MODULE - FULLSCREEN OVERLAY -->
+    <div id="mod-whiteboard" class="hidden"
+        style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-main); z-index: 1000; display: flex; flex-direction: column;">
+
+        <!-- Logo Back Button - Bottom Left -->
+        <div onclick="Nav.back()"
+            style="position: fixed; bottom: 24px; left: 24px; z-index: 20; cursor: pointer; transition: all 0.3s ease; padding: 16px 18px; background: var(--bg-surface); border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); border: 1px solid var(--border-color); backdrop-filter: blur(10px);"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(0,0,0,0.18)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'">
+             <div
+                style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; font-weight: 600; letter-spacing: 0.5px;">
+                <i class="fa-solid fa-arrow-left" style="font-size: 0.7rem; margin-right: 4px;"></i>Back
+            </div>
+        </div>
+
+        <div class="wb-toolbar">
+            <div style="display: flex; align-items: center; gap: 20px; flex: 1;">
+                <h2 class="font-head" style="margin: 0;">Whiteboard</h2>
+
+                <div class="wb-divider"></div>
+
+                <div class="wb-toolbar-group">
+                    <button class="wb-tool-btn active" data-tool="select" onclick="Whiteboard.setTool('select')"
+                        title="Select (V)">
+                        <i class="fa-solid fa-arrow-pointer"></i>
+                    </button>
+                    <button class="wb-tool-btn" data-tool="pen" onclick="Whiteboard.setTool('pen')" title="Pen (P)">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="wb-tool-btn" data-tool="eraser" onclick="Whiteboard.setTool('eraser')"
+                        title="Eraser (E)">
+                        <i class="fa-solid fa-eraser"></i>
+                    </button>
+                </div>
+
+                <div class="wb-divider"></div>
+
+                <div class="wb-toolbar-group">
+                    <button class="wb-tool-btn" data-tool="rect" onclick="Whiteboard.setTool('rect')"
+                        title="Rectangle (R)">
+                        <i class="fa-regular fa-square"></i>
+                    </button>
+                    <button class="wb-tool-btn" data-tool="ellipse" onclick="Whiteboard.setTool('ellipse')"
+                        title="Circle (C)">
+                        <i class="fa-regular fa-circle"></i>
+                    </button>
+                    <button class="wb-tool-btn" data-tool="line" onclick="Whiteboard.setTool('line')" title="Line (L)">
+                        <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <button class="wb-tool-btn" data-tool="text" onclick="Whiteboard.setTool('text')" title="Text (T)">
+                        <i class="fa-solid fa-font"></i>
+                    </button>
+                    <button class="wb-tool-btn" data-tool="note" onclick="Whiteboard.setTool('note')"
+                        title="Sticky Note (N)">
+                        <i class="fa-solid fa-note-sticky"></i>
+                    </button>
+                </div>
+
+                <div class="wb-divider"></div>
+
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="wb-color-picker">
+                        <input type="color" id="wb-color" value="#FF512F">
+                        <label for="wb-color" style="cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-palette"></i>
+                        </label>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-pen-nib" style="font-size: 0.8rem; color: var(--text-secondary);"></i>
+                        <input type="range" id="wb-size" min="1" max="20" value="3" style="width: 120px;">
+                        <span id="wb-size-display"
+                            style="font-size: 0.85rem; color: var(--text-secondary); min-width: 30px;">3px</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button class="btn btn-secondary" style="padding: 8px 12px;" onclick="Whiteboard.zoomOut()">
+                    <i class="fa-solid fa-minus"></i>
+                </button>
+                <span id="wb-zoom-display"
+                    style="min-width: 60px; text-align: center; font-weight: 600; color: var(--text-primary);">100%</span>
+                <button class="btn btn-secondary" style="padding: 8px 12px;" onclick="Whiteboard.zoomIn()">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+
+                <div class="wb-divider" style="margin: 0 8px;"></div>
+
+                <button class="btn btn-secondary" onclick="Whiteboard.undo()" title="Undo (Ctrl+Z)">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+                <button class="btn btn-secondary" onclick="Whiteboard.clear()" title="Clear Board">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+                <div class="wb-divider"></div>
+
+                <div class="wb-zoom-controls">
+                    <button class="wb-zoom-btn" onclick="Whiteboard.zoomOut()" title="Zoom Out">
+                        <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <span class="wb-zoom-display" id="wb-zoom-display">100%</span>
+                    <button class="wb-zoom-btn" onclick="Whiteboard.zoomIn()" title="Zoom In">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                    <button class="wb-zoom-btn" onclick="Whiteboard.resetZoom()" title="Reset">
+                        <i class="fa-solid fa-expand"></i>
+                    </button>
+                </div>
+
+                <div class="wb-divider"></div>
+
+                <button class="btn btn-primary" onclick="Whiteboard.export()">
+                    <i class="fa-solid fa-download"></i> Export
                 </button>
             </div>
-        </header>
-
-        <div class="nav-tabs">
-            <button class="active" onclick="switchTab('piano')">🎹 Interactive Piano</button>
-            <button onclick="switchTab('flashcards')">📚 Flashcards System</button>
         </div>
 
-        <div id="piano-view" class="tab-content">
-            <div class="piano-container">
-                <div class="piano-controls">
-                    <div>
-                        <label>Volume</label>
-                        <input type="range" id="vol-control" min="0" max="100" value="50">
-                    </div>
-                    <div>
-                        <label>Sound</label>
-                        <select id="sound-type" style="padding: 5px; border-radius: 5px;">
-                            <option value="sine">Sine Wave</option>
-                            <option value="triangle">Triangle Wave</option>
-                            <option value="square">Square Wave</option>
-                            <option value="sawtooth">Sawtooth Wave</option>
-                            <option value="fm">FM E-Piano</option>
-                            <option value="pad">Warm Pad</option>
-                            <option value="harpsichord">Harpsichord</option>
-                            <option value="rhodes">Rhodes Piano (Warm)</option>
-                        </select>
-                    </div>
-                    <button onclick="openKeybindModal()" class="btn-secondary"><i class="fa-regular fa-keyboard"></i> Edit Keybinds</button>
-                </div>
-                <div class="piano-scroll-wrapper">
-                    <div class="piano-keys-wrapper" id="piano-keys"></div>
-                </div>
+        <!-- Workspace: flex: 1, contains canvas + right panel -->
+        <div style="flex: 1; display: flex; overflow: hidden; position: relative; min-height: 0;">
+            <!-- Canvas area: flex: 1 -->
+            <div id="wb-canvas-container"
+                style="flex: 1; position: relative; overflow: hidden; background: linear-gradient(var(--border-color) 1px, transparent 1px), linear-gradient(90deg, var(--border-color) 1px, transparent 1px); background-size: 20px 20px; cursor: crosshair; min-width: 0;">
+                <canvas id="wb-canvas"></canvas>
             </div>
-        </div>
 
-        <div id="flashcards-view" class="tab-content hidden">
-            <div class="flashcard-layout">
-                <div class="sidebar">
-                    <h3 style="margin-bottom: 15px;">📁 Folders</h3>
-                    <div id="folder-list"></div>
-                    <button onclick="openModal('folderModal')" class="btn-secondary" style="width: 100%; margin-top: 10px;">+ New Folder</button>
+            <!-- Right panel: 280px fixed -->
+            <div
+                style="width: 280px; background: var(--bg-surface); border-left: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;">
+                <div
+                    style="padding: 15px; border-bottom: 1px solid var(--border-color); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);">
+                    Boards</div>
+                <div id="wb-board-list" style="flex: 0 0 auto; overflow-y: auto; max-height: 200px;"></div>
+                <div style="padding: 10px; border-top: 1px solid var(--border-color);">
+                    <button class="btn btn-secondary w-full" style="margin-bottom: 8px;"
+                        onclick="Whiteboard.addBoard()">
+                        <i class="fa-solid fa-plus"></i> New Board
+                    </button>
                 </div>
-                <div class="content-area">
-                    <div id="study-mode">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <h2 id="current-folder-title">Select a Folder</h2>
-                            <div style="display: flex; gap: 10px;">
-                                <button onclick="startQuiz()" id="quiz-btn" class="btn-secondary" disabled><i class="fa-solid fa-brain"></i> Start Quiz</button>
-                                <button onclick="openCardModal()" class="btn-primary" id="add-card-btn" disabled>+ Add Card</button>
-                            </div>
-                        </div>
-                        <div id="card-grid" class="card-grid">
-                            <div style="text-align: center; color: #94a3b8; grid-column: 1/-1; padding: 50px;">Select a folder to get started.</div>
-                        </div>
-                    </div>
-                    <div id="quiz-mode" class="hidden">
-                        <div class="quiz-container">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                                <span id="quiz-progress" style="font-weight: 600; color: #64748b;">Question 1/10</span>
-                                <button onclick="exitQuiz()" class="btn-secondary">Exit</button>
-                            </div>
-                            <div class="quiz-card-display" id="quiz-card-face" onclick="revealQuizCard()">???</div>
-                            <div id="quiz-actions" class="hidden" style="display: flex; gap: 15px; justify-content: center;">
-                                <button onclick="answerQuiz(false)" class="btn-danger" style="padding: 15px 30px;">Wrong</button>
-                                <button onclick="answerQuiz(true)" class="btn-primary" style="background: #22c55e; padding: 15px 30px;">Correct</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="quiz-results" class="hidden">
-                        <div class="quiz-container">
-                            <h2>Results</h2>
-                            <div class="quiz-score-display" id="final-score">80%</div>
-                            <button onclick="exitQuiz()" class="btn-primary" style="margin-top: 20px;">Back</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <div class="modal-overlay" id="folderModal">
-        <div class="modal-content">
-            <h3 id="folderModalTitle">Create New Folder</h3>
-            <input type="text" id="newFolderName" placeholder="Folder name...">
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
-                <button onclick="closeModal('folderModal')" class="btn-secondary">Cancel</button>
-                <button onclick="saveFolder()" class="btn-primary">Save</button>
+                <div
+                    style="padding: 15px; border-bottom: 1px solid var(--border-color); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin-top: 15px;">
+                    Layers</div>
+                <div id="wb-layer-list" style="flex: 1; overflow-y: auto;"></div>
+                <div style="padding: 10px; border-top: 1px solid var(--border-color);">
+                    <button class="btn btn-secondary w-full" onclick="Whiteboard.addLayer()">
+                        <i class="fa-solid fa-plus"></i> New Layer
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+    </div>
+    </main>
+    </div>
 
-    <div class="modal-overlay" id="cardModal">
-        <div class="modal-content">
-            <h3 id="cardModalTitle">New Flashcard</h3>
+    <!-- MODALS -->
+    <div id="modal-custom-input" class="modal-overlay">
+        <div class="modal-box">
+            <h2 id="custom-input-title" style="font-size:1.5rem; margin-bottom:15px; font-weight:700;">Input</h2>
+            <p id="custom-input-desc" style="color: var(--text-secondary); margin-bottom: 20px; display: none;"></p>
             <div class="input-wrapper">
-                <textarea id="cardQuestion" placeholder="Front (Question)"></textarea>
-                <div class="suggestions-box" id="suggestions"></div>
+                <textarea id="custom-input-field" class="input-std" rows="3" placeholder="Enter text..."></textarea>
             </div>
-            <textarea id="cardAnswer" placeholder="Back (Answer)"></textarea>
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
-                <button onclick="closeModal('cardModal')" class="btn-secondary">Cancel</button>
-                <button onclick="saveCard()" class="btn-primary">Save Card</button>
+            <div class="flex justify-between" style="margin-top:20px; gap: 10px;">
+                <button class="btn btn-secondary" style="flex: 1;" onclick="CustomModal.cancel()">Cancel</button>
+                <button class="btn btn-primary" style="flex: 1;" id="custom-input-confirm">Confirm</button>
             </div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="keybindModal">
-        <div class="modal-content">
-            <h3>Keybind Settings</h3>
-            <div class="keybind-list" id="kb-list"></div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
-                <button onclick="closeModal('keybindModal')" class="btn-secondary">Close</button>
-                <button onclick="saveKeybinds()" class="btn-primary">Save</button>
+    <div id="modal-prompt" class="modal-overlay">
+        <div class="modal-box">
+            <h2 id="prompt-title" style="font-size:1.5rem; margin-bottom:15px; font-weight:700;">Input</h2>
+            <div class="input-wrapper">
+                <label id="prompt-label" style="display:block; margin-bottom:5px;">Value</label>
+                <input id="prompt-input" class="input-std">
+            </div>
+            <div class="flex justify-between" style="margin-top:20px;">
+                <button class="btn btn-secondary" onclick="Modals.close()">Cancel</button>
+                <button class="btn btn-primary" id="prompt-confirm">Confirm</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // --- SAFE STORAGE WRAPPER (ONLY ONCE) ---
-        const SafeStorage = {
-            memory: {},
-            setItem: function(key, value) {
-                try { localStorage.setItem(key, value); }
-                catch(e) { this.memory[key] = value; console.warn('LocalStorage unavailable, using RAM'); }
-            },
-            getItem: function(key) {
-                try { return localStorage.getItem(key); }
-                catch(e) { return this.memory[key] || null; }
-            },
-            clear: function() {
-                try { localStorage.clear(); }
-                catch(e) { this.memory = {}; }
-            }
-        };
+    <div id="modal-confirm" class="modal-overlay">
+        <div class="modal-box">
+            <h2 id="confirm-title"
+                style="font-size:1.5rem; margin-bottom:10px; font-weight:700; color:var(--status-danger)">Confirm</h2>
+            <p id="confirm-msg" style="margin-bottom:20px;">Are you sure?</p>
+            <div class="flex justify-between">
+                <button class="btn btn-secondary" onclick="Modals.close()">Cancel</button>
+                <button class="btn btn-danger" id="confirm-btn">Delete</button>
+            </div>
+        </div>
+    </div>
 
-        // --- CORE DATA ---
-        const COMMON_WORDS = ["Strategy", "Architecture", "Ambition", "Discipline", "Focus", "High-Ticket", "Agency", "Conversion", "System", "Process", "Automation", "Leverage", "Capital", "Investment", "Asset"];
-        const DEFAULT_KEYS = [
-            { n: 'C', t: 'w', k: 'Z', o: -1 }, { n: 'C#', t: 'b', k: 'S', o: -1 }, { n: 'D', t: 'w', k: 'X', o: -1 }, { n: 'D#', t: 'b', k: 'D', o: -1 }, { n: 'E', t: 'w', k: 'C', o: -1 }, { n: 'F', t: 'w', k: 'V', o: -1 }, { n: 'F#', t: 'b', k: 'G', o: -1 }, { n: 'G', t: 'w', k: 'B', o: -1 }, { n: 'G#', t: 'b', k: 'H', o: -1 }, { n: 'A', t: 'w', k: 'N', o: -1 }, { n: 'A#', t: 'b', k: 'J', o: -1 }, { n: 'B', t: 'w', k: 'M', o: -1 },
-            { n: 'C', t: 'w', k: 'Q', o: 0 }, { n: 'C#', t: 'b', k: '2', o: 0 }, { n: 'D', t: 'w', k: 'W', o: 0 }, { n: 'D#', t: 'b', k: '3', o: 0 }, { n: 'E', t: 'w', k: 'E', o: 0 }, { n: 'F', t: 'w', k: 'R', o: 0 }, { n: 'F#', t: 'b', k: '5', o: 0 }, { n: 'G', t: 'w', k: 'T', o: 0 }, { n: 'G#', t: 'b', k: '6', o: 0 }, { n: 'A', t: 'w', k: 'Y', o: 0 }, { n: 'A#', t: 'b', k: '7', o: 0 }, { n: 'B', t: 'w', k: 'U', o: 0 },
-            { n: 'C', t: 'w', k: 'I', o: 1 }, { n: 'C#', t: 'b', k: '9', o: 1 }, { n: 'D', t: 'w', k: 'O', o: 1 }, { n: 'D#', t: 'b', k: '0', o: 1 }, { n: 'E', t: 'w', k: 'P', o: 1 }, { n: 'F', t: 'w', k: '[', o: 1 }, { n: 'F#', t: 'b', k: '=', o: 1 }, { n: 'G', t: 'w', k: ']', o: 1 }, { n: 'G#', t: 'b', k: 'A', o: 1 }, { n: 'A', t: 'w', k: '\\', o: 1 }, { n: 'A#', t: 'b', k: '', o: 1 }, { n: 'B', t: 'w', k: '', o: 1 }
-        ];
-        const NOTE_FREQUENCIES = { 'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13, 'E': 329.63, 'F': 349.23, 'F#': 369.99, 'G': 392.00, 'G#': 415.30, 'A': 440.00, 'A#': 466.16, 'B': 493.88 };
+    <div id="modal-keybinds" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="font-size:1.5rem; margin-bottom:15px;">Piano Keybinds</h2>
+            <div id="binds-list" class="bind-grid"></div>
+            <div class="flex justify-between"
+                style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                <button class="btn btn-secondary" onclick="Modals.close()">Cancel</button>
+                <button class="btn btn-primary" onclick="Piano.saveBinds()">Save</button>
+            </div>
+        </div>
+    </div>
 
-        let AppState = {
-            currentUser: null,
-            folders: [],
-            keys: DEFAULT_KEYS.slice(),
-            currentFolderId: null,
-            editingCardId: null,
-            editingFolderId: null,
-            quiz: { active: false, cards: [], index: 0, score: 0 },
-            audioCtx: null
-        };
+    <div id="modal-add-card" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="font-size:1.5rem; font-weight:700; margin-bottom:20px;">New Flashcard</h2>
+            <div class="input-wrapper">
+                <input id="new-q" class="input-std" placeholder="Front (Question)">
+            </div>
+            <div class="input-wrapper">
+                <textarea id="new-a" class="input-std" style="height: 100px;" placeholder="Back (Answer)"></textarea>
+            </div>
+            <div class="input-wrapper">
+                <input type="file" id="new-img" class="hidden-input" accept="image/*"
+                    onchange="FC.handleFileSelect(this, 'add-preview', 'add-label', 'add-preview-container', 'add-remove-btn')">
+                <div class="file-upload-box" id="add-label" onclick="document.getElementById('new-img').click()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i><span>Choose Image</span>
+                </div>
+                <div class="image-preview-wrapper" id="add-preview-container">
+                    <img id="add-preview" class="card-img-preview">
+                    <button class="btn-remove-image" id="add-remove-btn"
+                        onclick="FC.removeImage('new-img', 'add-preview', 'add-label', 'add-preview-container')">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="flex justify-between" style="margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="Modals.close()">Cancel</button>
+                <button class="btn btn-primary" onclick="FC.submitCard()">Save Card</button>
+            </div>
+        </div>
+    </div>
 
-        /* --- AUTHENTICATION --- */
-        const Auth = {
-            getUsers: () => {
-                try { return JSON.parse(SafeStorage.getItem('spartan_users')) || []; }
-                catch(e) { return []; }
-            },
-            register: (name, email, pass) => {
-                let users = Auth.getUsers();
-                if(users.find(u => u.email === email)) return alert("Email already exists!");
-                const newUser = { id: 'u' + Date.now(), name, email, pass };
-                users.push(newUser);
-                SafeStorage.setItem('spartan_users', JSON.stringify(users));
-                const userData = { folders: [], keys: DEFAULT_KEYS };
-                SafeStorage.setItem('spartan_data_' + newUser.id, JSON.stringify(userData));
-                alert("Registration successful!");
-                switchAuthMode();
-            },
-            login: (email, pass) => {
-                let users = Auth.getUsers();
-                const user = users.find(u => u.email === email && u.pass === pass);
-                if(user) Auth.loadUserSession(user);
-                else alert("Invalid email or password!");
-            },
-            loadUserSession: (user) => {
-                AppState.currentUser = user;
-                const rawData = SafeStorage.getItem('spartan_data_' + user.id);
-                const userData = rawData ? JSON.parse(rawData) : { folders: [], keys: DEFAULT_KEYS };
-                AppState.folders = userData.folders || [];
-                AppState.keys = userData.keys || DEFAULT_KEYS.slice();
-                ensureBuiltinVocab();   // <-- add this line
-                const nameEl = document.getElementById('user-display-name');
-                if(nameEl) nameEl.innerText = user.name;
-                document.getElementById('landing-page').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                setTimeout(() => document.getElementById('main-app').classList.add('active'), 50);
-                initAudioContext();
-                initSystem();
-            },
-            logout: () => {
-                AppState.currentUser = null;
-                document.getElementById('main-app').classList.remove('active');
-                document.getElementById('main-app').classList.add('hidden');
-                document.getElementById('landing-page').classList.remove('hidden');
-                const lf = document.getElementById('loginForm');
-                if(lf) lf.reset();
-            }
-        };
+    <div id="modal-edit-card" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="font-size:1.5rem; font-weight:700; margin-bottom:20px;">Edit Flashcard</h2>
+            <div class="input-wrapper">
+                <input id="edit-card-q" class="input-std" placeholder="Front (Question)">
+            </div>
+            <div class="input-wrapper">
+                <textarea id="edit-card-a" class="input-std" style="height: 100px;"
+                    placeholder="Back (Answer)"></textarea>
+            </div>
+            <div class="input-wrapper">
+                <input type="file" id="edit-card-img" class="hidden-input" accept="image/*"
+                    onchange="FC.handleFileSelect(this, 'edit-card-preview', 'edit-card-label', 'edit-card-preview-container', 'edit-card-remove-btn')">
+                <div class="file-upload-box" id="edit-card-label"
+                    onclick="document.getElementById('edit-card-img').click()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i><span>Choose Image</span>
+                </div>
+                <div class="image-preview-wrapper" id="edit-card-preview-container">
+                    <img id="edit-card-preview" class="card-img-preview">
+                    <button class="btn-remove-image" id="edit-card-remove-btn"
+                        onclick="FC.removeImage('edit-card-img', 'edit-card-preview', 'edit-card-label', 'edit-card-preview-container')">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="flex justify-between" style="margin-top: 20px;">
+                <button class="btn btn-danger" onclick="FC.deleteCard()">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>
+                <div class="flex gap-10">
+                    <button class="btn btn-secondary" onclick="Modals.close()">Cancel</button>
+                    <button class="btn btn-primary" onclick="FC.updateCard()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // --- AUDIO INIT ---
-        function initAudioContext() {
-            if (!AppState.audioCtx) {
-                const AudioCtor = window.AudioContext || window.webkitAudioContext;
-                if(AudioCtor) AppState.audioCtx = new AudioCtor();
-            }
-            if(AppState.audioCtx && AppState.audioCtx.state === 'suspended') {
-                AppState.audioCtx.resume();
-            }
-        }
-        document.addEventListener('click', initAudioContext);
-        document.addEventListener('keydown', initAudioContext);
+    <div id="modal-edit-folder" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="font-size:1.5rem; font-weight:700; margin-bottom:20px;">Edit Deck</h2>
+            <div class="input-wrapper">
+                <label style="display:block; margin-bottom:5px; color: var(--text-secondary);">Deck Name</label>
+                <input id="edit-folder-name" class="input-std" placeholder="Deck Name">
+            </div>
+            <div class="input-wrapper">
+                <label style="display:block; margin-bottom:5px; color: var(--text-secondary);">Icon</label>
+                <div class="icon-options" id="icon-options">
+                    <div class="icon-option" data-icon="📁" onclick="FC.selectIcon(this)">📁</div>
+                    <div class="icon-option" data-icon="📚" onclick="FC.selectIcon(this)">📚</div>
+                    <div class="icon-option" data-icon="🎯" onclick="FC.selectIcon(this)">🎯</div>
+                    <div class="icon-option" data-icon="🚀" onclick="FC.selectIcon(this)">🚀</div>
+                    <div class="icon-option" data-icon="💡" onclick="FC.selectIcon(this)">💡</div>
+                    <div class="icon-option" data-icon="🎨" onclick="FC.selectIcon(this)">🎨</div>
+                    <div class="icon-option" data-icon="🔥" onclick="FC.selectIcon(this)">🔥</div>
+                    <div class="icon-option" data-icon="⚡" onclick="FC.selectIcon(this)">⚡</div>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <label style="display:block; margin-bottom:5px; color: var(--text-secondary);">Color</label>
+                <div class="color-options" id="color-options">
+                    <div class="color-option" data-color="#FF512F" style="background: #FF512F;"
+                        onclick="FC.selectColor(this)"></div>
+                    <div class="color-option" data-color="#3B82F6" style="background: #3B82F6;"
+                        onclick="FC.selectColor(this)"></div>
+                    <div class="color-option" data-color="#10B981" style="background: #10B981;"
+                        onclick="FC.selectColor(this)"></div>
+                    <div class="color-option" data-color="#F59E0B" style="background: #F59E0B;"
+                        onclick="FC.selectColor(this)"></div>
+                    <div class="color-option" data-color="#8B5CF6" style="background: #8B5CF6;"
+                        onclick="FC.selectColor(this)"></div>
+                    <div class="color-option" data-color="#EC4899" style="background: #EC4899;"
+                        onclick="FC.selectColor(this)"></div>
+                </div>
+            </div>
+            <div class="flex justify-between" style="margin-top: 20px;">
+                <button class="btn btn-danger" onclick="FC.deleteFolder(State.currD)">
+                    <i class="fa-solid fa-trash"></i> Delete Deck
+                </button>
+                <div class="flex gap-10">
+                    <button class="btn btn-secondary" onclick="Modals.close()">Cancel</button>
+                    <button class="btn btn-primary" onclick="FC.saveFolderEdit()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // --- SOUND ENGINE: sampler + synth presets ---
-        const SoundEngine = {
-            samples: {},
-            async loadSampleBase(preset) {
-                try {
-                    const url = `assets/sounds/${preset}/C4.wav`;
-                    const resp = await fetch(url);
-                    if (!resp.ok) throw new Error('missing');
-                    const ab = await resp.arrayBuffer();
-                    const buf = await AppState.audioCtx.decodeAudioData(ab);
-                    this.samples[preset] = { buffer: buf, baseFreq: 261.63 };
-                    return true;
-                } catch (e) {
-                    console.warn('Sample load failed for', preset, e);
-                    return false;
-                }
-            },
-            async ensurePresetLoaded(preset) {
-                if (!AppState.audioCtx) initAudioContext();
-                if (this.samples[preset]) return true;
-                return await this.loadSampleBase(preset);
-            },
-            async playPresetSample(preset, freq, element) {
-                const ok = await this.ensurePresetLoaded(preset);
-                if (!ok) return Promise.reject('no-sample');
-                const s = this.samples[preset];
-                const src = AppState.audioCtx.createBufferSource();
-                src.buffer = s.buffer;
-                const gain = AppState.audioCtx.createGain();
-                const vol = (parseInt(document.getElementById('vol-control').value || '50') / 100);
-                gain.gain.setValueAtTime(0, AppState.audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(Math.max(0.001, vol), AppState.audioCtx.currentTime + 0.01);
-                gain.gain.exponentialRampToValueAtTime(0.0001, AppState.audioCtx.currentTime + 2.0);
-                src.playbackRate.value = freq / s.baseFreq;
-                src.connect(gain); gain.connect(AppState.audioCtx.destination);
-                src.start();
-                src.stop(AppState.audioCtx.currentTime + 2.2);
-            },
-                        synthPlay(type, freq, element) {
-                const now = AppState.audioCtx.currentTime;
-                const vol = (parseInt(document.getElementById('vol-control').value || '50') / 100);
-                if (type === 'fm') {
-                    const carrier = AppState.audioCtx.createOscillator();
-                    const mod = AppState.audioCtx.createOscillator();
-                    const modGain = AppState.audioCtx.createGain();
-                    const gain = AppState.audioCtx.createGain();
-                    carrier.frequency.value = freq;
-                    mod.frequency.value = freq * 2;
-                    modGain.gain.value = freq * 0.0025;
-                    carrier.connect(gain);
-                    mod.connect(modGain);
-                    modGain.connect(carrier.frequency);
-                    gain.connect(AppState.audioCtx.destination);
-                    gain.gain.setValueAtTime(0, now);
-                    gain.gain.linearRampToValueAtTime(vol, now + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.6);
-                    carrier.start(); mod.start();
-                    carrier.stop(now + 1.6); mod.stop(now + 1.6);
-                } else if (type === 'pad') {
-                    const osc1 = AppState.audioCtx.createOscillator();
-                    const osc2 = AppState.audioCtx.createOscillator();
-                    const gain = AppState.audioCtx.createGain();
-                    osc1.frequency.value = freq;
-                    osc2.frequency.value = freq * 1.01;
-                    osc1.type = 'sawtooth';
-                    osc2.type = 'sine';
-                    osc1.connect(gain); osc2.connect(gain);
-                    gain.connect(AppState.audioCtx.destination);
-                    gain.gain.setValueAtTime(0, now);
-                    gain.gain.linearRampToValueAtTime(vol * 0.8, now + 0.2);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 4.0);
-                    osc1.start(); osc2.start();
-                    osc1.stop(now + 4.0); osc2.stop(now + 4.0);
-                } else if (type === 'harpsichord') {
-                    const osc = AppState.audioCtx.createOscillator();
-                    const gain = AppState.audioCtx.createGain();
-                    osc.type = 'square';
-                    osc.frequency.value = freq;
-                    osc.connect(gain); gain.connect(AppState.audioCtx.destination);
-                    gain.gain.setValueAtTime(0.001, now);
-                    gain.gain.exponentialRampToValueAtTime(vol, now + 0.005);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-                    osc.start(); osc.stop(now + 0.5);
-                                } else if (type === 'rhodes') {
-                    const osc1 = AppState.audioCtx.createOscillator();
-                    const osc2 = AppState.audioCtx.createOscillator();
-                    const osc3 = AppState.audioCtx.createOscillator();
-                    const gain = AppState.audioCtx.createGain();
-                    const filter = AppState.audioCtx.createBiquadFilter();
-                    
-                    osc1.type = 'sine';
-                    osc2.type = 'sine';
-                    osc3.type = 'triangle';
-                    osc1.frequency.value = freq;
-                    osc2.frequency.value = freq * 0.5;
-                    osc3.frequency.value = freq * 2.03;
-                    
-                    filter.type = 'lowpass';
-                    filter.frequency.value = 3500;
-                    filter.Q.value = 3;
-                    
-                    osc1.connect(gain);
-                    osc2.connect(gain);
-                    osc3.connect(gain);
-                    gain.connect(filter);
-                    filter.connect(AppState.audioCtx.destination);
-                    
-                    gain.gain.setValueAtTime(0, now);
--                   gain.gain.linearRampToValueAtTime(vol * 0.85, now + 0.08);
-+                   gain.gain.linearRampToValueAtTime(vol, now + 0.08);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.0);
-                    
-                    osc1.start(); osc2.start(); osc3.start();
-                    osc1.stop(now + 3.0); osc2.stop(now + 3.0); osc3.stop(now + 3.0);
-                } else {
-                    // basic oscillator: sine / triangle / sawtooth / square
-                    const osc = AppState.audioCtx.createOscillator();
-                    const gain = AppState.audioCtx.createGain();
-                    osc.type = type || 'sine';
-                    osc.frequency.value = freq;
-                    osc.connect(gain); gain.connect(AppState.audioCtx.destination);
-                    gain.gain.setValueAtTime(0, now);
-                    gain.gain.linearRampToValueAtTime(Math.max(0.001, vol), now + 0.01);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-                    osc.start(); osc.stop(now + 0.8);
-                }
-            }
-        };
+    <div id="modal-join" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="margin-bottom:20px; font-weight: 700;">Join Shared Resource</h2>
+            <div class="input-wrapper">
+                <label
+                    style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px; display: block;">Resource
+                    ID</label>
+                <input id="join-id" class="input-std" placeholder="e.g. SPF-12345">
+            </div>
+            <div class="input-wrapper">
+                <label
+                    style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px; display: block;">Password</label>
+                <input id="join-pass" type="password" class="input-std" placeholder="Enter Password">
+            </div>
+            <button class="btn btn-primary w-full" onclick="Shared.confirmJoin()">
+                <i class="fa-solid fa-download"></i> Connect & Import
+            </button>
+            <button class="btn btn-secondary w-full" style="margin-top: 10px; border:none;"
+                onclick="Modals.close()">Cancel</button>
+        </div>
+    </div>
 
-        const soundSelect = document.getElementById('sound-type');
-        if (soundSelect) {
-            soundSelect.addEventListener('change', (e) => {
-                const val = e.target.value;
-                if (val && val.endsWith('-sampler')) {
-                    SoundEngine.ensurePresetLoaded(val);
-                }
-            });
-        }
+    <div id="modal-share-permission" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="margin-bottom:20px; font-weight: 700;">
+                <i class="fa-solid fa-share-nodes"></i> Share Resource
+            </h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">Choose permission level for people you share
+                with:</p>
 
-        // --- UI HANDLERS ---
-        function toggleAuth(mode) {
-            const loginCont = document.getElementById('login-form-container');
-            const regCont = document.getElementById('register-form-container');
-            if(!loginCont || !regCont) return;
-            if(mode === 'register') {
-                loginCont.classList.add('hidden');
-                regCont.classList.remove('hidden');
-            } else {
-                regCont.classList.add('hidden');
-                loginCont.classList.remove('hidden');
-            }
-        }
-
-        function switchAuthMode() {
-            const titleEl = document.getElementById('auth-title');
-            const titleRegEl = document.getElementById('auth-title-register');
-            const loginCont = document.getElementById('login-form-container');
-            const regCont = document.getElementById('register-form-container');
-            const isLogin = !loginCont.classList.contains('hidden');
-            
-            if(isLogin) {
-                titleEl.classList.add('hidden');
-                if(titleRegEl) titleRegEl.classList.remove('hidden');
-                loginCont.classList.add('hidden');
-                regCont.classList.remove('hidden');
-            } else {
-                titleEl.classList.remove('hidden');
-                if(titleRegEl) titleRegEl.classList.add('hidden');
-                regCont.classList.add('hidden');
-                loginCont.classList.remove('hidden');
-            }
-        }
-
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', e => {
-                e.preventDefault();
-                Auth.login(document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
-            });
-        }
-
-        const registerForm = document.getElementById('registerForm');
-        if (registerForm) {
-            registerForm.addEventListener('submit', e => {
-                e.preventDefault();
-                const name = document.getElementById('regName').value.trim();
-                const email = document.getElementById('regEmail').value.trim();
-                const pass = document.getElementById('regPass').value;
-                
-                if (!name) return alert("Please enter your name!");
-                if (!email) return alert("Please enter your email!");
-                if (pass.length < 6) return alert("Password must be at least 6 characters!");
-                
-                Auth.register(name, email, pass);
-            });
-        }
-
-        function logout() { Auth.logout(); }
-
-        function saveData() {
-            if(!AppState.currentUser) return;
-            const data = { folders: AppState.folders, keys: AppState.keys };
-            SafeStorage.setItem('spartan_data_' + AppState.currentUser.id, JSON.stringify(data));
-        }
-
-        function resetData() {
-           if(confirm("Reset data (only on this browser)?")) {
-                SafeStorage.clear();
-                location.reload();
-            }
-        }
-
-        // --- PIANO LOGIC ---
-        function renderPiano() {
-            const container = document.getElementById('piano-keys');
-            if(!container) return;
-            container.innerHTML = '';
-            let whiteCount = 0;
-            AppState.keys.forEach((k) => {
-                const div = document.createElement('div');
-                div.className = 'key ' + (k.t === 'w' ? 'white-key' : 'black-key');
-                if (k.k) {
-                    const span = document.createElement('span');
-                    span.style.position = 'absolute';
-                    span.style.bottom = '5px';
-                    span.style.pointerEvents = 'none';
-                    span.textContent = k.k;
-                    div.appendChild(span);
-                }
-                if (k.t === 'b') {
-                    div.style.left = `${(whiteCount * 44) - 14}px`;
-                } else {
-                    whiteCount++;
-                }
-                div.onmousedown = () => playNote(k, div);
-                container.appendChild(div);
-            });
-            container.style.width = `${whiteCount * 44}px`;
-        }
-
-        function playNote(keyObj, element) {
-            if (!AppState.audioCtx) return;
-            element.classList.add('active');
-            const baseFreq = NOTE_FREQUENCIES[keyObj.n] || 440;
-            const freq = baseFreq * Math.pow(2, (keyObj.o || 0));
-            const soundType = (document.getElementById('sound-type') || {}).value || 'sine';
-
-            if (soundType.endsWith('-sampler')) {
-                SoundEngine.playPresetSample(soundType, freq, element).catch(() => {
-                    SoundEngine.synthPlay('sine', freq, element);
-                });
-            } else {
-                SoundEngine.synthPlay(soundType, freq, element);
-            }
-            setTimeout(() => element.classList.remove('active'), 200);
-        }
-
-        window.addEventListener('keydown', (e) => {
-            const pianoView = document.getElementById('piano-view');
-            if (!pianoView || pianoView.classList.contains('hidden')) return;
-            if (e.repeat) return;
-            const tgt = e.target;
-            const tag = (tgt && tgt.tagName) || '';
-            if (tag === 'INPUT' || tag === 'TEXTAREA' || tgt.isContentEditable) return;
-            const modalIds = ['keybindModal', 'cardModal', 'folderModal'];
-            for (const id of modalIds) {
-                const m = document.getElementById(id);
-                if (m && m.classList.contains('active')) return;
-            }
-            const keyObj = AppState.keys.find(k => (k.k || '').toUpperCase() === e.key.toUpperCase());
-            if (keyObj) {
-                const index = AppState.keys.indexOf(keyObj);
-                const els = document.querySelectorAll('.key');
-                if(els[index]) playNote(keyObj, els[index]);
-            }
-        });
-
-        function openKeybindModal() {
-            const list = document.getElementById('kb-list');
-            if(!list) return;
-            list.innerHTML = AppState.keys.map((k, i) => `
-                <div class="keybind-row"><span>${k.n} (Octave ${k.o})</span><input type="text" class="kb-input" value="${k.k || ''}" oninput="updateKey(${i}, this.value)" maxlength="1"></div>
-            `).join('');
-            openModal('keybindModal');
-        }
-        function updateKey(index, val) { AppState.keys[index].k = (val || '').toUpperCase(); }
-        function saveKeybinds() { saveData(); renderPiano(); closeModal('keybindModal'); }
-
-        // --- FLASHCARD ENGINE ---
-        function renderFolders() {
-            const list = document.getElementById('folder-list');
-            if(!list) return;
-            list.innerHTML = AppState.folders.map(f => `
-                <div class="folder-item ${AppState.currentFolderId === f.id ? 'active' : ''}" onclick="selectFolder(${f.id})">
-                    <div class="folder-info">
-                        <span class="folder-name">📁 ${f.name}</span>
-                        <span class="folder-count">${(f.cards || []).length} cards</span>
-                    </div>
-                    <div class="folder-actions">
-                        <button class="btn-icon small" onclick="event.stopPropagation(); openEditFolder(${f.id})"><i class="fa-solid fa-pen"></i></button>
-                        <button class="btn-icon small" onclick="event.stopPropagation(); deleteFolder(${f.id})"><i class="fa-solid fa-trash"></i></button>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
+                <div class="permission-option" onclick="Shared.selectPermission('viewer', this)" data-role="viewer">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="permission-radio">
+                            <i class="fa-solid fa-circle" style="font-size: 8px; color: white;"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 3px;">
+                                <i class="fa-solid fa-eye"></i> Viewer
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                                Can only view and study. Cannot edit or delete.
+                            </div>
+                        </div>
                     </div>
                 </div>
-            `).join('');
-        }
 
-        function selectFolder(id) {
-            AppState.currentFolderId = id;
-            renderFolders(); renderCards();
-            const f = AppState.folders.find(f => f.id === id);
-            if (f) {
-                const titleEl = document.getElementById('current-folder-title');
-                if (titleEl) titleEl.textContent = f.name;
-                const addBtn = document.getElementById('add-card-btn');
-                if(addBtn) addBtn.disabled = false;
-                const quizBtn = document.getElementById('quiz-btn');
-                if(quizBtn) quizBtn.disabled = !(f.cards && f.cards.length > 0);
-                document.getElementById('study-mode').classList.remove('hidden');
-                document.getElementById('quiz-mode').classList.add('hidden');
-                document.getElementById('quiz-results').classList.add('hidden');
-            }
-        }
-
-        function openModal(id) {
-            if(id === 'folderModal') {
-                AppState.editingFolderId = null;
-                const title = document.getElementById('folderModalTitle');
-                if(title) title.innerText = "Create a new folder";
-                const name = document.getElementById('newFolderName');
-                if(name) name.value = '';
-            }
-            const el = document.getElementById(id);
-            if(el) el.classList.add('active');
-        }
-
-        function openEditFolder(id) {
-            AppState.editingFolderId = id;
-            const f = AppState.folders.find(f => f.id === id);
-            const title = document.getElementById('folderModalTitle');
-            const name = document.getElementById('newFolderName');
-            if(f) {
-                if(title) title.innerText = "Rename Folder";
-                if(name) name.value = f.name;
-                const modal = document.getElementById('folderModal');
-                if(modal) modal.classList.add('active');
-            }
-        }
-
-        function saveFolder() {
-            const nameEl = document.getElementById('newFolderName');
-            const name = nameEl ? nameEl.value.trim() : '';
-           if (!name) return alert("Enter folder name!");
-            if (AppState.editingFolderId) {
-                const f = AppState.folders.find(f => f.id === AppState.editingFolderId);
-                if(f) {
-                    f.name = name;
-                    if(AppState.currentFolderId === AppState.editingFolderId) {
-                        const t = document.getElementById('current-folder-title');
-                        if(t) t.textContent = name;
-                    }
-                }
-            } else {
-                AppState.folders.push({ id: Date.now(), name, cards: [] });
-            }
-            saveData();
-            closeModal('folderModal');
-            renderFolders();
-        }
-
-        function deleteFolder(id) {
-           if(confirm('Delete this folder and all cards inside?')) {
-                AppState.folders = AppState.folders.filter(f => f.id !== id);
-                if(AppState.currentFolderId === id) {
-                    AppState.currentFolderId = null;
-                    const title = document.getElementById('current-folder-title');
-                    if(title) title.textContent = "Select a Folder";
-                    const grid = document.getElementById('card-grid');
-                    if(grid) grid.innerHTML = '<div style="text-align: center; color: #94a3b8; grid-column: 1/-1; padding: 50px;">Select a folder to get started.</div>';
-                    const addBtn = document.getElementById('add-card-btn'); if(addBtn) addBtn.disabled = true;
-                    const quizBtn = document.getElementById('quiz-btn'); if(quizBtn) quizBtn.disabled = true;
-                }
-                saveData();
-                renderFolders();
-            }
-        }
-
-        function renderCards() {
-            if(!AppState.currentFolderId) return;
-            const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
-            const grid = document.getElementById('card-grid');
-            if(!grid) return;
-            if (!folder || !folder.cards || folder.cards.length === 0) {
-                grid.innerHTML = '<div style="text-align: center; color: #94a3b8; grid-column: 1/-1; padding: 50px;">No cards yet.</div>';
-                return;
-            }
-            grid.innerHTML = folder.cards.map(c => `
-                <div class="flashcard" onclick="this.classList.toggle('flipped')">
-                    <div class="card-actions" onclick="event.stopPropagation()">
-                        <button class="btn-icon" onclick="openEditCard(${c.id})"><i class="fa-solid fa-pen"></i></button>
-                        <button class="btn-icon" style="color: #ef4444;" onclick="deleteCard(${c.id})"><i class="fa-solid fa-trash"></i></button>
+                <div class="permission-option selected" onclick="Shared.selectPermission('editor', this)"
+                    data-role="editor">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="permission-radio">
+                            <i class="fa-solid fa-circle" style="font-size: 8px; color: white;"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 3px;">
+                                <i class="fa-solid fa-pen"></i> Editor
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                                Can view, edit, add and delete cards.
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-inner"><div class="card-front">${escapeHtml(c.q)}</div><div class="card-back">${escapeHtml(c.a)}</div></div>
                 </div>
-            `).join('');
-        }
+            </div>
 
-        function openCardModal() {
-            AppState.editingCardId = null;
-            const title = document.getElementById('cardModalTitle'); if(title) title.innerText = "Add New Card";
-            const q = document.getElementById('cardQuestion'); if(q) q.value = '';
-            const a = document.getElementById('cardAnswer'); if(a) a.value = '';
-            openModal('cardModal');
-        }
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-secondary" style="flex: 1;" onclick="Modals.close()">Cancel</button>
+                <button class="btn btn-primary" style="flex: 1;" onclick="Shared.confirmShare()">
+                    <i class="fa-solid fa-share-nodes"></i> Create Share Link
+                </button>
+            </div>
+        </div>
+    </div>
 
-        function openEditCard(cardId) {
-            AppState.editingCardId = cardId;
-            const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
-            if(!folder) return;
-            const card = folder.cards.find(c => c.id === cardId);
-            if(!card) return;
-            const title = document.getElementById('cardModalTitle'); if(title) title.innerText = "Edit Card";
-            const q = document.getElementById('cardQuestion'); if(q) q.value = card.q;
-            const a = document.getElementById('cardAnswer'); if(a) a.value = card.a;
-            openModal('cardModal');
-        }
+    <div id="modal-share-result" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="margin-bottom:20px; font-weight: 700; color: var(--status-success);">
+                <i class="fa-solid fa-check-circle"></i> Share Created
+            </h2>
+            <div style="background: var(--hover-bg); padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                <div style="margin-bottom: 15px;">
+                    <label
+                        style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 5px;">Resource
+                        ID</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input id="share-id-display" class="input-std" readonly style="flex: 1;">
+                        <button class="btn btn-secondary" onclick="Shared.copyToClipboard('share-id-display')">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label
+                        style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 5px;">Password</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input id="share-pass-display" class="input-std" readonly style="flex: 1;">
+                        <button class="btn btn-secondary" onclick="Shared.copyToClipboard('share-pass-display')">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">
+                Share these credentials with others to grant them access. They can import using the "Join" button.
+            </p>
+            <button class="btn btn-primary w-full" onclick="Modals.close()">Done</button>
+        </div>
+    </div>
 
-        function saveCard() {
-            const qEl = document.getElementById('cardQuestion');
-            const aEl = document.getElementById('cardAnswer');
-            const q = qEl ? qEl.value.trim() : '';
-            const a = aEl ? aEl.value.trim() : '';
-            if (!q || !a) return alert("Fill in all fields!");
-            const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
-            if(!folder) return alert("Select a folder first!");
-            if (AppState.editingCardId) {
-                const card = folder.cards.find(c => c.id === AppState.editingCardId);
-                if(card) { card.q = q; card.a = a; }
-            } else {
-                folder.cards.push({ id: Date.now(), q, a });
-            }
-            saveData(); selectFolder(AppState.currentFolderId); closeModal('cardModal');
-        }
+    <!-- Share Channel Modal -->
+    <div id="modal-share-channel" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="margin-bottom:20px; font-weight: 700; color: var(--status-success);">
+                <i class="fa-solid fa-share-nodes"></i> Share Channel
+            </h2>
+            <p style="margin-bottom: 15px; color: var(--text-secondary);">
+                Share <strong id="share-channel-name"></strong> with others
+            </p>
+            <div style="background: var(--hover-bg); padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 5px;">Channel Code</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input id="share-channel-code" class="input-std" readonly style="flex: 1;">
+                        <button class="btn btn-secondary" onclick="Shared.copyToClipboard('share-channel-code')">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 5px;">Password</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input id="share-channel-pass" class="input-std" readonly style="flex: 1;">
+                        <button class="btn btn-secondary" onclick="Shared.copyToClipboard('share-channel-pass')">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">
+                <i class="fa-solid fa-info-circle"></i> Others can join this channel by clicking "Join Channel" button and entering these credentials.
+            </p>
+            <button class="btn btn-primary w-full" onclick="Modals.close()">Done</button>
+        </div>
+    </div>
 
-        function deleteCard(id) {
-           if(!confirm('Delete this card?')) return;
-            const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
-            if(!folder) return;
-            folder.cards = folder.cards.filter(c => c.id !== id);
-            saveData(); selectFolder(AppState.currentFolderId);
-        }
+    <!-- Join Channel Modal -->
+    <div id="modal-join-channel" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="margin-bottom:20px; font-weight: 700;">
+                <i class="fa-solid fa-users"></i> Join Shared Channel
+            </h2>
+            <div class="input-wrapper">
+                <label style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px; display: block;">Channel Code</label>
+                <input id="join-channel-code" class="input-std" placeholder="e.g. CH-12345">
+            </div>
+            <div class="input-wrapper">
+                <label style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px; display: block;">Password</label>
+                <input id="join-channel-pass" type="password" class="input-std" placeholder="Enter Password">
+            </div>
+            <button class="btn btn-primary w-full" onclick="Community.joinSharedChannel()">
+                <i class="fa-solid fa-right-to-bracket"></i> Join Channel
+            </button>
+            <button class="btn btn-secondary w-full" style="margin-top: 10px; border:none;" onclick="Modals.close()">Cancel</button>
+        </div>
+    </div>
 
-        const qInput = document.getElementById('cardQuestion');
-        const sugBox = document.getElementById('suggestions');
-        if(qInput && sugBox) {
-            qInput.addEventListener('input', (e) => {
-                const val = e.target.value.toLowerCase();
-                if(val.length < 1) { sugBox.style.display = 'none'; return; }
-                const matches = COMMON_WORDS.filter(w => w.toLowerCase().includes(val));
-                if(matches.length > 0) {
-                    sugBox.innerHTML = matches.map(w => `<div class="suggestion-item" onclick="applySug('${escapeAttr(w)}')">${escapeHtml(w)}</div>`).join('');
-                    sugBox.style.display = 'block';
-                } else sugBox.style.display = 'none';
-            });
-        }
-        function applySug(w) { if(qInput) { qInput.value = w; } if(sugBox) sugBox.style.display = 'none'; }
+    <div id="modal-wb-note" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="font-size:1.5rem; font-weight:700; margin-bottom:20px;">
+                <i class="fa-solid fa-note-sticky"></i> Add Sticky Note
+            </h2>
+            <div class="input-wrapper">
+                <label style="display:block; margin-bottom:5px; color: var(--text-secondary);">Note Content</label>
+                <textarea id="wb-note-input" class="input-std" style="height: 120px; resize: none;"
+                    placeholder="Enter your note..."></textarea>
+            </div>
+            <div class="input-wrapper">
+                <label style="display:block; margin-bottom:8px; color: var(--text-secondary);">Note Color</label>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div class="note-color-option selected" data-color="#FFF59D" style="background: #FFF59D;"
+                        onclick="WB_selectNoteColor(this)"></div>
+                    <div class="note-color-option" data-color="#FFCCBC" style="background: #FFCCBC;"
+                        onclick="WB_selectNoteColor(this)"></div>
+                    <div class="note-color-option" data-color="#B2DFDB" style="background: #B2DFDB;"
+                        onclick="WB_selectNoteColor(this)"></div>
+                    <div class="note-color-option" data-color="#C5CAE9" style="background: #C5CAE9;"
+                        onclick="WB_selectNoteColor(this)"></div>
+                    <div class="note-color-option" data-color="#F8BBD0" style="background: #F8BBD0;"
+                        onclick="WB_selectNoteColor(this)"></div>
+                    <div class="note-color-option" data-color="#E1BEE7" style="background: #E1BEE7;"
+                        onclick="WB_selectNoteColor(this)"></div>
+                </div>
+            </div>
+            <div class="flex justify-between" style="margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="Modals.close()">Cancel</button>
+                <button class="btn btn-primary" onclick="Whiteboard.confirmNote()">
+                    <i class="fa-solid fa-check"></i> Add Note
+                </button>
+            </div>
+        </div>
+    </div>
 
-        function startQuiz() {
-            const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
-            if(!folder || !folder.cards || folder.cards.length === 0) return alert('No cards in this folder.');
-            AppState.quiz = { active: true, cards: [...folder.cards].sort(() => Math.random() - 0.5), index: 0, score: 0 };
-            const study = document.getElementById('study-mode');
-            const quiz = document.getElementById('quiz-mode');
-            if(study) study.classList.add('hidden');
-            if(quiz) quiz.classList.remove('hidden');
-            renderQuizCard();
-        }
+    <div id="modal-wb-text" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="font-size:1.5rem; font-weight:700; margin-bottom:20px;">
+                <i class="fa-solid fa-font"></i> Add Text
+            </h2>
+            <div class="input-wrapper">
+                <label style="display:block; margin-bottom:5px; color: var(--text-secondary);">Text Content</label>
+                <input id="wb-text-input" class="input-std" placeholder="Enter text...">
+            </div>
+            <div class="flex justify-between" style="margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="Modals.close()">Cancel</button>
+                <button class="btn btn-primary" onclick="Whiteboard.confirmText()">
+                    <i class="fa-solid fa-check"></i> Add Text
+                </button>
+            </div>
+        </div>
+    </div>
 
-        function renderQuizCard() {
-            const q = AppState.quiz;
-            const progressEl = document.getElementById('quiz-progress');
-            if(progressEl) progressEl.innerText = `Question ${q.index + 1}/${q.cards.length}`;
-            const cardUI = document.getElementById('quiz-card-face');
-            if(!cardUI) return;
-            cardUI.className = 'quiz-card-display';
-            cardUI.innerText = q.cards[q.index].q;
-            const actions = document.getElementById('quiz-actions');
-            if(actions) actions.classList.add('hidden');
-        }
-
-        function revealQuizCard() {
-            const cardUI = document.getElementById('quiz-card-face');
-            if(!cardUI) return;
-            cardUI.classList.add('revealed');
-            cardUI.innerText = AppState.quiz.cards[AppState.quiz.index].a;
-            const actions = document.getElementById('quiz-actions');
-            if(actions) actions.classList.remove('hidden');
-        }
-
-        function answerQuiz(isCorrect) {
-            if (isCorrect) AppState.quiz.score++;
-            AppState.quiz.index++;
-            if (AppState.quiz.index >= AppState.quiz.cards.length) {
-                const qm = document.getElementById('quiz-mode');
-                const res = document.getElementById('quiz-results');
-                if(qm) qm.classList.add('hidden');
-                if(res) res.classList.remove('hidden');
-                const percent = Math.round((AppState.quiz.score / AppState.quiz.cards.length) * 100);
-                const finalEl = document.getElementById('final-score');
-                if(finalEl) finalEl.innerText = `${percent}%`;
-            } else { renderQuizCard(); }
-        }
-
-        function exitQuiz() { if(AppState.currentFolderId) selectFolder(AppState.currentFolderId); }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
-            const btn = Array.from(document.querySelectorAll('.nav-tabs button')).find(b => (b.getAttribute('onclick') || '').includes("'" + tabName + "'"));
-            if(btn) btn.classList.add('active');
-            document.getElementById('piano-view').classList.add('hidden');
-            document.getElementById('flashcards-view').classList.add('hidden');
-            if (tabName === 'piano') document.getElementById('piano-view').classList.remove('hidden');
-            else document.getElementById('flashcards-view').classList.remove('hidden');
-        }
-
-        function closeModal(id) { const el = document.getElementById(id); if(el) el.classList.remove('active'); }
-        function initSystem() { renderPiano(); renderFolders(); }
-
-        function escapeHtml(s) {
-            if(!s && s !== 0) return '';
-            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-        }
-        function escapeAttr(s) { return (String(s || '')).replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
-
-        // --- Built-in vocabulary (expanded B2/C1) ---
-        const BUILTIN_VOCAB_CARDS = [
-          { q: "Proficient", a: "Skilled and experienced" },
-          { q: "Cohesive", a: "Forming a united whole" },
-          { q: "Sustainable", a: "Capable of being maintained over time" },
-          { q: "Ambiguous", a: "Open to more than one interpretation" },
-          { q: "Consequence", a: "A result or effect of an action" },
-          { q: "Negotiate", a: "To try to reach an agreement" },
-          { q: "Implement", a: "To put into effect" },
-          { q: "Paradigm", a: "A typical example or pattern" },
-          { q: "Mitigate", a: "To make less severe" },
-          { q: "Facilitate", a: "To make an action or process easier" },
-          { q: "Pragmatic", a: "Dealing with things sensibly and realistically" },
-          { q: "Tenacious", a: "Persistent and determined" },
-          { q: "Conscientious", a: "Wishing to do what is right; diligent" },
-          { q: "Articulate", a: "Able to express ideas clearly" },
-          { q: "Evaluate", a: "Assess the value or significance of something" },
-          { q: "Interpret", a: "Explain the meaning of" },
-          { q: "Hypothesis", a: "A proposed explanation made on limited evidence" },
-          { q: "Corroborate", a: "Provide evidence to support or confirm" },
-          { q: "Empirical", a: "Based on observation or experience rather than theory" },
-          { q: "Salient", a: "Most noticeable or important" },
-          { q: "Viable", a: "Capable of working successfully; feasible" },
-          { q: "Intrinsic", a: "Belonging naturally; essential" },
-          { q: "Extrinsic", a: "Not part of the essential nature; external" },
-          { q: "Allocate", a: "Distribute resources or duties for a purpose" },
-          { q: "Consensus", a: "General agreement among a group" },
-          { q: "Redundant", a: "Not or no longer needed; superfluous" },
-          { q: "Pivotal", a: "Of crucial importance in relation to the success of something" },
-          { q: "Discrepancy", a: "A lack of compatibility or similarity between facts" },
-          { q: "Exacerbate", a: "Make a problem or situation worse" },
-          { q: "Prevalent", a: "Widespread in a particular area or at a particular time" },
-          { q: "Ubiquitous", a: "Present, appearing, or found everywhere" },
-          { q: "Conducive", a: "Making a certain situation or outcome likely" },
-          { q: "Discern", a: "Perceive or recognize something" },
-          { q: "Retrospect", a: "Reviewing or looking back on past events" },
-          { q: "Augment", a: "Make something greater by adding to it" },
-          { q: "Curtail", a: "Reduce in extent or quantity; impose a restriction on" },
-          { q: "Propensity", a: "A natural inclination or tendency" },
-          { q: "Immutable", a: "Unchanging over time; unable to be changed" },
-          { q: "Ambivalent", a: "Having mixed feelings or contradictory ideas" },
-          { q: "Disparate", a: "Essentially different in kind; not allowing comparison" }
-        ];
-
-        function ensureBuiltinVocab() {
-          if (!AppState || !AppState.currentUser) return;
-          // find or create the built-in folder
-          let builtinFolder = AppState.folders.find(f => f && f.name === 'Built-in: English B2/C1');
-          if (!builtinFolder) {
-            builtinFolder = { id: Date.now() + 1, name: 'Built-in: English B2/C1', cards: [] };
-            AppState.folders.unshift(builtinFolder);
-          }
-          // collect existing question texts to avoid duplicates
-          const existingQs = new Set((builtinFolder.cards || []).map(c => (c.q || '').toString().trim()));
-          BUILTIN_VOCAB_CARDS.forEach(card => {
-            const q = (card.q || '').toString().trim();
-            if (!existingQs.has(q)) {
-              builtinFolder.cards.push({
-                id: Date.now() + Math.floor(Math.random() * 10000),
-                q,
-                a: card.a || ''
-              });
-              existingQs.add(q);
-            }
-          });
-          // persist & refresh UI
-          try { saveData(); } catch(e) { console.warn('saveData failed', e); }
-          try { renderFolders(); } catch(e) {
- /* ignore */ }
-        }
-
-        // --- AI Definition Placeholders ---
-        // Creates one placeholder "AI Definition: <term>" card for each existing card.
-        function addAIDefPlaceholders(opts = {}) {
-          if (!window.AppState || !Array.isArray(AppState.folders)) {
-            console.warn('AppState or folders not available yet.');
-            return { added: 0, message: 'AppState not ready' };
-          }
-          const { onlyBuiltin = false, onlyCurrent = false } = opts;
-          const results = { added: 0, foldersProcessed: 0 };
-          const nowBase = Date.now();
-
-          function addToFolder(folder) {
-            if (!folder || !Array.isArray(folder.cards)) return 0;
-            results.foldersProcessed++;
-            const existingQs = new Set(folder.cards.map(c => (c.q || '').toString().trim()));
-            let addedHere = 0;
-            // iterate over snapshot of cards (so we don't loop newly added placeholders)
-            const snapshot = (folder.cards || []).slice();
-            snapshot.forEach((c) => {
-              const term = (c.q || '').toString().trim();
-              if (!term) return;
-              const aiQ = `AI Definition: ${term}`;
-              if (!existingQs.has(aiQ)) {
-                const newCard = {
-                  id: nowBase + Math.floor(Math.random() * 100000) + addedHere,
-                  q: aiQ,
-                  a: '',
-                  __aiPlaceholder: true
-                };
-                folder.cards.push(newCard);
-                existingQs.add(aiQ);
-                addedHere++;
-              }
-            });
-            return addedHere;
-          }
-
-          if (onlyCurrent && AppState.currentFolderId) {
-            const folder = AppState.folders.find(f => f.id === AppState.currentFolderId);
-            results.added += addToFolder(folder);
-          } else if (onlyBuiltin) {
-            const builtin = AppState.folders.find(f => f && f.name === 'Built-in: English B2/C1');
-            results.added += addToFolder(builtin);
-          } else {
-            AppState.folders.forEach(f => { results.added += addToFolder(f); });
-          }
-
-          try { saveData(); } catch (e) { console.warn('saveData failed', e); }
-          try { renderFolders(); if (AppState.currentFolderId) renderCards(); } catch (e) { /* ignore */ }
-
-          console.log(`AI placeholder creation: added=${results.added}, foldersProcessed=${results.foldersProcessed}`);
-          return results;
-        }
-        function addAIDefForBuiltIn() { return addAIDefPlaceholders({ onlyBuiltin: true }); }
-        function addAIDefForCurrent() { return addAIDefPlaceholders({ onlyCurrent: true }); }
-        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="RB-GhOWlWGCnxZOsizoFz";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
-    </script>
+    <!-- Main JavaScript -->
+    <script src="app.js"></script>
 </body>
+
 </html>
