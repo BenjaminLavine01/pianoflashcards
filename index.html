@@ -42,6 +42,7 @@
                 --radius-md: 10px;
                 --radius-lg: 16px;
                 --radius-xl: 24px;
+                --white-key-width: 50px;
                 --font-head: 'Space Grotesk', sans-serif;
                 --ease-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
             }
@@ -2649,6 +2650,42 @@
         .modal-box video {
             border-radius: 8px;
         }
+
+        /* ===================== RESPONSIVE / MOBILE STYLES ===================== */
+        @media (max-width: 900px) {
+            .piano-header { padding: 0 20px; height: 64px; margin-top: 20px; width: calc(100% - 40px); }
+            .piano-header .mobile-nav-btn { display: inline-flex; margin-right: 10px; }
+            .piano-header > div:first-child { font-size: 1rem; }
+            .piano-case { padding: 20px; border-radius: 14px; }
+            .keys-wrapper { height: clamp(150px, 36vh, 220px); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .key-white { width: clamp(36px, 9vw, 50px) !important; min-width: 36px; }
+            .key-black { width: calc(var(--white-key-width) * 0.6); min-width: 24px; }
+            .btn { padding: 10px 14px; font-size: 0.95rem; }
+        }
+
+        @media (max-width: 600px) {
+            body { overflow: auto; }
+            .sidebar { left: -110% !important; position: fixed !important; top: 0; bottom: 0; width: 80% !important; max-width: 320px !important; z-index: 9999; transition: left 0.25s ease; }
+            .sidebar.mobile-open { left: 0 !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+            body.sidebar-open { overflow: hidden; }
+            .piano-header { padding: 0 12px; height: 56px; margin-top: 12px; width: calc(100% - 24px); }
+            .piano-header .mobile-nav-btn { display: inline-flex; }
+            .piano-header .fa-bars { font-size: 1.1rem; }
+            .piano-stage { padding: 10px 0; }
+            .piano-case { padding: 16px; border-radius: 12px; width: calc(100% - 32px); }
+            .keys-wrapper { height: clamp(130px, 34vh, 180px); }
+            .key { font-size: 11px; }
+            .key-white { width: clamp(34px, 12vw, 48px) !important; }
+            .key-black { height: 58%; }
+            .key { touch-action: manipulation; -webkit-user-select: none; }
+            .btn-icon-sm { padding: 8px; font-size: 0.9rem; }
+            /* override inline overflow hidden on main for small screens so content can scroll */
+            #app-shell main { overflow: auto !important; }
+            /* backdrop for mobile sidebar */
+            .sidebar-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 9998; }
+            /* make key labels compact on small screens */
+            .key-label { bottom: 16px; font-size: 11px; padding: 3px 6px; border-radius: 6px; }
+        }
         </style>
                     <div id="toast-container"></div>
 
@@ -2782,7 +2819,10 @@
                             <!-- PIANO MODULE -->
                             <div id="mod-piano" class="module-flex-column">
                                 <div class="piano-header font-head">
-                                    <div style="font-size: 1.2rem; font-weight: 700;">
+                                    <button class="mobile-nav-btn btn-icon-sm" onclick="UI.toggleSidebar()" aria-label="Open Menu" style="display:none;">
+                                        <i class="fa-solid fa-bars"></i>
+                                    </button>
+                                    <div style="display:flex; align-items:center; gap:8px; font-size: 1.1rem; font-weight: 700;">
                                         <i class="fa-solid fa-terminal"></i> AUDIO ENGINE
                                     </div>
                                     <div style="font-size: 0.9rem; opacity: 0.9;">
@@ -3986,6 +4026,26 @@
                             }]
                         }];
                     }
+                    const UI = {
+                        toggleSidebar: () => {
+                            const sb = document.querySelector('.sidebar');
+                            if (!sb) return;
+                            const isOpen = sb.classList.toggle('mobile-open');
+                            document.body.classList.toggle('sidebar-open', isOpen);
+                            const existing = document.querySelector('.sidebar-backdrop');
+                            if (isOpen) {
+                                // create backdrop to capture outside taps
+                                if (!existing) {
+                                    const backdrop = document.createElement('div');
+                                    backdrop.className = 'sidebar-backdrop';
+                                    backdrop.onclick = () => UI.toggleSidebar();
+                                    document.body.appendChild(backdrop);
+                                }
+                            } else {
+                                if (existing) existing.remove();
+                            }
+                        }
+                    };
                     Piano.render();
                     FC.renderHub();
                     Tasks.renderSidebar();
@@ -4176,6 +4236,8 @@
                     if (!box) return;
                     box.innerHTML = '';
                     let pos = 0;
+                    // start with a fallback white key width; actual widths will be measured after rendering
+                    let lastWhiteW = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--white-key-width')) || 50;
                     Piano.notes.forEach(k => {
                         const el = document.createElement('div');
                         el.dataset.note = k.n;
@@ -4183,15 +4245,24 @@
                         if (k.t === 'w') {
                             el.className = 'key key-white';
                             el.innerHTML = `<span class="key-label">${labelText}</span>`;
-                            pos += 50;
+                            box.appendChild(el);
+                            // measure actual rendered white key width (let CSS clamp take effect)
+                            const w = el.offsetWidth || lastWhiteW;
+                            pos += w;
+                            lastWhiteW = w;
                         } else {
                             el.className = 'key key-black';
-                            el.style.left = (pos - 15) + 'px';
+                            const blackW = Math.round(lastWhiteW * 0.6);
+                            el.style.width = blackW + 'px';
+                            el.style.left = (pos - Math.round(lastWhiteW * 0.3)) + 'px';
                             el.innerHTML = `<span class="key-label">${labelText}</span>`;
+                            box.appendChild(el);
                         }
                         el.onmousedown = () => Piano.play(k.n, el);
-                        box.appendChild(el);
+                        el.ontouchstart = (e) => { e.preventDefault(); Piano.play(k.n, el); };
                     });
+                    // ensure keys can overflow horizontally on narrow screens
+                    box.style.width = 'max-content';
                 },
                 play: (note, el) => {
                     if (!State.audioCtx) State.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
