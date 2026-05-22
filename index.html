@@ -1104,12 +1104,12 @@
                 font-size: 8px;
             }
 
-            .mobile-tab-bar {
-                display: none !important;
-            }
-
-            #app-shell:not(.hidden) .mobile-tab-bar {
-                display: none !important;
+            /* Bottom tab bar: hidden on desktop only (shown in mobile @media block) */
+            @media (min-width: 769px) {
+                .mobile-tab-bar,
+                #app-shell:not(.hidden) .mobile-tab-bar {
+                    display: none !important;
+                }
             }
 
             /* FLASHCARDS MODULE */
@@ -2231,10 +2231,13 @@
                 border-radius: 0;
             }
 
-            body.wb-fullscreen-active #app-shell .sidebar,
-            body.wb-fullscreen-active #app-shell .mobile-tab-bar {
+            body.wb-fullscreen-active #app-shell .sidebar {
                 visibility: hidden;
                 pointer-events: none;
+            }
+
+            body.wb-fullscreen-active #app-shell .mobile-tab-bar {
+                display: none !important;
             }
 
             body.wb-fullscreen-active #mod-whiteboard .mobile-nav-btn {
@@ -2434,6 +2437,24 @@
             @media (min-width: 769px) {
                 .wb-panel {
                     display: flex !important;
+                }
+
+                .task-workspace .task-sidebar,
+                #mod-pathway .pathway-sidebar {
+                    display: flex !important;
+                    position: static !important;
+                    width: 280px;
+                    box-shadow: none;
+                }
+
+                .task-sidebar-backdrop,
+                .path-sidebar-backdrop {
+                    display: none !important;
+                }
+
+                .task-header .wb-mobile-panel-btn,
+                .pathway-header .wb-mobile-panel-btn {
+                    display: none !important;
                 }
             }
 
@@ -2985,7 +3006,9 @@
             .piano-header { padding: 0 20px; height: 64px; margin-top: 20px; width: calc(100% - 40px); }
             .piano-header .mobile-nav-btn,
             .fc-header .mobile-nav-btn,
-            .task-header .mobile-nav-btn { display: inline-flex; }
+            .task-header .mobile-nav-btn,
+            .pathway-header .mobile-nav-btn,
+            .module-header .mobile-nav-btn { display: inline-flex; }
             .piano-header > div:first-child { font-size: 1rem; }
             .piano-case { padding: 20px; border-radius: 14px; }
             .keys-scroll { -webkit-overflow-scrolling: touch; }
@@ -3041,21 +3064,26 @@
         }
 
             @media (max-width: 768px) {
+            :root {
+                --mobile-tab-h: calc(56px + env(safe-area-inset-bottom, 0px));
+            }
+
             #app-shell:not(.hidden) .mobile-tab-bar {
                 display: flex !important;
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 right: 0;
-                z-index: 10001;
+                z-index: 10050;
                 background: var(--bg-surface);
                 border-top: 1px solid var(--border-color);
-                padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+                padding: 4px 6px env(safe-area-inset-bottom, 0px);
                 justify-content: space-around;
                 align-items: stretch;
-                gap: 4px;
+                gap: 2px;
                 backdrop-filter: var(--glass-blur);
-                box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12);
+                box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+                min-height: 56px;
             }
 
             .mobile-tab-item {
@@ -3064,21 +3092,30 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                gap: 3px;
-                padding: 8px 4px;
+                gap: 2px;
+                padding: 6px 2px;
                 border: none;
                 background: transparent;
                 color: var(--text-secondary);
-                font-size: 0.65rem;
+                font-size: 0.62rem;
                 font-weight: 700;
                 border-radius: var(--radius-md);
                 cursor: pointer;
                 transition: all 0.2s;
                 min-width: 0;
+                -webkit-tap-highlight-color: transparent;
             }
 
             .mobile-tab-item i {
-                font-size: 1.15rem;
+                font-size: 1.2rem;
+            }
+
+            .mobile-tab-item span {
+                line-height: 1.1;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
             }
 
             .mobile-tab-item.active {
@@ -3086,15 +3123,50 @@
                 background: var(--active-bg);
             }
 
+            .mobile-tab-item:active {
+                transform: scale(0.96);
+            }
+
             #app-shell {
                 flex-direction: column;
+                height: 100vh;
+                height: 100dvh;
+            }
+
+            #app-shell .sidebar {
+                position: fixed !important;
+                left: -110% !important;
+                top: 0;
+                bottom: var(--mobile-tab-h);
+                width: min(300px, 88vw) !important;
+                max-width: 320px !important;
+                z-index: 10055;
+                height: auto !important;
+                transition: left 0.3s var(--ease-bounce);
+                box-shadow: none;
+            }
+
+            #app-shell .sidebar.mobile-open {
+                left: 0 !important;
+                box-shadow: 8px 0 40px rgba(0, 0, 0, 0.35);
+            }
+
+            .sidebar-backdrop {
+                position: fixed;
+                inset: 0;
+                bottom: var(--mobile-tab-h);
+                background: rgba(0, 0, 0, 0.45);
+                z-index: 10054;
+                backdrop-filter: blur(4px);
             }
 
             #app-shell > main {
                 flex: 1;
+                width: 100% !important;
+                min-width: 0;
                 min-height: 0;
                 overflow: hidden !important;
-                padding-bottom: 62px;
+                padding-bottom: var(--mobile-tab-h);
             }
 
             [id^="mod-"]:not(.hidden) {
@@ -3146,16 +3218,102 @@
                 display: block;
             }
 
-            .fc-header {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 12px 14px;
-                gap: 10px;
+            .fc-header,
+            .task-header {
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+                padding: 10px 12px;
+                gap: 8px;
             }
 
-            .fc-header-actions {
-                width: 100%;
-                justify-content: flex-start;
+            .fc-header-main,
+            .task-header .fc-header-main {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .fc-title {
+                font-size: 1rem !important;
+                max-width: none;
+            }
+
+            .fc-header-actions,
+            .task-header .fc-header-actions {
+                width: auto;
+                flex-shrink: 0;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                max-width: 45vw;
+            }
+
+            .fc-header-actions::-webkit-scrollbar,
+            .task-header .fc-header-actions::-webkit-scrollbar {
+                display: none;
+            }
+
+            .task-workspace .task-sidebar,
+            #mod-pathway .pathway-sidebar {
+                display: none !important;
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: var(--mobile-tab-h);
+                width: min(280px, 90vw) !important;
+                z-index: 10045;
+                box-shadow: 8px 0 32px rgba(0, 0, 0, 0.28);
+            }
+
+            .task-workspace.task-projects-open .task-sidebar,
+            #mod-pathway.path-sidebar-open .pathway-sidebar {
+                display: flex !important;
+            }
+
+            .task-sidebar-backdrop,
+            .path-sidebar-backdrop {
+                display: none;
+                position: fixed;
+                inset: 0;
+                bottom: var(--mobile-tab-h);
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 10044;
+            }
+
+            .task-workspace.task-projects-open .task-sidebar-backdrop,
+            #mod-pathway.path-sidebar-open .path-sidebar-backdrop {
+                display: block;
+            }
+
+            .task-board-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                padding: 12px 14px 0;
+            }
+
+            .task-board-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .task-board-actions .btn {
+                flex: 1;
+                min-width: 0;
+            }
+
+            #mod-pathway {
+                flex-direction: column;
+            }
+
+            .pathway-main {
+                min-width: 0;
+            }
+
+            .lesson-header {
+                padding: 12px 14px;
             }
 
             .wb-toolbar-scroll {
@@ -3170,7 +3328,7 @@
                 position: fixed;
                 left: 0;
                 top: 0;
-                bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+                bottom: var(--mobile-tab-h);
                 width: min(280px, 88vw) !important;
                 z-index: 10002;
                 box-shadow: 8px 0 32px rgba(0, 0, 0, 0.28);
@@ -3185,7 +3343,7 @@
                 display: block;
                 position: fixed;
                 inset: 0;
-                bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+                bottom: var(--mobile-tab-h);
                 background: rgba(0, 0, 0, 0.4);
                 z-index: 10001;
             }
@@ -3244,7 +3402,7 @@
                 display: block;
                 position: fixed;
                 inset: 0;
-                bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+                bottom: var(--mobile-tab-h);
                 background: rgba(0, 0, 0, 0.45);
                 z-index: 10002;
             }
@@ -3276,13 +3434,13 @@
 
             body { overflow: hidden; }
             #app-shell { height: 100vh; height: 100dvh; overflow: hidden; }
-            .sidebar { left: -110% !important; position: fixed !important; top: 0; bottom: 0; width: 80% !important; max-width: 320px !important; z-index: 9999; transition: left 0.3s var(--ease-bounce); }
-            .sidebar.mobile-open { left: 0 !important; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
             body.sidebar-open { overflow: hidden; }
             .piano-header { padding: 0 12px; height: 56px; margin-top: 12px; width: calc(100% - 24px); }
             .piano-header .mobile-nav-btn,
             .fc-header .mobile-nav-btn,
-            .task-header .mobile-nav-btn { display: inline-flex; }
+            .task-header .mobile-nav-btn,
+            .pathway-header .mobile-nav-btn,
+            .module-header .mobile-nav-btn { display: inline-flex; }
             .piano-stage { padding: 10px 0; }
             .piano-case { padding: 16px; border-radius: 12px; width: calc(100% - 32px); }
             .piano-case > div:first-child {
@@ -3298,8 +3456,7 @@
             .key-black { height: 58%; }
             .key { touch-action: manipulation; -webkit-user-select: none; }
             .btn-icon-sm { padding: 8px; font-size: 0.9rem; }
-            #app-shell > main { overflow: hidden !important; padding-bottom: 62px; }
-            .sidebar-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9998; backdrop-filter: blur(4px); }
+            #app-shell > main { overflow: hidden !important; }
             .key-label { bottom: 16px; font-size: 11px; padding: 3px 6px; border-radius: 6px; }
 
             /* Flashcards mobile */
@@ -3763,16 +3920,21 @@
                                         <h2 class="font-head fc-title">Task Arena</h2>
                                     </div>
                                     <div class="fc-header-actions">
+                                        <button type="button" class="btn btn-secondary btn-sm wb-mobile-panel-btn" onclick="Tasks.toggleProjectsPanel()"
+                                            aria-label="Projects">
+                                            <i class="fa-solid fa-folder"></i><span class="btn-label"> Projects</span>
+                                        </button>
                                         <button type="button" class="btn btn-secondary btn-sm" onclick="Tasks.jumpToFlashcards()">
                                             <i class="fa-solid fa-layer-group"></i><span class="btn-label"> Cards</span>
                                         </button>
                                         <button type="button" class="btn btn-secondary btn-sm" onclick="Modals.prompt('New Project','Project Name:', Tasks.createProject)">
-                                            <i class="fa-solid fa-plus"></i><span class="btn-label"> Project</span>
+                                            <i class="fa-solid fa-plus"></i><span class="btn-label"> New</span>
                                         </button>
                                     </div>
                                 </div>
 
-                                <div class="task-workspace">
+                                <div class="task-workspace" id="task-workspace">
+                                <div class="task-sidebar-backdrop" id="task-sidebar-backdrop" onclick="Tasks.toggleProjectsPanel()" aria-hidden="true"></div>
                                 <div class="task-sidebar">
                                     <div
                                         style="font-size: 0.7rem; font-weight: 800; color: var(--text-secondary); margin-bottom: 15px; letter-spacing: 1px;">
@@ -3903,7 +4065,23 @@
                             </div>
 
                             <!-- PATHWAY MODULE -->
-                            <div id="mod-pathway" class="hidden module-flex">
+                            <div id="mod-pathway" class="hidden module-flex-column">
+                                <div class="fc-header pathway-header">
+                                    <div class="fc-header-main">
+                                        <button type="button" class="mobile-nav-btn" onclick="UI.toggleSidebar()" aria-label="Open menu">
+                                            <i class="fa-solid fa-bars"></i>
+                                        </button>
+                                        <h2 class="font-head fc-title">Learning Path</h2>
+                                    </div>
+                                    <div class="fc-header-actions">
+                                        <button type="button" class="btn btn-secondary btn-sm wb-mobile-panel-btn" onclick="Pathway.toggleSidebar()"
+                                            aria-label="Course menu">
+                                            <i class="fa-solid fa-book"></i><span class="btn-label"> Courses</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="pathway-workspace module-flex" style="flex:1;min-height:0;overflow:hidden;">
+                                <div class="path-sidebar-backdrop" id="path-sidebar-backdrop" onclick="Pathway.toggleSidebar()" aria-hidden="true"></div>
                                 <div class="pathway-sidebar">
                                     <div style="padding: 15px; border-bottom: 1px solid var(--border-color);">
                                         <h3
@@ -4006,11 +4184,12 @@
                                             <i class="fa-solid fa-save"></i> Save Notes
                                         </button>
                                     </div>
+                                    </div>
+                                </div>
                                 </div>
                             </div>
-                    </div>
 
-                    <!-- WHITEBOARD MODULE -->
+                            <!-- WHITEBOARD MODULE -->
                     <div id="mod-whiteboard" class="hidden module-flex-column">
                         <header class="module-header">
                             <div class="module-header-left">
@@ -4594,6 +4773,20 @@
             };
 
             const UI = {
+                isMobile: () => window.matchMedia('(max-width: 768px)').matches,
+
+                closeMobileDrawers: () => {
+                    document.querySelector('.sidebar')?.classList.remove('mobile-open');
+                    document.body.classList.remove('sidebar-open');
+                    document.querySelector('.sidebar-backdrop')?.remove();
+                    document.getElementById('task-workspace')?.classList.remove('task-projects-open');
+                    document.getElementById('mod-pathway')?.classList.remove('path-sidebar-open');
+                    const wbPanel = document.getElementById('wb-side-panel');
+                    const wbBackdrop = document.getElementById('wb-panel-backdrop');
+                    if (wbPanel) wbPanel.classList.remove('wb-panel-open');
+                    if (wbBackdrop) wbBackdrop.classList.add('hidden');
+                },
+
                 toggleSidebar: () => {
                     const sb = document.querySelector('.sidebar');
                     if (!sb) return;
@@ -4794,10 +4987,7 @@
                 to: (tab, el) => {
                     if (tab !== Nav.currentModule) Nav.previousModule = Nav.currentModule;
                     Nav.currentModule = tab;
-                    const wbPanel = document.getElementById('wb-side-panel');
-                    const wbBackdrop = document.getElementById('wb-panel-backdrop');
-                    if (wbPanel) wbPanel.classList.remove('wb-panel-open');
-                    if (wbBackdrop) wbBackdrop.classList.add('hidden');
+                    UI.closeMobileDrawers();
                     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                     document.querySelectorAll('.mobile-tab-item').forEach(i => i.classList.remove('active'));
                     if (!el) el = document.querySelector(`.nav-item[onclick*="'${tab}'"]`);
@@ -4811,7 +5001,10 @@
                     if (tab === 'whiteboard') {
                         if (typeof Whiteboard !== 'undefined') {
                             if (!Whiteboard._inited) Whiteboard.init();
-                            Whiteboard.setFullscreen(true);
+                            else {
+                                Whiteboard.resizeCanvas();
+                                Whiteboard.setFullscreen(!UI.isMobile());
+                            }
                         }
                         window.dispatchEvent(new Event('resize'));
                     } else {
@@ -5734,6 +5927,10 @@
             const Tasks = {
                 returnTo: null,
 
+                toggleProjectsPanel: () => {
+                    document.getElementById('task-workspace')?.classList.toggle('task-projects-open');
+                },
+
                 goBack: () => {
                     const panel = document.getElementById('task-panel');
                     if (panel && panel.classList.contains('open')) {
@@ -5772,6 +5969,7 @@
                 switch: (i) => {
                     State.currP = i;
                     Tasks.renderSidebar();
+                    document.getElementById('task-workspace')?.classList.remove('task-projects-open');
                 },
 
                 createProject: (name) => {
@@ -6152,6 +6350,10 @@
                 courses: [],
                 currentCourse: 0,
                 currentLesson: 0,
+
+                toggleSidebar: () => {
+                    document.getElementById('mod-pathway')?.classList.toggle('path-sidebar-open');
+                },
 
                 init: () => {
                     // Load courses from storage or create default
@@ -6612,7 +6814,7 @@
                         }
                     });
 
-                    Whiteboard.setFullscreen(true);
+                    Whiteboard.setFullscreen(!UI.isMobile());
                     Whiteboard._inited = true;
                 },
 
