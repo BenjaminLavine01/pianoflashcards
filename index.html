@@ -197,6 +197,48 @@
                 }
             }
 
+            @keyframes shimmer {
+                0% { background-position: -200% center; }
+                100% { background-position: 200% center; }
+            }
+
+            @keyframes floatOrb {
+                0%, 100% { transform: translate(0, 0) scale(1); }
+                33% { transform: translate(30px, -20px) scale(1.05); }
+                66% { transform: translate(-20px, 15px) scale(0.95); }
+            }
+
+            @keyframes cardPop {
+                0% { opacity: 0; transform: scale(0.92) translateY(24px); }
+                70% { transform: scale(1.02) translateY(-4px); }
+                100% { opacity: 1; transform: scale(1) translateY(0); }
+            }
+
+            @keyframes cardExit {
+                to { opacity: 0; transform: scale(0.95) translateX(-40px); }
+            }
+
+            @keyframes cardEnter {
+                from { opacity: 0; transform: scale(0.95) translateX(40px); }
+                to { opacity: 1; transform: scale(1) translateX(0); }
+            }
+
+            @keyframes glowPulse {
+                0%, 100% { box-shadow: 0 0 20px rgba(255, 81, 47, 0.2), 0 30px 60px rgba(0, 0, 0, 0.4); }
+                50% { box-shadow: 0 0 40px rgba(255, 81, 47, 0.45), 0 30px 60px rgba(0, 0, 0, 0.5); }
+            }
+
+            @keyframes progressGrow {
+                from { transform: scaleX(0); }
+                to { transform: scaleX(1); }
+            }
+
+            @keyframes meshDrift {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+
             @keyframes slideInToast {
                 from {
                     opacity: 0;
@@ -251,7 +293,8 @@
 
             .btn-primary:hover {
                 opacity: 0.95;
-                transform: translateY(-1px);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 22px rgba(255, 81, 47, 0.35);
             }
 
             .btn-secondary {
@@ -695,6 +738,7 @@
             .nav-item.active {
                 background: var(--active-bg);
                 color: var(--accent-color);
+                box-shadow: inset 3px 0 0 var(--accent-color);
             }
 
             .settings-widget {
@@ -868,45 +912,154 @@
                 display: flex;
                 flex-direction: column;
                 background: var(--bg-main);
+                position: relative;
+                overflow: hidden;
+            }
+
+            #mod-flashcards::before {
+                content: '';
+                position: absolute;
+                top: -120px;
+                right: -80px;
+                width: 320px;
+                height: 320px;
+                background: radial-gradient(circle, rgba(255, 81, 47, 0.12) 0%, transparent 70%);
+                pointer-events: none;
+                animation: floatOrb 12s ease-in-out infinite;
+            }
+
+            #mod-flashcards::after {
+                content: '';
+                position: absolute;
+                bottom: -100px;
+                left: -60px;
+                width: 280px;
+                height: 280px;
+                background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+                pointer-events: none;
+                animation: floatOrb 15s ease-in-out infinite reverse;
             }
 
             .fc-header {
-                padding: 30px 40px;
+                padding: 24px 32px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                gap: 16px;
                 border-bottom: 1px solid var(--border-color);
                 flex-shrink: 0;
+                position: relative;
+                z-index: 2;
+                background: rgba(248, 250, 252, 0.85);
+                backdrop-filter: blur(12px);
+            }
+
+            body.theme-dark .fc-header {
+                background: rgba(9, 9, 11, 0.85);
+            }
+
+            .fc-header-main {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                min-width: 0;
+            }
+
+            .fc-title {
+                color: var(--text-primary);
+                font-size: 1.6rem;
+                font-weight: 700;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .fc-header-actions,
+            .fc-overview-actions {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+            }
+
+            .mobile-nav-btn {
+                display: none;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                background: var(--hover-bg);
+                color: var(--text-primary);
+                border: 1px solid var(--border-color);
+                cursor: pointer;
+                flex-shrink: 0;
+                transition: transform 0.2s var(--ease-bounce), background 0.2s;
+            }
+
+            .mobile-nav-btn:active {
+                transform: scale(0.92);
             }
 
             .folder-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                gap: 25px;
-                padding: 30px 40px;
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                gap: 20px;
+                padding: 24px 32px;
                 overflow-y: auto;
                 flex: 1;
+                position: relative;
+                z-index: 1;
             }
 
             .folder-card {
                 background: var(--bg-surface);
                 border: 1px solid var(--border-color);
                 border-radius: var(--radius-lg);
-                padding: 25px;
-                height: 180px;
+                padding: 22px;
+                min-height: 160px;
                 cursor: pointer;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-                transition: all 0.3s ease;
+                transition: transform 0.35s var(--ease-bounce), box-shadow 0.35s ease, border-color 0.3s ease;
                 box-shadow: var(--shadow-md);
-                animation: fadeInUp 0.4s ease;
+                animation: cardPop 0.5s var(--ease-bounce) backwards;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .folder-card::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                padding: 1px;
+                background: linear-gradient(135deg, transparent 40%, rgba(255, 81, 47, 0.4) 50%, transparent 60%);
+                background-size: 200% 200%;
+                -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+                mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+                -webkit-mask-composite: xor;
+                mask-composite: exclude;
+                opacity: 0;
+                transition: opacity 0.3s;
+                pointer-events: none;
             }
 
             .folder-card:hover {
-                transform: translateY(-5px);
+                transform: translateY(-6px) scale(1.01);
                 border-color: var(--accent-color);
-                box-shadow: var(--shadow-lg);
+                box-shadow: 0 16px 40px rgba(255, 81, 47, 0.15), var(--shadow-lg);
+            }
+
+            .folder-card:hover::before {
+                opacity: 1;
+                animation: shimmer 2s linear infinite;
+            }
+
+            .folder-card:active {
+                transform: translateY(-2px) scale(0.99);
             }
 
             #fc-overview-panel {
@@ -923,7 +1076,12 @@
                 height: 200px;
                 cursor: pointer;
                 position: relative;
-                animation: fadeInUp 0.4s ease;
+                animation: cardPop 0.45s var(--ease-bounce) backwards;
+                transition: transform 0.3s var(--ease-bounce);
+            }
+
+            .mini-card-scene:hover {
+                transform: translateY(-4px);
             }
 
             .mini-card {
@@ -1019,19 +1177,67 @@
             #study-overlay {
                 position: fixed;
                 inset: 0;
-                background: rgba(9, 9, 11, 0.95);
-                backdrop-filter: blur(20px);
+                background: linear-gradient(135deg, #0a0a0c 0%, #141418 40%, #1a1012 100%);
+                background-size: 200% 200%;
+                animation: meshDrift 18s ease infinite;
+                backdrop-filter: blur(24px);
                 z-index: 100;
                 display: flex;
                 flex-direction: column;
                 color: white;
             }
 
+            #study-overlay::before,
+            #study-overlay::after {
+                content: '';
+                position: absolute;
+                border-radius: 50%;
+                filter: blur(80px);
+                pointer-events: none;
+                animation: floatOrb 14s ease-in-out infinite;
+            }
+
+            #study-overlay::before {
+                width: 280px;
+                height: 280px;
+                top: 10%;
+                left: 5%;
+                background: rgba(255, 81, 47, 0.25);
+            }
+
+            #study-overlay::after {
+                width: 220px;
+                height: 220px;
+                bottom: 15%;
+                right: 8%;
+                background: rgba(59, 130, 246, 0.2);
+                animation-delay: -5s;
+            }
+
             .study-header {
-                padding: 20px 40px;
+                padding: 16px 24px;
                 display: flex;
                 justify-content: space-between;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                align-items: center;
+                gap: 12px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                position: relative;
+                z-index: 2;
+            }
+
+            .study-progress-wrap {
+                height: 3px;
+                background: rgba(255, 255, 255, 0.1);
+                position: relative;
+                z-index: 2;
+            }
+
+            .study-progress-bar {
+                height: 100%;
+                background: var(--brand-gradient);
+                transform-origin: left;
+                transition: width 0.4s var(--ease-bounce);
+                box-shadow: 0 0 12px rgba(255, 81, 47, 0.6);
             }
 
             .flashcard-stage {
@@ -1041,14 +1247,25 @@
                 align-items: center;
                 justify-content: center;
                 perspective: 1200px;
+                padding: 20px;
+                position: relative;
+                z-index: 1;
+                touch-action: pan-y;
+            }
+
+            .study-card-wrap {
+                position: relative;
+                width: 100%;
+                max-width: 620px;
             }
 
             .card-3d {
-                width: 600px;
-                height: 400px;
+                width: min(600px, 92vw);
+                height: min(400px, 52vh);
+                max-height: 420px;
                 position: relative;
                 transform-style: preserve-3d;
-                transition: transform 0.6s var(--ease-bounce);
+                transition: transform 0.65s var(--ease-bounce);
                 cursor: pointer;
             }
 
@@ -1056,39 +1273,93 @@
                 transform: rotateY(180deg);
             }
 
+            .card-3d.card-exit {
+                animation: cardExit 0.22s ease forwards;
+            }
+
+            .card-3d.card-enter {
+                animation: cardEnter 0.35s var(--ease-bounce) forwards;
+            }
+
             .card-face {
                 position: absolute;
                 inset: 0;
                 backface-visibility: hidden;
-                border-radius: 30px;
+                border-radius: 28px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                padding: 40px;
+                padding: 32px;
                 text-align: center;
-                border: 1px solid #333;
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
                 flex-direction: column;
             }
 
             .face-front {
-                background: #1E1E21;
+                background: linear-gradient(145deg, #252528 0%, #1a1a1e 100%);
                 color: white;
-                font-size: 2.5rem;
+                font-size: clamp(1.25rem, 4vw, 2.5rem);
                 font-weight: 700;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+                animation: glowPulse 4s ease-in-out infinite;
             }
 
             .face-back {
-                background: #000;
+                background: linear-gradient(145deg, #0d0d0f 0%, #000 100%);
                 color: var(--accent-color);
                 transform: rotateY(180deg);
                 border: 2px solid var(--accent-color);
-                font-size: 2rem;
+                font-size: clamp(1.1rem, 3.5vw, 2rem);
+                box-shadow: 0 0 30px rgba(255, 81, 47, 0.25), 0 24px 48px rgba(0, 0, 0, 0.5);
             }
 
             .term-text {
-                font-size: 2rem;
+                font-size: clamp(1.1rem, 3.5vw, 2rem);
                 font-weight: 700;
+                line-height: 1.35;
+                word-break: break-word;
+            }
+
+            .flip-hint {
+                font-size: 0.85rem;
+                color: rgba(255, 255, 255, 0.45);
+                margin-top: 12px;
+            }
+
+            .study-nav-dock {
+                display: flex;
+                gap: 16px;
+                margin-top: 32px;
+                width: 100%;
+                max-width: 400px;
+                justify-content: center;
+            }
+
+            .study-nav-dock .btn {
+                flex: 1;
+                min-height: 48px;
+                border-radius: 14px;
+                font-size: 1rem;
+            }
+
+            .study-nav-dock .btn-primary {
+                box-shadow: 0 8px 24px rgba(255, 81, 47, 0.35);
+            }
+
+            #study-card-actions {
+                position: absolute;
+                top: -48px;
+                right: 0;
+                display: flex;
+                gap: 8px;
+            }
+
+            .swipe-hint {
+                display: none;
+                font-size: 0.75rem;
+                color: rgba(255, 255, 255, 0.35);
+                margin-top: 16px;
+                letter-spacing: 0.5px;
             }
 
             .card-img-display {
@@ -2462,8 +2733,8 @@
                 }
 
                 .card-3d {
-                    width: 90%;
-                    height: 300px;
+                    width: min(100%, 94vw);
+                    height: min(320px, 48vh);
                 }
 
                 .hero-title {
@@ -2654,37 +2925,222 @@
         /* ===================== RESPONSIVE / MOBILE STYLES ===================== */
         @media (max-width: 900px) {
             .piano-header { padding: 0 20px; height: 64px; margin-top: 20px; width: calc(100% - 40px); }
-            .piano-header .mobile-nav-btn { display: inline-flex; margin-right: 10px; }
+            .piano-header .mobile-nav-btn,
+            .fc-header .mobile-nav-btn { display: inline-flex; }
             .piano-header > div:first-child { font-size: 1rem; }
             .piano-case { padding: 20px; border-radius: 14px; }
             .keys-wrapper { height: clamp(150px, 36vh, 220px); overflow-x: auto; -webkit-overflow-scrolling: touch; }
             .key-white { width: clamp(36px, 9vw, 50px) !important; min-width: 36px; }
             .key-black { width: calc(var(--white-key-width) * 0.6); min-width: 24px; }
             .btn { padding: 10px 14px; font-size: 0.95rem; }
+
+            .fc-header {
+                flex-wrap: wrap;
+                padding: 16px 20px;
+            }
+
+            .fc-title { font-size: 1.35rem; }
+
+            .fc-header-actions .btn span,
+            .fc-overview-actions .btn span.btn-label {
+                display: none;
+            }
+
+            .fc-header-actions .btn,
+            .fc-overview-actions .btn {
+                padding: 10px 12px;
+            }
+
+            .folder-grid {
+                padding: 16px 20px;
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 16px;
+            }
+
+            #fc-overview-panel .fc-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .fc-overview-actions {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 4px;
+                scrollbar-width: none;
+            }
+
+            .fc-overview-actions::-webkit-scrollbar { display: none; }
+
+            .card-3d {
+                width: min(520px, 94vw);
+                height: min(360px, 48vh);
+            }
+
+            .swipe-hint { display: block; }
         }
 
-        @media (max-width: 600px) {
+            @media (max-width: 600px) {
+            .landing-container {
+                padding: 20px 0;
+            }
+
+            .auth-card {
+                padding: 32px 24px;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
             body { overflow: auto; }
-            .sidebar { left: -110% !important; position: fixed !important; top: 0; bottom: 0; width: 80% !important; max-width: 320px !important; z-index: 9999; transition: left 0.25s ease; }
-            .sidebar.mobile-open { left: 0 !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+            .sidebar { left: -110% !important; position: fixed !important; top: 0; bottom: 0; width: 80% !important; max-width: 320px !important; z-index: 9999; transition: left 0.3s var(--ease-bounce); }
+            .sidebar.mobile-open { left: 0 !important; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
             body.sidebar-open { overflow: hidden; }
             .piano-header { padding: 0 12px; height: 56px; margin-top: 12px; width: calc(100% - 24px); }
-            .piano-header .mobile-nav-btn { display: inline-flex; }
-            .piano-header .fa-bars { font-size: 1.1rem; }
+            .piano-header .mobile-nav-btn,
+            .fc-header .mobile-nav-btn { display: inline-flex; }
             .piano-stage { padding: 10px 0; }
             .piano-case { padding: 16px; border-radius: 12px; width: calc(100% - 32px); }
+            .piano-case > div:first-child {
+                flex-wrap: wrap;
+                gap: 12px !important;
+            }
+            .piano-case label { font-size: 0.85rem; }
+            .piano-case #vol-slider { flex: 1; min-width: 100px; }
             .keys-wrapper { height: clamp(130px, 34vh, 180px); }
             .key { font-size: 11px; }
             .key-white { width: clamp(34px, 12vw, 48px) !important; }
             .key-black { height: 58%; }
             .key { touch-action: manipulation; -webkit-user-select: none; }
             .btn-icon-sm { padding: 8px; font-size: 0.9rem; }
-            /* override inline overflow hidden on main for small screens so content can scroll */
             #app-shell main { overflow: auto !important; }
-            /* backdrop for mobile sidebar */
-            .sidebar-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 9998; }
-            /* make key labels compact on small screens */
+            .sidebar-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9998; backdrop-filter: blur(4px); }
             .key-label { bottom: 16px; font-size: 11px; padding: 3px 6px; border-radius: 6px; }
+
+            /* Flashcards mobile */
+            .fc-header {
+                padding: 12px 16px;
+                gap: 12px;
+            }
+
+            .fc-title { font-size: 1.15rem; max-width: 160px; }
+
+            .fc-header-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .folder-grid {
+                grid-template-columns: 1fr;
+                padding: 12px 16px 24px;
+                gap: 14px;
+            }
+
+            .folder-card {
+                min-height: 140px;
+                padding: 18px;
+            }
+
+            #fc-overview-panel .fc-header-main {
+                width: 100%;
+            }
+
+            #fc-overview-panel .fc-overview-actions {
+                width: 100%;
+            }
+
+            #fc-overview-panel #ov-title {
+                font-size: 1.1rem !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 140px;
+            }
+
+            #word-list {
+                grid-template-columns: 1fr !important;
+                padding: 12px 16px !important;
+            }
+
+            .mini-card-scene { height: 180px; }
+
+            /* Study mode mobile */
+            .study-header {
+                padding: 12px 16px;
+            }
+
+            .study-header .btn {
+                padding: 8px 14px;
+                font-size: 0.85rem;
+            }
+
+            .flashcard-stage {
+                padding: 12px 16px 24px;
+                justify-content: flex-start;
+                padding-top: 8vh;
+            }
+
+            .card-3d {
+                width: 100%;
+                height: min(320px, 42vh);
+                min-height: 260px;
+            }
+
+            .card-face {
+                border-radius: 20px;
+                padding: 24px 20px;
+            }
+
+            #study-card-actions {
+                position: static;
+                margin-bottom: 12px;
+                justify-content: center;
+                width: 100%;
+            }
+
+            .study-card-wrap {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .study-nav-dock {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: 0;
+                max-width: none;
+                padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+                background: rgba(10, 10, 12, 0.92);
+                backdrop-filter: blur(16px);
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+                z-index: 3;
+                gap: 12px;
+            }
+
+            .flashcard-stage {
+                padding-bottom: 100px;
+            }
+
+            #mode-quiz h2 {
+                font-size: 1.75rem !important;
+            }
+
+            #mode-quiz #qz-a {
+                font-size: 1.15rem !important;
+            }
+
+            .toast {
+                min-width: auto;
+                max-width: calc(100vw - 40px);
+            }
+
+            #toast-container {
+                left: 20px;
+                right: 20px;
+            }
         }
         </style>
                     <div id="toast-container"></div>
@@ -2819,7 +3275,7 @@
                             <!-- PIANO MODULE -->
                             <div id="mod-piano" class="module-flex-column">
                                 <div class="piano-header font-head">
-                                    <button class="mobile-nav-btn btn-icon-sm" onclick="UI.toggleSidebar()" aria-label="Open Menu" style="display:none;">
+                                    <button class="mobile-nav-btn" onclick="UI.toggleSidebar()" aria-label="Open Menu">
                                         <i class="fa-solid fa-bars"></i>
                                     </button>
                                     <div style="display:flex; align-items:center; gap:8px; font-size: 1.1rem; font-weight: 700;">
@@ -2850,10 +3306,15 @@
                             <!-- FLASHCARDS MODULE -->
                             <div id="mod-flashcards" class="hidden module-flex-column">
                                 <div class="fc-header">
-                                    <h2 class="font-head" style="color: var(--text-primary); font-size: 1.8rem;">Knowledge Hub</h2>
-                                    <div class="flex gap-10">
+                                    <div class="fc-header-main">
+                                        <button class="mobile-nav-btn" onclick="UI.toggleSidebar()" aria-label="Open Menu">
+                                            <i class="fa-solid fa-bars"></i>
+                                        </button>
+                                        <h2 class="font-head fc-title">Knowledge Hub</h2>
+                                    </div>
+                                    <div class="fc-header-actions">
                                         <button class="btn btn-secondary" onclick="Shared.openJoinUI()">
-                                            <i class="fa-solid fa-download"></i> Join
+                                            <i class="fa-solid fa-download"></i><span class="btn-label"> Join</span>
                                         </button>
                                         <button class="btn btn-secondary btn-toggle" id="fc-shuffle-btn" onclick="FC.shuffleNow()"
                                             title="Shuffle Cards">
@@ -2861,7 +3322,7 @@
                                         </button>
                                         <button class="btn btn-primary"
                                             onclick="Modals.prompt('New Deck', 'Deck Name:', FC.createFolder)">
-                                            + New Deck
+                                            <i class="fa-solid fa-plus"></i><span class="btn-label"> New Deck</span>
                                         </button>
                                     </div>
                                 </div>
@@ -2870,33 +3331,38 @@
                                 <!-- Deck Overview Panel -->
                                 <div id="fc-overview-panel" class="hidden">
                                     <div class="fc-header" style="border-bottom: 1px solid var(--border-color);">
-                                        <div class="flex items-center gap-20">
-                                            <button class="btn btn-secondary" style="border:none;" onclick="FC.closeOverview()">
+                                        <div class="fc-header-main">
+                                            <button class="mobile-nav-btn" onclick="UI.toggleSidebar()" aria-label="Open Menu">
+                                                <i class="fa-solid fa-bars"></i>
+                                            </button>
+                                            <button class="btn btn-secondary" style="border:none; padding: 8px 12px;" onclick="FC.closeOverview()">
                                                 <i class="fa-solid fa-arrow-left"></i>
                                             </button>
-                                            <h2 class="font-head" style="color: var(--text-primary);" id="ov-title">Deck Name</h2>
+                                            <h2 class="font-head fc-title" id="ov-title">Deck Name</h2>
                                             <span id="ov-role-badge" class="read-only-badge hidden">Read Only</span>
                                         </div>
-                                        <div class="flex gap-10">
+                                        <div class="fc-overview-actions">
                                             <button class="btn btn-secondary" onclick="FC.editFolder()" id="btn-edit-folder">
-                                                <i class="fa-solid fa-pen"></i> Edit Deck
+                                                <i class="fa-solid fa-pen"></i><span class="btn-label"> Edit</span>
                                             </button>
                                             <button class="btn btn-secondary" onclick="FC.jumpToTasks()">
-                                                <i class="fa-solid fa-list-check"></i> Go to Tasks
+                                                <i class="fa-solid fa-list-check"></i><span class="btn-label"> Tasks</span>
                                             </button>
                                             <button class="btn btn-secondary btn-toggle" id="fc-shuffle-btn-ov"
                                                 onclick="FC.shuffleNow()" title="Shuffle Cards">
                                                 <i class="fa-solid fa-shuffle"></i>
                                             </button>
                                             <button class="btn btn-secondary" onclick="FC.shareCurrentDeck()">
-                                                <i class="fa-solid fa-share-nodes"></i> Share
+                                                <i class="fa-solid fa-share-nodes"></i><span class="btn-label"> Share</span>
                                             </button>
                                             <button class="btn btn-secondary" onclick="FC.startQuiz()">
-                                                <i class="fa-solid fa-brain"></i> Quiz
+                                                <i class="fa-solid fa-brain"></i><span class="btn-label"> Quiz</span>
                                             </button>
-                                            <button class="btn btn-primary" onclick="FC.startStudy()">Start Study</button>
+                                            <button class="btn btn-primary" onclick="FC.startStudy()">
+                                                <i class="fa-solid fa-play"></i><span class="btn-label"> Study</span>
+                                            </button>
                                             <button class="btn btn-secondary" onclick="Modals.open('modal-add-card')"
-                                                id="btn-add-card">+ Add</button>
+                                                id="btn-add-card"><i class="fa-solid fa-plus"></i><span class="btn-label"> Add</span></button>
                                         </div>
                                     </div>
                                     <div class="folder-grid" id="word-list"
@@ -2908,46 +3374,48 @@
                                     <div class="study-header">
                                         <button class="btn btn-secondary"
                                             style="background:rgba(255,255,255,0.1); color:white; border:none;"
-                                            onclick="FC.closeStudy()">Exit</button>
+                                            onclick="FC.closeStudy()"><i class="fa-solid fa-xmark"></i> Exit</button>
                                         <div style="color: white; font-weight: 700;" id="st-count">1 / 10</div>
                                         <button class="btn btn-secondary"
                                             style="background:rgba(255,255,255,0.1); color:white; border:none;"
-                                            onclick="FC.shareCurrentDeck()">Share</button>
+                                            onclick="FC.shareCurrentDeck()"><i class="fa-solid fa-share-nodes"></i></button>
+                                    </div>
+                                    <div class="study-progress-wrap">
+                                        <div class="study-progress-bar" id="study-progress" style="width: 10%;"></div>
                                     </div>
 
                                     <!-- Flip Mode -->
                                     <div id="mode-flip" class="flashcard-stage">
-                                        <div style="position: relative; width: 100%; max-width: 600px;">
-                                            <div class="card-3d" onclick="this.classList.toggle('flipped')">
+                                        <div class="study-card-wrap">
+                                            <div id="study-card-actions">
+                                                <button class="btn btn-secondary"
+                                                    style="background:rgba(255,255,255,0.1); color:white; border:none; padding: 8px 12px;"
+                                                    onclick="event.stopPropagation(); FC.editCurrentCard()">
+                                                    <i class="fa-solid fa-pen"></i>
+                                                </button>
+                                                <button class="btn btn-secondary"
+                                                    style="background:rgba(255,68,68,0.2); color:#ff4444; border:none; padding: 8px 12px;"
+                                                    onclick="event.stopPropagation(); FC.deleteCurrentCard()">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </div>
+                                            <div class="card-3d" id="study-card-3d" onclick="this.classList.toggle('flipped')">
                                                 <div class="card-face face-front">
                                                     <div id="st-img-container"></div>
                                                     <div class="term-text" id="st-q">Question</div>
-                                                    <div style="font-size:0.9rem; color:gray; margin-top:10px;">Click to flip</div>
+                                                    <div class="flip-hint">Tap to flip</div>
                                                 </div>
                                                 <div class="card-face face-back">
                                                     <div class="term-text" id="st-a">Answer</div>
                                                 </div>
                                             </div>
-                                            <!-- Card Action Buttons -->
-                                            <div id="study-card-actions"
-                                                style="position: absolute; top: -50px; right: 0; display: flex; gap: 10px;">
-                                                <button class="btn btn-secondary"
-                                                    style="background:rgba(255,255,255,0.1); color:white; border:none; padding: 8px 12px;"
-                                                    onclick="event.stopPropagation(); FC.editCurrentCard()">
-                                                    <i class="fa-solid fa-pen"></i> Edit
-                                                </button>
-                                                <button class="btn btn-secondary"
-                                                    style="background:rgba(255,68,68,0.2); color:#ff4444; border:none; padding: 8px 12px;"
-                                                    onclick="event.stopPropagation(); FC.deleteCurrentCard()">
-                                                    <i class="fa-solid fa-trash"></i> Delete
-                                                </button>
-                                            </div>
+                                            <p class="swipe-hint"><i class="fa-solid fa-hand-pointer"></i> Swipe left or right to navigate</p>
                                         </div>
-                                        <div class="flex gap-20" style="margin-top: 40px;">
+                                        <div class="study-nav-dock">
                                             <button class="btn btn-secondary"
                                                 style="background:rgba(255,255,255,0.1); color:white; border:none;"
-                                                onclick="FC.nav(-1)">Prev</button>
-                                            <button class="btn btn-primary" onclick="FC.nav(1)">Next</button>
+                                                onclick="FC.nav(-1)"><i class="fa-solid fa-chevron-left"></i> Prev</button>
+                                            <button class="btn btn-primary" onclick="FC.nav(1)">Next <i class="fa-solid fa-chevron-right"></i></button>
                                         </div>
                                     </div>
 
@@ -4112,6 +4580,7 @@
                     document.querySelectorAll('[id^="mod-"]').forEach(m => m.classList.add('hidden'));
                     const target = document.getElementById('mod-' + tab);
                     if (target) target.classList.remove('hidden');
+                    if (document.querySelector('.sidebar.mobile-open')) UI.toggleSidebar();
                     if (tab === 'whiteboard' && Whiteboard._inited) {
                         window.dispatchEvent(new Event('resize'));
                     }
@@ -4321,11 +4790,34 @@
 
             // ========== FLASHCARDS MODULE ==========
             const FC = {
+                initStudyTouch: () => {
+                    const overlay = document.getElementById('study-overlay');
+                    if (!overlay || overlay._touchBound) return;
+                    overlay._touchBound = true;
+                    let startX = 0;
+                    overlay.addEventListener('touchstart', e => {
+                        if (e.touches.length === 1) startX = e.touches[0].clientX;
+                    }, { passive: true });
+                    overlay.addEventListener('touchend', e => {
+                        if (overlay.classList.contains('hidden')) return;
+                        const dx = e.changedTouches[0].clientX - startX;
+                        if (Math.abs(dx) > 55) FC.nav(dx > 0 ? -1 : 1);
+                    }, { passive: true });
+                },
+
+                updateProgress: () => {
+                    const bar = document.getElementById('study-progress');
+                    if (!bar || State.currD == null) return;
+                    const total = State.decks[State.currD].cards.length;
+                    const pct = total ? ((State.currC + 1) / total) * 100 : 0;
+                    bar.style.width = pct + '%';
+                },
+
                 renderHub: () => {
                     const container = document.getElementById('folder-grid');
                     if (!container) return;
                     container.innerHTML = State.decks.map((f, i) => `
-                        <div class="folder-card" onclick="FC.openOverview(${i})">
+                        <div class="folder-card" style="animation-delay: ${i * 0.06}s" onclick="FC.openOverview(${i})">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                 <div style="font-size: 2.5rem; color: ${f.color || '#FF512F'}; margin-bottom: 10px;">${f.icon || '📁'}</div>
                                 <div class="flex gap-10">
@@ -4402,7 +4894,7 @@
                     }
 
                     document.getElementById('word-list').innerHTML = deck.cards.map((c, cardIdx) => `
-                        <div class="mini-card-scene" style="position: relative;">
+                        <div class="mini-card-scene" style="position: relative; animation-delay: ${cardIdx * 0.04}s;">
                             ${deck.role === 'editor' ? `
                                 <button class="btn-delete-float" onclick="event.stopPropagation(); FC.deleteCardByIndex(${cardIdx})" title="Delete card">
                                     <i class="fa-solid fa-trash"></i>
@@ -4639,6 +5131,7 @@
                 startStudy: () => {
                     if (State.decks[State.currD].cards.length === 0) return Notify.show('Empty Deck', 'info');
                     State.currC = 0;
+                    FC.initStudyTouch();
                     document.getElementById('study-overlay').classList.remove('hidden');
                     document.getElementById('mode-flip').classList.remove('hidden');
                     document.getElementById('mode-quiz').classList.add('hidden');
@@ -4648,10 +5141,12 @@
                 startQuiz: () => {
                     if (State.decks[State.currD].cards.length === 0) return Notify.show('Empty Deck', 'info');
                     State.currC = 0;
+                    FC.initStudyTouch();
                     document.getElementById('study-overlay').classList.remove('hidden');
                     document.getElementById('mode-flip').classList.add('hidden');
                     document.getElementById('mode-quiz').classList.remove('hidden');
                     FC.loadQuiz();
+                    FC.updateProgress();
                 },
 
                 closeStudy: () => document.getElementById('study-overlay').classList.add('hidden'),
@@ -4662,9 +5157,10 @@
                     document.getElementById('st-q').innerText = c.q;
                     document.getElementById('st-a').innerText = c.a;
                     document.getElementById('st-count').innerText = `${State.currC + 1} / ${State.decks[State.currD].cards.length}`;
-                    document.querySelector('.card-3d').classList.remove('flipped');
+                    const card = document.getElementById('study-card-3d');
+                    if (card) card.classList.remove('flipped', 'card-exit', 'card-enter');
+                    FC.updateProgress();
 
-                    // Show/hide edit buttons based on deck role
                     const actionsDiv = document.getElementById('study-card-actions');
                     if (actionsDiv) {
                         if (State.decks[State.currD].role === 'viewer') {
@@ -4677,9 +5173,26 @@
 
                 nav: (d) => {
                     const n = State.currC + d;
-                    if (n >= 0 && n < State.decks[State.currD].cards.length) {
+                    if (n < 0 || n >= State.decks[State.currD].cards.length) return;
+                    const card = document.getElementById('study-card-3d');
+                    const applyNav = () => {
                         State.currC = n;
-                        FC.updCard();
+                        if (document.getElementById('mode-quiz') && !document.getElementById('mode-quiz').classList.contains('hidden')) {
+                            FC.loadQuiz();
+                            FC.updateProgress();
+                        } else {
+                            FC.updCard();
+                            if (card) {
+                                card.classList.add('card-enter');
+                                requestAnimationFrame(() => card.classList.remove('card-enter'));
+                            }
+                        }
+                    };
+                    if (card && !document.getElementById('mode-flip').classList.contains('hidden')) {
+                        card.classList.add('card-exit');
+                        setTimeout(applyNav, 200);
+                    } else {
+                        applyNav();
                     }
                 },
 
@@ -4720,6 +5233,8 @@
                     document.getElementById('qz-a').innerText = c.a;
                     document.getElementById('qz-reveal').classList.add('hidden');
                     document.getElementById('qz-btn-show').classList.remove('hidden');
+                    document.getElementById('st-count').innerText = `${State.currC + 1} / ${State.decks[State.currD].cards.length}`;
+                    FC.updateProgress();
                 },
 
                 showQuiz: () => {
