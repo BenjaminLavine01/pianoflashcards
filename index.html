@@ -1686,6 +1686,39 @@
                 gap: 15px;
             }
 
+            .task-row-title {
+                font-weight: 500;
+                min-width: 0;
+                word-break: break-word;
+            }
+
+            .task-row-meta {
+                display: contents;
+            }
+
+            .task-meta-assignee {
+                font-size: 0.8rem;
+                color: var(--text-secondary);
+            }
+
+            .task-meta-date {
+                color: var(--text-secondary);
+            }
+
+            .task-row.completed .task-meta-date {
+                color: var(--text-secondary) !important;
+            }
+
+            .task-meta-priority {
+                font-size: 0.7rem;
+                padding: 4px 8px;
+                border-radius: 4px;
+                text-align: center;
+                background: rgba(59, 130, 246, 0.2);
+                color: #3B82F6;
+                justify-self: start;
+            }
+
             .task-cols {
                 border-bottom: 1px solid var(--border-color);
                 color: var(--text-secondary);
@@ -1731,7 +1764,8 @@
                 border-color: var(--status-success);
             }
 
-            .task-row.completed span {
+            .task-row.completed .task-row-title,
+            .task-row.completed .task-meta-assignee {
                 text-decoration: line-through;
                 color: var(--text-secondary) !important;
             }
@@ -2825,11 +2859,6 @@
                     grid-template-columns: 1fr;
                 }
 
-                .task-cols,
-                .task-row {
-                    grid-template-columns: 40px 2fr 1fr 80px;
-                }
-
                 .card-3d {
                     width: min(100%, 94vw);
                     height: min(320px, 48vh);
@@ -3395,7 +3424,18 @@
             }
 
             .task-header .fc-header-actions {
-                flex-wrap: wrap;
+                flex-wrap: nowrap;
+            }
+
+            #mod-tasks .task-workspace,
+            #mod-tasks .task-main {
+                min-height: 0;
+            }
+
+            #mod-tasks .task-list-container {
+                flex: 1;
+                min-height: 0;
+                overflow-y: auto;
             }
 
             .task-header .fc-header-actions .btn .btn-label {
@@ -3403,11 +3443,65 @@
             }
 
             .task-board-header {
-                padding: 16px 14px 0;
+                padding: 10px 12px 0;
+                margin-bottom: 10px;
+            }
+
+            .task-board-header .task-workspace-label {
+                display: none;
+            }
+
+            #proj-header {
+                font-size: 1.2rem !important;
             }
 
             .task-list-container {
-                padding: 0 14px 20px;
+                padding: 0 10px 12px;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .task-cols {
+                display: none;
+            }
+
+            .task-row {
+                grid-template-columns: 32px 1fr;
+                grid-template-areas:
+                    "cb title"
+                    "cb meta";
+                gap: 6px 10px;
+                padding: 12px;
+                align-items: start;
+            }
+
+            .task-row .checkbox {
+                grid-area: cb;
+                align-self: start;
+                margin-top: 2px;
+            }
+
+            .task-row-title {
+                grid-area: title;
+                font-size: 0.95rem;
+            }
+
+            .task-row-meta {
+                grid-area: meta;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 6px 10px;
+                min-width: 0;
+            }
+
+            .task-meta-assignee,
+            .task-meta-date,
+            .task-meta-priority {
+                font-size: 0.75rem;
+            }
+
+            .task-meta-priority {
+                padding: 3px 8px;
             }
 
             .task-detail-panel {
@@ -3437,6 +3531,82 @@
                 align-items: center;
                 gap: 6px;
                 flex-shrink: 0;
+            }
+
+            /* Task Arena — landscape phone */
+            @media (max-width: 768px) and (orientation: landscape) {
+                .task-header {
+                    padding: 6px 10px;
+                }
+
+                .task-header .fc-title {
+                    font-size: 0.9rem !important;
+                }
+
+                .task-header .fc-header-actions {
+                    max-width: 55vw;
+                }
+
+                .task-board-header {
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 8px;
+                    padding: 6px 10px 4px;
+                    margin-bottom: 6px;
+                }
+
+                .task-board-actions {
+                    flex-wrap: nowrap;
+                    flex-shrink: 0;
+                }
+
+                .task-board-actions .btn {
+                    flex: 0 0 auto;
+                    padding: 6px 10px;
+                    font-size: 0.78rem;
+                    white-space: nowrap;
+                }
+
+                #proj-header {
+                    font-size: 1rem !important;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 40vw;
+                }
+
+                .task-list-container {
+                    padding: 0 8px 8px;
+                }
+
+                .task-row {
+                    padding: 8px 10px;
+                    gap: 4px 8px;
+                }
+
+                .task-row-meta {
+                    gap: 4px 8px;
+                }
+
+                .task-detail-panel {
+                    padding: 16px 14px;
+                }
+
+                .task-detail-panel .task-panel-back-row {
+                    margin-bottom: 12px;
+                    padding-bottom: 10px;
+                }
+
+                #edit-title {
+                    font-size: 1.15rem !important;
+                    margin-bottom: 12px !important;
+                }
+
+                #edit-desc,
+                #task-comment-input {
+                    height: 72px !important;
+                }
             }
         }
 
@@ -3967,7 +4137,7 @@
                                         <div>
                                             <h2 class="font-head" style="font-size: 1.8rem; color: var(--text-primary);"
                                                 id="proj-header">Projects</h2>
-                                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Workspace: Main</p>
+                                            <p class="task-workspace-label" style="color: var(--text-secondary); font-size: 0.9rem;">Workspace: Main</p>
                                         </div>
                                         <div class="flex gap-10 task-board-actions">
                                             <button type="button" class="btn btn-secondary" onclick="Tasks.share()">
@@ -4555,6 +4725,30 @@
                     const users = Storage.get('spartan_users') || [];
                     return users.find(u => u.email === email) || null;
                 },
+                isPrebuiltDeck: (d) => {
+                    return d && d.name === 'English C1' &&
+                        Array.isArray(d.cards) &&
+                        d.cards.length === 1 &&
+                        d.cards[0].q === 'Ambition' &&
+                        (d.cards[0].a === 'Hoài bão' || d.cards[0].a === 'Hoai bao');
+                },
+
+                isPrebuiltProject: (p) => {
+                    return p && p.name === 'English C1' &&
+                        Array.isArray(p.tasks) &&
+                        p.tasks.length === 1 &&
+                        p.tasks[0].title === 'Setup Server' &&
+                        p.tasks[0].assignee === 'Henry';
+                },
+
+                stripPrebuiltData: () => {
+                    const decksBefore = State.decks.length;
+                    const projectsBefore = State.projects.length;
+                    State.decks = State.decks.filter(d => !DB.isPrebuiltDeck(d));
+                    State.projects = State.projects.filter(p => !DB.isPrebuiltProject(p));
+                    return State.decks.length !== decksBefore || State.projects.length !== projectsBefore;
+                },
+
                 loadUserSession: (user) => {
                     State.currentUser = user;
                     const data = Storage.get('spartan_data_' + user.id);
@@ -4566,32 +4760,12 @@
                         if (data.themeAccent) State.themeAccent = data.themeAccent;
                         if (data.themeMode) State.theme = data.themeMode;
                     } else {
-                        const deckId = Date.now();
-                        State.decks = [{
-                            id: deckId,
-                            name: 'English C1',
-                            icon: '📁',
-                            color: '#FF512F',
-                            role: 'editor',
-                            cards: [{ q: 'Ambition', a: 'Hoài bão' }]
-                        }];
-                        const today = new Date().toLocaleDateString('en-CA');
-                        State.projects = [{
-                            id: deckId,
-                            name: 'English C1',
-                            icon: '📁',
-                            color: '#FF512F',
-                            role: 'editor',
-                            tasks: [{
-                                id: 1,
-                                title: 'Setup Server',
-                                done: false,
-                                date: today,
-                                priority: 'High',
-                                assignee: 'Henry'
-                            }]
-                        }];
+                        State.decks = [];
+                        State.projects = [];
                     }
+                    if (DB.stripPrebuiltData()) DB.saveCurrentData();
+                    State.currD = State.decks.length ? Math.min(State.currD, State.decks.length - 1) : 0;
+                    State.currP = State.projects.length ? Math.min(State.currP, State.projects.length - 1) : 0;
                     if (savedTheme.accent) State.themeAccent = savedTheme.accent;
                     if (savedTheme.mode) State.theme = savedTheme.mode;
                     document.body.className = 'theme-' + State.theme;
@@ -5109,6 +5283,10 @@
                 renderHub: () => {
                     const container = document.getElementById('folder-grid');
                     if (!container) return;
+                    if (!State.decks.length) {
+                        container.innerHTML = '<div style="grid-column:1/-1;padding:40px 20px;text-align:center;color:var(--text-secondary);">No decks yet. Tap <strong>+ New Deck</strong> to create your first set of flashcards.</div>';
+                        return;
+                    }
                     container.innerHTML = State.decks.map((f, i) => `
                         <div class="folder-card" style="animation-delay: ${i * 0.06}s" onclick="FC.openOverview(${i})">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
@@ -5596,6 +5774,11 @@
                 renderSidebar: () => {
                     const container = document.getElementById('project-list');
                     if (!container) return;
+                    if (!State.projects.length) {
+                        container.innerHTML = '<div style="padding:16px 8px;text-align:center;color:var(--text-secondary);font-size:0.85rem;">No projects yet. Use <strong>+ New Project</strong> below.</div>';
+                        Tasks.renderBoard();
+                        return;
+                    }
                     container.innerHTML = State.projects.map((p, i) => `
                         <div class="project-item ${i === State.currP ? 'active' : ''}" onclick="Tasks.switch(${i})">
                             <div style="font-size: 1.2rem;">${p.icon || '📁'}</div>
@@ -5648,10 +5831,12 @@
                     container.innerHTML = p.tasks.map(t => `
                         <div class="task-row ${t.done ? 'completed' : ''}" onclick="Tasks.openPanel(${t.id})">
                             <div class="checkbox"><i class="fa-solid fa-check" style="font-size:10px; color:${t.done ? 'white' : 'transparent'}"></i></div>
-                            <div style="font-weight:500;">${t.title}</div>
-                            <div style="font-size:0.8rem; color:var(--text-secondary);">${t.assignee || 'Unassigned'}</div>
-                            <div style="color:${t.done ? 'var(--text-secondary)' : '#EF4444'}">${t.date}</div>
-                            <div style="font-size:0.7rem; padding:4px 8px; border-radius:4px; text-align:center; background:rgba(59,130,246,0.2); color:#3B82F6">${t.priority}</div>
+                            <div class="task-row-title">${t.title}</div>
+                            <div class="task-row-meta">
+                                <span class="task-meta-assignee">${t.assignee || 'Unassigned'}</span>
+                                <span class="task-meta-date" style="color:${t.done ? 'var(--text-secondary)' : '#EF4444'}">${t.date}</span>
+                                <span class="task-meta-priority">${t.priority}</span>
+                            </div>
                         </div>`).join('');
                 },
 
