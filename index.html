@@ -914,33 +914,34 @@
                 display: flex;
                 flex-direction: column;
                 background: var(--bg-main);
-                align-items: center;
+                align-items: stretch;
+                overflow: hidden;
+                min-height: 0;
             }
 
             .piano-header {
-                width: calc(100% - 48px);
-                max-width: 1200px;
-                height: 72px;
-                margin: 24px 24px 0;
-                background: var(--brand-gradient);
-                border-radius: var(--radius-xl);
+                width: 100%;
+                max-width: none;
+                height: auto;
+                min-height: 52px;
+                margin: 0;
+                padding: 12px 16px;
+                background: var(--bg-surface);
+                border-bottom: 1px solid var(--border-color);
+                border-radius: 0;
                 display: flex;
                 align-items: center;
-                justify-content: space-between;
-                padding: 0 28px;
-                color: white;
-                box-shadow: var(--shadow-accent);
+                gap: 12px;
+                color: var(--text-primary);
+                box-shadow: none;
                 flex-shrink: 0;
-                position: relative;
-                overflow: hidden;
             }
 
-            .piano-header::before {
-                content: '';
-                position: absolute;
-                inset: 0;
-                background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);
-                pointer-events: none;
+            .piano-header-title {
+                font-family: var(--font-head);
+                font-size: 1.15rem;
+                font-weight: 700;
+                flex: 1;
             }
 
             .piano-stage {
@@ -1025,10 +1026,23 @@
                 overflow-x: auto;
                 overflow-y: hidden;
                 -webkit-overflow-scrolling: touch;
+                overscroll-behavior-x: contain;
+                touch-action: pan-x;
                 padding: 8px 4px 10px;
                 border-radius: 8px;
                 background: linear-gradient(180deg, #0a0a0c 0%, #121216 100%);
                 box-shadow: inset 0 4px 16px rgba(0, 0, 0, 0.55);
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .keys-scroll-hint {
+                display: none;
+                font-size: 0.7rem;
+                color: rgba(255, 255, 255, 0.4);
+                text-align: center;
+                margin-top: 6px;
+                letter-spacing: 0.03em;
             }
 
             .keys-wrapper {
@@ -1103,7 +1117,78 @@
             }
 
             .mobile-tab-bar {
-                display: none;
+                display: none !important;
+            }
+
+            #app-shell:not(.hidden) .mobile-tab-bar {
+                display: none !important;
+            }
+
+            /* Whiteboard as in-app module */
+            #mod-whiteboard {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                min-height: 0;
+                background: var(--bg-main);
+            }
+
+            #mod-whiteboard.hidden {
+                display: none !important;
+            }
+
+            .wb-viewport {
+                flex: 1;
+                overflow: auto;
+                -webkit-overflow-scrolling: touch;
+                touch-action: pan-x pan-y;
+                min-height: 0;
+                position: relative;
+                background: var(--bg-main);
+            }
+
+            .wb-canvas-scroll {
+                width: 2000px;
+                height: 1400px;
+                position: relative;
+            }
+
+            .wb-canvas-container {
+                width: 100%;
+                height: 100%;
+                position: relative;
+                background: linear-gradient(var(--border-color) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+                background-size: 20px 20px;
+                cursor: crosshair;
+            }
+
+            .wb-side-panel {
+                width: 280px;
+                background: var(--bg-surface);
+                border-left: 1px solid var(--border-color);
+                display: flex;
+                flex-direction: column;
+                flex-shrink: 0;
+                overflow-y: auto;
+            }
+
+            .wb-workspace-mobile {
+                flex: 1;
+                display: flex;
+                overflow: hidden;
+                min-height: 0;
+            }
+
+            @media (min-width: 769px) {
+                .wb-workspace-mobile {
+                    flex-direction: row;
+                }
+                .wb-side-panel {
+                    display: flex !important;
+                }
             }
 
             /* FLASHCARDS MODULE */
@@ -2511,23 +2596,15 @@
                 min-height: 0;
             }
 
-            #mod-whiteboard {
-                width: 100%;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                overflow: hidden;
-                min-height: 0;
-            }
-
-            /* Make sure the canvas sizing is robust */
             #wb-canvas {
                 position: absolute;
                 top: 0;
                 left: 0;
-                width: 100%;
-                height: 100%;
                 display: block;
+            }
+
+            .wb-mobile-panel-btn {
+                display: none;
             }
 
             /* RESPONSIVE */
@@ -2807,8 +2884,8 @@
         }
 
             @media (max-width: 768px) {
-            .mobile-tab-bar {
-                display: flex;
+            #app-shell:not(.hidden) .mobile-tab-bar {
+                display: flex !important;
                 position: fixed;
                 bottom: 0;
                 left: 0;
@@ -2865,6 +2942,117 @@
 
             [id^="mod-"]:not(.hidden) {
                 height: 100% !important;
+                min-height: 0 !important;
+            }
+
+            .piano-header {
+                margin: 0;
+                width: 100%;
+                padding: 10px 14px;
+            }
+
+            .piano-stage {
+                padding: 12px;
+                align-items: stretch;
+            }
+
+            .piano-case {
+                width: 100% !important;
+                max-width: 100%;
+                margin: 0;
+                padding: 14px 12px 16px;
+            }
+
+            .piano-controls {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                gap: 8px 12px;
+                align-items: center;
+            }
+
+            .piano-controls label:nth-of-type(2),
+            .piano-controls .sound-select {
+                grid-column: 1 / -1;
+            }
+
+            .piano-controls .sound-select {
+                width: 100%;
+            }
+
+            .piano-controls .btn {
+                grid-column: 1 / -1;
+                width: 100%;
+                margin-left: 0 !important;
+            }
+
+            .keys-scroll-hint {
+                display: block;
+            }
+
+            .fc-header {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 12px 14px;
+                gap: 10px;
+            }
+
+            .fc-header-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            #mod-whiteboard {
+                position: relative !important;
+                inset: auto !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: 1 !important;
+            }
+
+            .wb-toolbar {
+                flex-shrink: 0;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                flex-wrap: nowrap;
+                padding: 10px 12px;
+                gap: 8px;
+            }
+
+            .wb-toolbar > div {
+                flex-wrap: nowrap;
+                min-width: max-content;
+            }
+
+            .wb-workspace-mobile {
+                flex-direction: column;
+            }
+
+            .wb-side-panel {
+                display: none !important;
+                position: fixed;
+                right: 0;
+                top: 0;
+                bottom: 62px;
+                width: min(300px, 88vw) !important;
+                z-index: 10002;
+                box-shadow: -8px 0 30px rgba(0, 0, 0, 0.2);
+            }
+
+            .wb-side-panel.wb-panel-open {
+                display: flex !important;
+            }
+
+            .wb-viewport {
+                flex: 1;
+                min-height: 180px;
+            }
+
+            .wb-mobile-panel-btn {
+                display: inline-flex !important;
+            }
+
+            .wb-module-header {
+                flex-shrink: 0;
             }
         }
 
@@ -3189,16 +3377,11 @@
                         <main style="flex: 1; height: 100%; overflow: hidden; background: var(--bg-main);">
                             <!-- PIANO MODULE -->
                             <div id="mod-piano" class="module-flex-column">
-                                <div class="piano-header font-head">
+                                <div class="piano-header">
                                     <button class="mobile-nav-btn" onclick="UI.toggleSidebar()" aria-label="Open Menu">
                                         <i class="fa-solid fa-bars"></i>
                                     </button>
-                                    <div style="display:flex; align-items:center; gap:8px; font-size: 1.1rem; font-weight: 700;">
-                                        <i class="fa-solid fa-terminal"></i> AUDIO ENGINE
-                                    </div>
-                                    <div style="font-size: 0.9rem; opacity: 0.9;">
-                                        WebAudio API Active <i class="fa-solid fa-circle-check"></i>
-                                    </div>
+                                    <span class="piano-header-title font-head">Piano Lab</span>
                                 </div>
                                 <div class="piano-stage">
                                     <div class="piano-case">
@@ -3219,9 +3402,10 @@
                                                 <i class="fa-solid fa-keyboard"></i> Keys
                                             </button>
                                         </div>
-                                        <div class="keys-scroll">
+                                        <div class="keys-scroll" id="keys-scroll">
                                             <div class="keys-wrapper" id="piano-keys"></div>
                                         </div>
+                                        <p class="keys-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe sideways for more keys</p>
                                     </div>
                                 </div>
                             </div>
@@ -3600,27 +3784,25 @@
                             </div>
                     </div>
 
-                    <!-- WHITEBOARD MODULE - FULLSCREEN OVERLAY -->
-                    <div id="mod-whiteboard" class="hidden"
-                        style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-main); z-index: 1000; display: flex; flex-direction: column;">
+                    <!-- WHITEBOARD MODULE -->
+                    <div id="mod-whiteboard" class="hidden module-flex-column">
 
-                        <!-- Logo Back Button - Bottom Left -->
-                        <div onclick="Nav.back()"
-                            style="position: fixed; bottom: 24px; left: 24px; z-index: 20; cursor: pointer; transition: all 0.3s ease; padding: 16px 18px; background: var(--bg-surface); border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); border: 1px solid var(--border-color); backdrop-filter: blur(10px);"
-                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(0,0,0,0.18)'"
-                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'">
-                            <div
-                                style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; font-weight: 600; letter-spacing: 0.5px;">
-                                <i class="fa-solid fa-arrow-left" style="font-size: 0.7rem; margin-right: 4px;"></i>Back
+                        <div class="fc-header wb-module-header">
+                            <div class="fc-header-main">
+                                <button class="mobile-nav-btn" onclick="UI.toggleSidebar()" aria-label="Open Menu">
+                                    <i class="fa-solid fa-bars"></i>
+                                </button>
+                                <h2 class="font-head fc-title">Whiteboard</h2>
+                            </div>
+                            <div class="fc-header-actions">
+                                <button class="btn btn-secondary wb-mobile-panel-btn" onclick="Whiteboard.toggleMobilePanel()">
+                                    <i class="fa-solid fa-layer-group"></i><span class="btn-label"> Layers</span>
+                                </button>
                             </div>
                         </div>
 
                         <div class="wb-toolbar">
-                            <div style="display: flex; align-items: center; gap: 20px; flex: 1;">
-                                <h2 class="font-head" style="margin: 0;">Whiteboard</h2>
-
-                                <div class="wb-divider"></div>
-
+                            <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: max-content;">
                                 <div class="wb-toolbar-group">
                                     <button class="wb-tool-btn active" data-tool="select" onclick="Whiteboard.setTool('select')"
                                         title="Select (V)">
@@ -3719,17 +3901,16 @@
                             </div>
                         </div>
 
-                        <!-- Workspace: flex: 1, contains canvas + right panel -->
-                        <div style="flex: 1; display: flex; overflow: hidden; position: relative; min-height: 0;">
-                            <!-- Canvas area: flex: 1 -->
-                            <div id="wb-canvas-container"
-                                style="flex: 1; position: relative; overflow: hidden; background: linear-gradient(var(--border-color) 1px, transparent 1px), linear-gradient(90deg, var(--border-color) 1px, transparent 1px); background-size: 20px 20px; cursor: crosshair; min-width: 0;">
-                                <canvas id="wb-canvas"></canvas>
+                        <div class="wb-workspace-mobile">
+                            <div class="wb-viewport" id="wb-viewport">
+                                <div class="wb-canvas-scroll" id="wb-canvas-scroll">
+                                    <div id="wb-canvas-container" class="wb-canvas-container">
+                                        <canvas id="wb-canvas"></canvas>
+                                    </div>
+                                </div>
                             </div>
 
-                            <!-- Right panel: 280px fixed -->
-                            <div
-                                style="width: 280px; background: var(--bg-surface); border-left: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;">
+                            <div class="wb-side-panel" id="wb-side-panel">
                                 <div
                                     style="padding: 15px; border-bottom: 1px solid var(--border-color); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);">
                                     Boards</div>
@@ -3752,7 +3933,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
                     </div>
                     </main>
 
@@ -4395,7 +4575,11 @@
                     const target = document.getElementById('mod-' + tab);
                     if (target) target.classList.remove('hidden');
                     if (document.querySelector('.sidebar.mobile-open')) UI.toggleSidebar();
-                    if (tab === 'whiteboard' && typeof Whiteboard !== 'undefined' && Whiteboard._inited) {
+                    if (tab === 'whiteboard') {
+                        if (typeof Whiteboard !== 'undefined') {
+                            if (!Whiteboard._inited) Whiteboard.init();
+                            else Whiteboard.resizeCanvas();
+                        }
                         window.dispatchEvent(new Event('resize'));
                     }
                     window.scrollTo(0, 0);
@@ -4757,12 +4941,15 @@
                             el.innerHTML = `<span class="key-label">${labelText}</span>`;
                             box.appendChild(el);
                         }
-                        const playKey = (e) => {
-                            if (e) e.preventDefault();
-                            Piano.play(k.n, el);
-                        };
-                        el.addEventListener('mousedown', playKey);
-                        el.addEventListener('touchstart', playKey, { passive: false });
+                        let touchX = 0;
+                        el.addEventListener('mousedown', () => Piano.play(k.n, el));
+                        el.addEventListener('touchstart', (e) => {
+                            touchX = e.touches[0].clientX;
+                        }, { passive: true });
+                        el.addEventListener('touchend', (e) => {
+                            const dx = Math.abs(e.changedTouches[0].clientX - touchX);
+                            if (dx < 14) Piano.play(k.n, el);
+                        }, { passive: true });
                     });
                     box.style.width = 'max-content';
                 },
@@ -6060,15 +6247,49 @@
                 selectedNoteColor: '#FFF59D',
                 _inited: false,
 
+                resizeCanvas: () => {
+                    if (!Whiteboard.canvas) return;
+                    const scroll = document.getElementById('wb-canvas-scroll');
+                    const w = scroll ? scroll.offsetWidth : 2000;
+                    const h = scroll ? scroll.offsetHeight : 1400;
+                    Whiteboard.canvas.width = w;
+                    Whiteboard.canvas.height = h;
+                    Whiteboard.render();
+                },
+
+                toggleMobilePanel: () => {
+                    const panel = document.getElementById('wb-side-panel');
+                    if (panel) panel.classList.toggle('wb-panel-open');
+                },
+
+                getPointer: (e) => {
+                    const rect = Whiteboard.canvas.getBoundingClientRect();
+                    const t = e.touches && e.touches.length ? e.touches[0] : (e.changedTouches && e.changedTouches.length ? e.changedTouches[0] : e);
+                    return {
+                        clientX: t.clientX,
+                        clientY: t.clientY,
+                        x: t.clientX - rect.left,
+                        y: t.clientY - rect.top
+                    };
+                },
+
+                bindPointer: (el, down, move, up) => {
+                    el.addEventListener('mousedown', down);
+                    el.addEventListener('mousemove', move);
+                    el.addEventListener('mouseup', up);
+                    el.addEventListener('mouseleave', up);
+                    el.addEventListener('touchstart', (e) => { if (e.touches.length === 1) down(e); }, { passive: false });
+                    el.addEventListener('touchmove', (e) => { if (e.touches.length === 1) { e.preventDefault(); move(e); } }, { passive: false });
+                    el.addEventListener('touchend', up);
+                    el.addEventListener('touchcancel', up);
+                },
+
                 init: () => {
                     if (Whiteboard._inited) return;
                     Whiteboard.canvas = document.getElementById('wb-canvas');
                     if (!Whiteboard.canvas) return;
                     Whiteboard.ctx = Whiteboard.canvas.getContext('2d');
-
-                    const container = document.getElementById('wb-canvas-container');
-                    Whiteboard.canvas.width = container.clientWidth;
-                    Whiteboard.canvas.height = container.clientHeight;
+                    Whiteboard.resizeCanvas();
 
                     // Initialize with one default board
                     Whiteboard.boards = [{
@@ -6088,10 +6309,7 @@
                     Whiteboard.renderBoards();
                     Whiteboard.renderLayers();
 
-                    const c = Whiteboard.canvas;
-                    c.addEventListener('mousedown', Whiteboard.onMouseDown);
-                    c.addEventListener('mousemove', Whiteboard.onMouseMove);
-                    c.addEventListener('mouseup', Whiteboard.onMouseUp);
+                    Whiteboard.bindPointer(Whiteboard.canvas, Whiteboard.onMouseDown, Whiteboard.onMouseMove, Whiteboard.onMouseUp);
 
                     document.getElementById('wb-color').addEventListener('change', e => Whiteboard.color = e.target.value);
                     document.getElementById('wb-size').addEventListener('input', e => {
@@ -6100,11 +6318,9 @@
                     });
 
                     window.addEventListener('resize', () => {
-                        const container = document.getElementById('wb-canvas-container');
-                        if (!container) return;
-                        Whiteboard.canvas.width = container.clientWidth;
-                        Whiteboard.canvas.height = container.clientHeight;
-                        Whiteboard.render();
+                        if (document.getElementById('mod-whiteboard') && !document.getElementById('mod-whiteboard').classList.contains('hidden')) {
+                            Whiteboard.resizeCanvas();
+                        }
                     });
 
                     Whiteboard._inited = true;
@@ -6184,11 +6400,10 @@
                 },
 
                 onMouseDown: (e) => {
-                    const rect = Whiteboard.canvas.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
+                    const p = Whiteboard.getPointer(e);
+                    const x = p.x;
+                    const y = p.y;
 
-                    // Check if clicking on a note
                     if (Whiteboard.tool === 'select') {
                         const board = Whiteboard.boards[Whiteboard.currentBoard];
                         for (let i = board.notes.length - 1; i >= 0; i--) {
@@ -6253,9 +6468,9 @@
                 },
 
                 onMouseMove: (e) => {
-                    const rect = Whiteboard.canvas.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
+                    const p = Whiteboard.getPointer(e);
+                    const x = p.x;
+                    const y = p.y;
 
                     // Dragging note
                     if (Whiteboard.draggedNote) {
