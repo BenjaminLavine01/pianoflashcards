@@ -5029,6 +5029,7 @@
                     </div>
                     </div>
                 
+                    <script src="config.js" defer onerror="void 0"></script>
                     <script>
                         /* ==========================================================================
             SPARTAN.EDU - COMPLETE JAVASCRIPT (FIXED & OPTIMIZED)
@@ -5202,42 +5203,85 @@
              * Cloud backend (Supabase) — set backend to 'supabase' and add your project keys.
              * See BACKEND.md for full setup (email codes, cross-device login, user data sync).
              */
+            /* Option A: paste keys here. Option B: config.js. Option C: Vercel env vars → /api/config */
             const APP_CONFIG = {
                 backend: 'local',
                 supabaseUrl: '',
                 supabaseAnonKey: ''
             };
 
+            const applyAppConfig = (cfg) => {
+                if (!cfg) return false;
+                const url = String(cfg.supabaseUrl || '').trim();
+                const key = String(cfg.supabaseAnonKey || '').trim();
+                if (!url || !key) return false;
+                APP_CONFIG.supabaseUrl = url;
+                APP_CONFIG.supabaseAnonKey = key;
+                APP_CONFIG.backend = 'supabase';
+                return true;
+            };
+
             const CloudAuth = {
                 client: null,
                 forgotEmail: '',
                 ready: false,
+                lastError: '',
 
                 isEnabled: () =>
                     APP_CONFIG.backend === 'supabase' &&
-                    APP_CONFIG.supabaseUrl &&
-                    APP_CONFIG.supabaseAnonKey,
+                    Boolean(APP_CONFIG.supabaseUrl && APP_CONFIG.supabaseAnonKey),
+
+                getCreateClient: () => {
+                    const lib = window.supabase;
+                    if (!lib) return null;
+                    if (typeof lib.createClient === 'function') return lib.createClient.bind(lib);
+                    if (lib.default && typeof lib.default.createClient === 'function') {
+                        return lib.default.createClient.bind(lib.default);
+                    }
+                    return null;
+                },
 
                 loadScript: () => new Promise((resolve, reject) => {
-                    if (window.supabase?.createClient) return resolve();
+                    if (CloudAuth.getCreateClient()) return resolve();
+                    if (document.querySelector('script[data-supabase-sdk]')) {
+                        const wait = setInterval(() => {
+                            if (CloudAuth.getCreateClient()) {
+                                clearInterval(wait);
+                                resolve();
+                            }
+                        }, 50);
+                        setTimeout(() => {
+                            clearInterval(wait);
+                            if (CloudAuth.getCreateClient()) resolve();
+                            else reject(new Error('Supabase SDK load timeout'));
+                        }, 10000);
+                        return;
+                    }
                     const s = document.createElement('script');
+                    s.dataset.supabaseSdk = '1';
                     s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-                    s.onload = resolve;
-                    s.onerror = () => reject(new Error('Could not load Supabase SDK'));
+                    s.crossOrigin = 'anonymous';
+                    s.onload = () => (CloudAuth.getCreateClient() ? resolve() : reject(new Error('Supabase SDK loaded but createClient missing')));
+                    s.onerror = () => reject(new Error('Could not load Supabase SDK (CDN blocked?)'));
                     document.head.appendChild(s);
                 }),
 
                 init: async () => {
+                    CloudAuth.lastError = '';
+                    CloudAuth.ready = false;
                     if (!CloudAuth.isEnabled()) return false;
                     try {
                         await CloudAuth.loadScript();
-                        CloudAuth.client = window.supabase.createClient(
+                        const createClient = CloudAuth.getCreateClient();
+                        if (!createClient) throw new Error('Supabase createClient not available');
+                        CloudAuth.client = createClient(
                             APP_CONFIG.supabaseUrl,
                             APP_CONFIG.supabaseAnonKey
                         );
                         CloudAuth.ready = true;
                         return true;
                     } catch (e) {
+                        CloudAuth.lastError = e.message || String(e);
                         console.warn('CloudAuth init failed', e);
                         return false;
                     }
@@ -5436,15 +5480,53 @@
             const Auth = {
                 forgotStep: 1,
 
-                updateBackendHint: () => {
+                updateBackendHint: async () => {
                     const el = document.getElementById('auth-backend-status');
                     if (!el) return;
-                    if (CloudAuth.isEnabled()) {
+
+                    if (CloudAuth.isEnabled() && CloudAuth.ready) {
                         el.textContent = 'Cloud accounts enabled — sign in works on any device.';
                         el.classList.add('cloud');
+                        return;
+                    }
+
+                    el.classList.remove('cloud');
+
+                    if (CloudAuth.isEnabled() && !CloudAuth.ready) {
+                        el.textContent = 'Supabase keys loaded but client failed: ' + (CloudAuth.lastError || 'unknown error') + '. Check browser console or ad-blocker.';
+                        return;
+                    }
+
+                    const host = location.hostname;
+                    const onVercel = host.includes('vercel.app') || host.endsWith('.vercel.app');
+
+                    if (onVercel) {
+                        try {
+                            const res = await fetch('/api/config', { cache: 'no-store' });
+                            const ct = (res.headers.get('content-type') || '').toLowerCase();
+                            if (!ct.includes('application/json')) {
+                                el.textContent = 'Config error: /api/config did not return JSON (Vercel rewrite issue). Push latest vercel.json and redeploy.';
+                                return;
+                            }
+                            const cfg = await res.json();
+                            if (cfg.supabaseUrl && cfg.supabaseAnonKey) {
+                                el.textContent = 'Keys found on server but app did not connect — hard refresh (Ctrl+F5) or clear cache.';
+                                return;
+                            }
+                            el.innerHTML = 'Vercel env vars missing or empty. Set <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code>, then <strong>Redeploy</strong>. Check <a href="/api/config" target="_blank" rel="noopener">/api/config</a> (should show your URL, not empty strings).';
+                            return;
+                        } catch (err) {
+                            el.textContent = 'Could not reach /api/config: ' + (err.message || 'network error');
+                            return;
+                        }
+                    }
+
+                    if (location.protocol === 'file:') {
+                        el.textContent = 'Opened as a file — use your Vercel URL (https://….vercel.app), not index.html from disk.';
+                    } else if (host === 'localhost' || host === '127.0.0.1') {
+                        el.textContent = 'Local demo — deploy to Vercel with SUPABASE_URL + SUPABASE_ANON_KEY env vars for cloud on all devices.';
                     } else {
-                        el.textContent = 'Local demo mode — data stays in this browser only. See BACKEND.md for real accounts.';
-                        el.classList.remove('cloud');
+                        el.textContent = 'Local demo mode — open your Vercel deployment URL for cloud accounts.';
                     }
                 },
 
@@ -5513,7 +5595,10 @@
                     const email = document.getElementById('log-email').value.trim();
                     const pass = document.getElementById('log-pass').value;
 
-                    if (CloudAuth.isEnabled() && CloudAuth.ready) {
+                    if (CloudAuth.isEnabled()) {
+                        if (!CloudAuth.ready) {
+                            return Notify.show(CloudAuth.lastError || 'Cloud login not ready — refresh the page', 'error');
+                        }
                         try {
                             await CloudAuth.signIn(email, pass);
                             const u = await CloudAuth.sessionUser();
@@ -7035,10 +7120,27 @@
             Theme.init();
             Piano.notes = Piano.buildNotes();
 
+            const loadAppConfig = async () => {
+                if (applyAppConfig(window.__SPARTAN_CONFIG__)) return;
+                if (applyAppConfig(APP_CONFIG)) return;
+                try {
+                    const res = await fetch('/api/config', { cache: 'no-store' });
+                    if (!res.ok) return;
+                    const ct = (res.headers.get('content-type') || '').toLowerCase();
+                    if (!ct.includes('application/json')) {
+                        console.warn('loadAppConfig: /api/config returned', ct, '— expected JSON');
+                        return;
+                    }
+                    applyAppConfig(await res.json());
+                } catch (e) {
+                    console.warn('loadAppConfig failed', e);
+                }
+            };
+
             (async () => {
-                Auth.updateBackendHint();
+                await loadAppConfig();
                 await CloudAuth.init();
-                Auth.updateBackendHint();
+                await Auth.updateBackendHint();
                 await Auth.tryRestoreSession();
             })();
 

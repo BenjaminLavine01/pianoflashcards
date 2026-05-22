@@ -71,9 +71,48 @@ Redeploy or refresh the page. The login screen will show **“Cloud accounts ena
 
 Forgot password **only works when `backend: 'supabase'`** is configured. Local demo mode cannot send real emails.
 
-## 6. Deploying
+## 6. Deploy on Vercel (recommended)
 
-Host `index.html` on any static host (GitHub Pages, Netlify, Vercel). Add your site URL under **Authentication → URL configuration → Redirect URLs** if you use email confirmation links.
+**Vercel hosts the app (frontend). Supabase is still the backend** (auth, database, emails). You do not run login or the database on Vercel.
+
+### Deploy steps
+
+1. Push the `Piano` folder to GitHub (or import the repo in [vercel.com](https://vercel.com)).
+2. **Import project** → set **Root Directory** to `Piano` if the repo is the parent `GitHub` folder.
+3. Deploy — `vercel.json` serves `index.html` for all routes; `/api/config` returns your public Supabase settings.
+
+### Environment variables (Vercel dashboard)
+
+**Settings → Environment Variables** (Production + Preview):
+
+| Name | Example | Notes |
+|------|---------|--------|
+| `SPARTAN_BACKEND` | `supabase` | Turns on cloud auth |
+| `SUPABASE_URL` | `https://xxxx.supabase.co` | From Supabase API settings |
+| `SUPABASE_ANON_KEY` | `eyJhbG...` | **anon** key only, never service_role |
+
+Redeploy after saving. The app loads these from `/api/config` so keys are not committed in git.
+
+### Supabase URLs for Vercel
+
+In Supabase **Authentication → URL configuration**, add:
+
+- **Site URL**: `https://your-app.vercel.app`
+- **Redirect URLs**: `https://your-app.vercel.app/**` and your custom domain if you add one
+
+### Local dev without Vercel
+
+Either hardcode `APP_CONFIG` in `index.html`, or run `vercel dev` in the `Piano` folder so `/api/config` works locally.
+
+### What runs where
+
+| Piece | Where |
+|-------|--------|
+| HTML / JS / Piano UI | **Vercel** (static + one tiny API route) |
+| Sign up, login, OTP email | **Supabase Auth** |
+| Decks, tasks, sync | **Supabase Postgres** (`user_data` table) |
+
+You do **not** need Vercel Postgres or Vercel KV for this setup unless you later build a custom API.
 
 ## 7. Alternatives
 
