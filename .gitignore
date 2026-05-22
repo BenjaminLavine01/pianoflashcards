@@ -1,1 +1,2 @@
-config.js
+# Local Supabase keys only (not api/config.js — that must deploy to Vercel)
+/config.js
