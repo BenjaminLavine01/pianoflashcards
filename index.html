@@ -730,10 +730,18 @@
             /* APP SHELL */
             #app-shell {
                 display: flex;
+                flex-direction: row;
                 width: 100%;
                 height: 100%;
                 opacity: 0;
                 transition: opacity 0.5s;
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            /* Mobile bottom tabs live outside app-shell flex (see HTML) */
+            #mobile-tab-bar {
+                display: none;
             }
 
             .sidebar {
@@ -1106,8 +1114,7 @@
 
             /* Bottom tab bar: hidden on desktop only (shown in mobile @media block) */
             @media (min-width: 769px) {
-                .mobile-tab-bar,
-                #app-shell:not(.hidden) .mobile-tab-bar {
+                #mobile-tab-bar {
                     display: none !important;
                 }
             }
@@ -2237,7 +2244,7 @@
                 pointer-events: none;
             }
 
-            body.wb-fullscreen-active.wb-module-active #app-shell .mobile-tab-bar {
+            body.wb-fullscreen-active.wb-module-active #mobile-tab-bar {
                 display: none !important;
             }
 
@@ -3069,8 +3076,7 @@
                 --mobile-tab-h: calc(56px + env(safe-area-inset-bottom, 0px));
             }
 
-            #app-shell:not(.hidden) #mobile-tab-bar,
-            #app-shell:not(.hidden) .mobile-tab-bar {
+            #app-shell:not(.hidden) + #mobile-tab-bar {
                 display: flex !important;
                 visibility: visible !important;
                 opacity: 1 !important;
@@ -3088,6 +3094,10 @@
                 backdrop-filter: var(--glass-blur);
                 box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
                 min-height: 56px;
+            }
+
+            #app-shell.hidden + #mobile-tab-bar {
+                display: none !important;
             }
 
             .mobile-tab-item {
@@ -3132,26 +3142,33 @@
             }
 
             #app-shell {
-                flex-direction: column;
+                flex-direction: row;
                 height: 100vh;
                 height: 100dvh;
+                width: 100%;
+                max-width: 100vw;
             }
 
+            /* Hide desktop sidebar from layout; only show as left drawer via menu */
             #app-shell .sidebar {
+                display: none !important;
                 position: fixed !important;
-                left: -110% !important;
+                left: 0 !important;
+                right: auto !important;
                 top: 0;
                 bottom: var(--mobile-tab-h);
                 width: min(300px, 88vw) !important;
                 max-width: 320px !important;
                 z-index: 10055;
                 height: auto !important;
-                transition: left 0.3s var(--ease-bounce);
+                transition: transform 0.3s var(--ease-bounce);
+                transform: translateX(-105%);
                 box-shadow: none;
             }
 
             #app-shell .sidebar.mobile-open {
-                left: 0 !important;
+                display: flex !important;
+                transform: translateX(0);
                 box-shadow: 8px 0 40px rgba(0, 0, 0, 0.35);
             }
 
@@ -4345,6 +4362,7 @@
                         </div>
                     </div>
                     </main>
+                    </div>
 
                     <nav class="mobile-tab-bar" id="mobile-tab-bar" aria-label="App navigation">
                         <button type="button" class="mobile-tab-item active" data-tab="piano" onclick="Nav.to('piano')">
@@ -4363,7 +4381,6 @@
                             <i class="fa-solid fa-pen-ruler"></i><span>Board</span>
                         </button>
                     </nav>
-                    </div>
 
                     <!-- MODALS -->
                     <div id="modal-custom-input" class="modal-overlay">
