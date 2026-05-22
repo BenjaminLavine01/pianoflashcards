@@ -3,7 +3,7 @@
 
                 <head>
                     <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
                     <title>Spartan.Edu | The Ultimate Ecosystem</title>
 
                     <!-- Fonts -->
@@ -938,6 +938,33 @@
                 font-size: 1.15rem;
                 font-weight: 700;
                 flex: 1;
+                min-width: 0;
+            }
+
+            .piano-live-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 5px 12px;
+                border-radius: 999px;
+                font-size: 0.68rem;
+                font-weight: 800;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: var(--accent-color);
+                background: var(--accent-soft);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                flex-shrink: 0;
+            }
+
+            .piano-live-badge i {
+                font-size: 0.65rem;
+                animation: pianoPulse 2s ease-in-out infinite;
+            }
+
+            @keyframes pianoPulse {
+                0%, 100% { opacity: 1; transform: scale(1); }
+                50% { opacity: 0.55; transform: scale(0.85); }
             }
 
             .piano-stage {
@@ -949,73 +976,140 @@
                 width: 100%;
                 min-height: 0;
                 overflow: auto;
-                padding: 12px 16px 20px;
+                padding: 16px 20px 24px;
                 background:
-                    radial-gradient(ellipse 70% 50% at 50% 0%, var(--accent-soft), transparent 60%),
-                    linear-gradient(180deg, rgba(15, 23, 42, 0.04) 0%, transparent 45%);
+                    radial-gradient(ellipse 90% 60% at 50% -10%, var(--accent-glow), transparent 55%),
+                    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(99, 102, 241, 0.12), transparent 50%),
+                    linear-gradient(180deg, rgba(15, 23, 42, 0.06) 0%, transparent 50%);
             }
 
-            .piano-case {
-                background: linear-gradient(165deg, #1a1a1f 0%, #0d0d10 45%, #15151a 100%);
-                padding: 28px 20px 28px;
-                border-radius: 22px 22px 10px 10px;
-                box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-                border: 1px solid rgba(255, 255, 255, 0.06);
-                display: flex;
-                flex-direction: column;
-                align-items: stretch;
+            .piano-showcase {
                 position: relative;
                 width: 100%;
                 max-width: 100%;
+            }
+
+            .piano-glow {
+                position: absolute;
+                inset: -8% -4% -12%;
+                background: radial-gradient(ellipse 70% 45% at 50% 85%, var(--accent-glow), transparent 70%);
+                filter: blur(28px);
+                opacity: 0.65;
+                pointer-events: none;
+                z-index: 0;
+            }
+
+            .piano-case {
+                position: relative;
+                z-index: 1;
+                background:
+                    linear-gradient(175deg, #25252d 0%, #121218 38%, #0a0a0e 100%);
+                padding: 22px 18px 20px;
+                border-radius: 28px 28px 14px 14px;
+                box-shadow:
+                    0 32px 80px rgba(0, 0, 0, 0.45),
+                    0 0 0 1px rgba(255, 255, 255, 0.07),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
             }
 
             .piano-case::before {
                 content: '';
                 position: absolute;
                 top: 0;
-                left: 20px;
-                right: 20px;
-                height: 3px;
+                left: 12%;
+                right: 12%;
+                height: 4px;
                 background: var(--brand-gradient);
-                border-radius: 0 0 4px 4px;
-                opacity: 0.9;
+                border-radius: 0 0 6px 6px;
+                opacity: 0.95;
+                box-shadow: 0 0 20px var(--accent-glow);
+            }
+
+            .piano-case::after {
+                content: '';
+                position: absolute;
+                bottom: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 42%;
+                height: 6px;
+                border-radius: 999px;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+                pointer-events: none;
             }
 
             .piano-controls {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 12px 16px;
-                align-items: center;
-                margin-bottom: 18px;
+                display: grid;
+                grid-template-columns: 1fr 1fr auto;
+                gap: 12px 14px;
+                align-items: end;
+                margin-bottom: 16px;
                 padding: 14px 16px;
-                background: rgba(255, 255, 255, 0.04);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 14px;
+                backdrop-filter: blur(8px);
+            }
+
+            .piano-control-group {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                min-width: 0;
             }
 
             .piano-controls label {
-                font-weight: 600;
-                font-size: 0.75rem;
-                color: rgba(255, 255, 255, 0.5);
+                font-weight: 700;
+                font-size: 0.68rem;
+                color: rgba(255, 255, 255, 0.45);
                 text-transform: uppercase;
-                letter-spacing: 0.06em;
+                letter-spacing: 0.08em;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .piano-controls label i {
+                color: var(--accent-color);
+                opacity: 0.9;
             }
 
             .piano-controls .input-std,
             .piano-controls select {
-                background: rgba(0, 0, 0, 0.35);
-                border-color: rgba(255, 255, 255, 0.12);
+                background: rgba(0, 0, 0, 0.4);
+                border-color: rgba(255, 255, 255, 0.14);
                 color: #f4f4f5;
+                width: 100%;
             }
 
             .piano-controls #vol-slider {
-                flex: 1;
-                min-width: 80px;
+                width: 100%;
                 accent-color: var(--accent-color);
             }
 
             .piano-controls .sound-select {
-                min-width: 150px;
+                min-width: 0;
+            }
+
+            .piano-controls .btn-piano-keys {
+                align-self: stretch;
+                white-space: nowrap;
+                border-color: rgba(255, 255, 255, 0.15);
+                background: rgba(255, 255, 255, 0.08);
+                color: #fafafa;
+            }
+
+            .piano-controls .btn-piano-keys:hover {
+                background: var(--accent-soft);
+                border-color: var(--accent-color);
+                color: var(--accent-color);
             }
 
             .keys-scroll {
@@ -1024,10 +1118,13 @@
                 -webkit-overflow-scrolling: touch;
                 overscroll-behavior-x: contain;
                 touch-action: pan-x;
-                padding: 8px 4px 10px;
-                border-radius: 8px;
-                background: linear-gradient(180deg, #0a0a0c 0%, #121216 100%);
-                box-shadow: inset 0 4px 16px rgba(0, 0, 0, 0.55);
+                padding: 10px 6px 12px;
+                border-radius: 12px;
+                background:
+                    linear-gradient(180deg, #050508 0%, #0e0e14 50%, #14141c 100%);
+                box-shadow:
+                    inset 0 6px 24px rgba(0, 0, 0, 0.7),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.04);
                 width: 100%;
                 max-width: 100%;
             }
@@ -1035,22 +1132,22 @@
             .keys-scroll-hint {
                 display: none;
                 font-size: 0.7rem;
-                color: rgba(255, 255, 255, 0.4);
+                color: rgba(255, 255, 255, 0.38);
                 text-align: center;
-                margin-top: 6px;
-                letter-spacing: 0.03em;
+                margin-top: 8px;
+                letter-spacing: 0.04em;
             }
 
             .keys-wrapper {
                 display: flex;
                 position: relative;
-                height: clamp(180px, 30vh, 280px);
+                height: clamp(190px, 32vh, 300px);
                 min-width: min-content;
             }
 
             .key {
                 border: none;
-                border-radius: 0 0 8px 8px;
+                border-radius: 0 0 10px 10px;
                 cursor: pointer;
                 position: relative;
                 display: flex;
@@ -1058,57 +1155,73 @@
                 justify-content: center;
                 touch-action: manipulation;
                 user-select: none;
-                transition: transform 0.08s var(--ease-bounce), box-shadow 0.08s;
+                transition: transform 0.07s var(--ease-bounce), box-shadow 0.07s, filter 0.07s;
             }
 
             .key-white {
-                width: 44px;
+                width: 46px;
                 height: 100%;
-                background: linear-gradient(180deg, #fefefe 0%, #f0f1f4 55%, #e2e5ea 100%);
+                background: linear-gradient(180deg, #ffffff 0%, #f4f5f8 42%, #d8dce4 100%);
                 z-index: 1;
                 color: #64748b;
-                box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.06), 2px 4px 8px rgba(0, 0, 0, 0.12);
-                margin-right: 1px;
+                box-shadow:
+                    inset -1px 0 0 rgba(0, 0, 0, 0.05),
+                    0 6px 12px rgba(0, 0, 0, 0.15);
+                margin-right: 2px;
+            }
+
+            .key-white::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 4px;
+                right: 4px;
+                height: 28%;
+                border-radius: 0 0 6px 6px;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), transparent);
+                pointer-events: none;
             }
 
             .key-white.active {
-                transform: translateY(3px);
-                box-shadow: inset 0 -3px 0 var(--accent-color), 0 0 18px var(--accent-glow);
+                transform: translateY(4px);
+                filter: brightness(0.96);
+                box-shadow: inset 0 -4px 0 var(--accent-color), 0 0 22px var(--accent-glow);
             }
 
             .key-black {
-                width: 26px;
-                height: 62%;
-                background: linear-gradient(180deg, #3d4450 0%, #1a1d24 40%, #0a0a0c 100%);
+                width: 28px;
+                height: 64%;
+                background: linear-gradient(180deg, #4a5260 0%, #22262e 35%, #08080a 100%);
                 position: absolute;
                 z-index: 2;
-                border-radius: 0 0 6px 6px;
-                color: rgba(255, 255, 255, 0.4);
-                box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
+                border-radius: 0 0 8px 8px;
+                color: rgba(255, 255, 255, 0.35);
+                box-shadow: 0 8px 18px rgba(0, 0, 0, 0.55), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
             }
 
             .key-black.active {
-                transform: translateY(2px);
-                box-shadow: inset 0 -2px 0 var(--accent-color), 0 0 14px var(--accent-glow);
+                transform: translateY(3px);
+                box-shadow: inset 0 -3px 0 var(--accent-color), 0 0 16px var(--accent-glow);
             }
 
             .key-label {
                 position: absolute;
-                bottom: 26px;
+                bottom: 28px;
                 font-size: 9px;
-                font-weight: 700;
+                font-weight: 800;
                 text-transform: uppercase;
                 pointer-events: none;
-                padding: 2px 5px;
-                border-radius: 4px;
-                background: rgba(0, 0, 0, 0.06);
+                padding: 3px 6px;
+                border-radius: 5px;
+                background: rgba(0, 0, 0, 0.05);
                 color: #64748b;
+                z-index: 3;
             }
 
             .key-black .key-label {
-                bottom: 18px;
-                color: rgba(255, 255, 255, 0.7);
-                background: rgba(255, 255, 255, 0.1);
+                bottom: 20px;
+                color: rgba(255, 255, 255, 0.75);
+                background: rgba(255, 255, 255, 0.12);
                 font-size: 8px;
             }
 
@@ -1651,6 +1764,49 @@
                 color: var(--accent-color);
                 font-weight: 700;
                 border-left: 3px solid var(--accent-color);
+            }
+
+            .project-item-name {
+                flex: 1;
+                min-width: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .project-item-delete {
+                flex-shrink: 0;
+                width: 32px;
+                height: 32px;
+                border: none;
+                border-radius: 8px;
+                background: transparent;
+                color: var(--text-secondary);
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.2s, background 0.2s, color 0.2s;
+            }
+
+            .project-item:hover .project-item-delete,
+            .project-item.active .project-item-delete {
+                opacity: 1;
+            }
+
+            .project-item-delete:hover {
+                background: rgba(239, 68, 68, 0.12);
+                color: var(--status-danger);
+            }
+
+            .btn-danger-outline {
+                color: var(--status-danger) !important;
+                border-color: rgba(239, 68, 68, 0.35) !important;
+            }
+
+            .btn-danger-outline:hover {
+                background: rgba(239, 68, 68, 0.1) !important;
             }
 
             .task-main {
@@ -3040,14 +3196,17 @@
 
         /* ===================== RESPONSIVE / MOBILE STYLES ===================== */
         @media (max-width: 900px) {
-            .piano-header { padding: 0 20px; height: 64px; margin-top: 20px; width: calc(100% - 40px); }
+            .piano-header {
+                padding: 12px 16px;
+                min-height: 52px;
+                margin: 0;
+                width: 100%;
+            }
             .piano-header .mobile-nav-btn,
             .fc-header .mobile-nav-btn,
             .task-header .mobile-nav-btn,
-            .pathway-header .mobile-nav-btn,
             .module-header .mobile-nav-btn { display: inline-flex; }
-            .piano-header > div:first-child { font-size: 1rem; }
-            .piano-case { padding: 20px; border-radius: 14px; }
+            .piano-case { padding: 18px 16px; border-radius: 20px 20px 12px 12px; width: 100%; max-width: 100%; }
             .keys-scroll { -webkit-overflow-scrolling: touch; }
             .keys-wrapper { height: clamp(150px, 36vh, 220px); }
             .key-white { width: clamp(32px, 8vw, 44px) !important; min-width: 32px; }
@@ -3243,25 +3402,27 @@
             }
 
             .piano-controls {
-                display: grid;
-                grid-template-columns: auto 1fr;
-                gap: 8px 12px;
-                align-items: center;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
             }
 
-            .piano-controls label:nth-of-type(2),
-            .piano-controls .sound-select {
-                grid-column: 1 / -1;
-            }
-
-            .piano-controls .sound-select {
-                width: 100%;
-            }
-
-            .piano-controls .btn {
+            .piano-controls .btn-piano-keys {
                 grid-column: 1 / -1;
                 width: 100%;
-                margin-left: 0 !important;
+            }
+
+            .piano-stage {
+                padding: 10px 12px 14px;
+                justify-content: flex-start;
+            }
+
+            .piano-case {
+                padding: 14px 12px 14px;
+                border-radius: 20px 20px 12px 12px;
+            }
+
+            .piano-live-badge {
+                display: none;
             }
 
             .keys-scroll-hint {
@@ -3607,6 +3768,88 @@
                 #task-comment-input {
                     height: 72px !important;
                 }
+
+                /* Piano — landscape phone */
+                #mod-piano .piano-stage {
+                    padding: 6px 10px 10px;
+                    overflow: hidden;
+                }
+
+                #mod-piano .piano-showcase {
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 0;
+                }
+
+                #mod-piano .piano-case {
+                    flex: 1;
+                    min-height: 0;
+                    display: flex;
+                    flex-direction: column;
+                    padding: 10px 10px 8px;
+                }
+
+                #mod-piano .piano-controls {
+                    grid-template-columns: 1fr 1fr auto;
+                    gap: 6px 8px;
+                    margin-bottom: 8px;
+                    padding: 8px 10px;
+                }
+
+                #mod-piano .piano-controls .btn-piano-keys {
+                    grid-column: auto;
+                    width: auto;
+                    padding: 6px 10px;
+                    font-size: 0.75rem;
+                }
+
+                #mod-piano .keys-wrapper {
+                    height: clamp(100px, 42vh, 160px);
+                }
+
+                #mod-piano .keys-scroll-hint {
+                    display: block;
+                    margin-top: 4px;
+                    font-size: 0.62rem;
+                }
+
+                /* Flashcards — landscape */
+                #mod-flashcards .fc-header,
+                #mod-flashcards #fc-overview-panel .fc-header {
+                    padding: 6px 10px;
+                }
+
+                #mod-flashcards .folder-grid {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    padding: 8px 10px 16px;
+                    gap: 10px;
+                }
+
+                #mod-flashcards .folder-card {
+                    min-height: 110px;
+                    padding: 14px;
+                }
+
+                /* Auth — landscape */
+                #view-auth .landing-container {
+                    padding: 12px 16px;
+                    max-height: 100%;
+                    overflow-y: auto;
+                }
+
+                #view-auth .auth-card {
+                    max-width: min(420px, 92vw);
+                    padding: 24px 20px;
+                }
+
+                #view-auth .hero-title {
+                    font-size: 1.65rem;
+                }
+
+                [id^="mod-"]:not(.hidden) {
+                    overflow: hidden;
+                }
             }
         }
 
@@ -3626,24 +3869,26 @@
             body { overflow: hidden; }
             #app-shell { height: 100vh; height: 100dvh; overflow: hidden; }
             body.sidebar-open { overflow: hidden; }
-            .piano-header { padding: 0 12px; height: 56px; margin-top: 12px; width: calc(100% - 24px); }
+            .piano-header {
+                padding: 10px 12px;
+                min-height: 48px;
+                margin: 0;
+                width: 100%;
+            }
             .piano-header .mobile-nav-btn,
             .fc-header .mobile-nav-btn,
             .task-header .mobile-nav-btn,
-            .pathway-header .mobile-nav-btn,
             .module-header .mobile-nav-btn { display: inline-flex; }
-            .piano-stage { padding: 10px 0; }
-            .piano-case { padding: 16px; border-radius: 12px; width: calc(100% - 32px); }
-            .piano-case > div:first-child {
-                flex-wrap: wrap;
-                gap: 12px !important;
+            .piano-stage { padding: 10px 12px 14px; }
+            .piano-case {
+                padding: 14px 12px;
+                border-radius: 18px 18px 10px 10px;
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
             }
-            .piano-case label { font-size: 0.85rem; }
-            .piano-case #vol-slider { flex: 1; min-width: 100px; }
             .keys-wrapper { height: clamp(130px, 32vh, 180px); }
             .key-white { width: clamp(28px, 10vw, 40px) !important; min-width: 28px; }
-            .piano-controls { gap: 10px; }
-            .piano-controls .sound-select { min-width: 100%; flex: 1 1 100%; }
             .key-black { height: 58%; }
             .key { touch-action: manipulation; -webkit-user-select: none; }
             .btn-icon-sm { padding: 8px; font-size: 0.9rem; }
@@ -3925,30 +4170,38 @@
                                         <i class="fa-solid fa-bars"></i>
                                     </button>
                                     <span class="piano-header-title font-head">Piano Lab</span>
+                                    <span class="piano-live-badge" aria-hidden="true"><i class="fa-solid fa-circle"></i> Live</span>
                                 </div>
                                 <div class="piano-stage">
-                                    <div class="piano-case">
-                                        <div class="piano-controls">
-                                            <label>Volume</label>
-                                            <input type="range" id="vol-slider" min="0" max="100" value="55">
-                                            <label>Sound</label>
-                                            <select id="wave-type" class="input-std sound-select">
-                                                <option value="stay" selected>Stay · Resonant</option>
-                                                <option value="grand">Concert Grand</option>
-                                                <option value="warm">Warm Studio</option>
-                                                <option value="soft">Soft Felt</option>
-                                                <option value="electric">Electric EP</option>
-                                                <option value="bell">Glass Bell</option>
-                                                <option value="synth">Ambient Pad</option>
-                                            </select>
-                                            <button class="btn btn-secondary" onclick="Piano.openBindEditor()" style="margin-left: auto;">
-                                                <i class="fa-solid fa-keyboard"></i> Keys
-                                            </button>
+                                    <div class="piano-showcase">
+                                        <div class="piano-glow" aria-hidden="true"></div>
+                                        <div class="piano-case">
+                                            <div class="piano-controls">
+                                                <div class="piano-control-group">
+                                                    <label><i class="fa-solid fa-volume-high"></i> Volume</label>
+                                                    <input type="range" id="vol-slider" min="0" max="100" value="55">
+                                                </div>
+                                                <div class="piano-control-group">
+                                                    <label><i class="fa-solid fa-wave-square"></i> Sound</label>
+                                                    <select id="wave-type" class="input-std sound-select">
+                                                        <option value="stay" selected>Stay · Resonant</option>
+                                                        <option value="grand">Concert Grand</option>
+                                                        <option value="warm">Warm Studio</option>
+                                                        <option value="soft">Soft Felt</option>
+                                                        <option value="electric">Electric EP</option>
+                                                        <option value="bell">Glass Bell</option>
+                                                        <option value="synth">Ambient Pad</option>
+                                                    </select>
+                                                </div>
+                                                <button type="button" class="btn btn-secondary btn-piano-keys" onclick="Piano.openBindEditor()">
+                                                    <i class="fa-solid fa-keyboard"></i> Keys
+                                                </button>
+                                            </div>
+                                            <div class="keys-scroll" id="keys-scroll">
+                                                <div class="keys-wrapper" id="piano-keys"></div>
+                                            </div>
+                                            <p class="keys-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe sideways for more keys</p>
                                         </div>
-                                        <div class="keys-scroll" id="keys-scroll">
-                                            <div class="keys-wrapper" id="piano-keys"></div>
-                                        </div>
-                                        <p class="keys-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe sideways for more keys</p>
                                     </div>
                                 </div>
                             </div>
@@ -4140,6 +4393,10 @@
                                             <p class="task-workspace-label" style="color: var(--text-secondary); font-size: 0.9rem;">Workspace: Main</p>
                                         </div>
                                         <div class="flex gap-10 task-board-actions">
+                                            <button type="button" class="btn btn-secondary btn-danger-outline" id="btn-delete-project"
+                                                onclick="Tasks.deleteProject()" title="Delete this project">
+                                                <i class="fa-solid fa-trash"></i><span class="btn-label"> Delete</span>
+                                            </button>
                                             <button type="button" class="btn btn-secondary" onclick="Tasks.share()">
                                                 <i class="fa-solid fa-share-nodes"></i><span class="btn-label"> Share</span>
                                             </button>
@@ -4726,19 +4983,17 @@
                     return users.find(u => u.email === email) || null;
                 },
                 isPrebuiltDeck: (d) => {
-                    return d && d.name === 'English C1' &&
-                        Array.isArray(d.cards) &&
-                        d.cards.length === 1 &&
-                        d.cards[0].q === 'Ambition' &&
-                        (d.cards[0].a === 'Hoài bão' || d.cards[0].a === 'Hoai bao');
+                    if (!d) return false;
+                    if (d.name === 'English C1') return true;
+                    if (Array.isArray(d.cards) && d.cards.some(c => c && String(c.q).trim() === 'Ambition')) return true;
+                    return false;
                 },
 
                 isPrebuiltProject: (p) => {
-                    return p && p.name === 'English C1' &&
-                        Array.isArray(p.tasks) &&
-                        p.tasks.length === 1 &&
-                        p.tasks[0].title === 'Setup Server' &&
-                        p.tasks[0].assignee === 'Henry';
+                    if (!p) return false;
+                    if (p.name === 'English C1') return true;
+                    if (Array.isArray(p.tasks) && p.tasks.some(t => t && t.title === 'Setup Server')) return true;
+                    return false;
                 },
 
                 stripPrebuiltData: () => {
@@ -5777,16 +6032,51 @@
                     if (!State.projects.length) {
                         container.innerHTML = '<div style="padding:16px 8px;text-align:center;color:var(--text-secondary);font-size:0.85rem;">No projects yet. Use <strong>+ New Project</strong> below.</div>';
                         Tasks.renderBoard();
+                        Tasks.updateDeleteButton();
                         return;
                     }
                     container.innerHTML = State.projects.map((p, i) => `
                         <div class="project-item ${i === State.currP ? 'active' : ''}" onclick="Tasks.switch(${i})">
                             <div style="font-size: 1.2rem;">${p.icon || '📁'}</div>
-                            <div style="width:8px; height:8px; border-radius:50%; background:${p.color || '#F59E0B'}"></div> 
-                            ${p.name}
+                            <div style="width:8px; height:8px; border-radius:50%; background:${p.color || '#F59E0B'}"></div>
+                            <span class="project-item-name">${p.name}</span>
                             ${p.role === 'viewer' ? '<span class="read-only-badge">Read Only</span>' : ''}
+                            ${p.role !== 'viewer' ? `<button type="button" class="project-item-delete" onclick="event.stopPropagation(); Tasks.deleteProject(${i})" aria-label="Delete project"><i class="fa-solid fa-trash"></i></button>` : ''}
                         </div>`).join('');
                     Tasks.renderBoard();
+                    Tasks.updateDeleteButton();
+                },
+
+                updateDeleteButton: () => {
+                    const btn = document.getElementById('btn-delete-project');
+                    if (!btn) return;
+                    const p = State.projects[State.currP];
+                    const hide = !p || p.role === 'viewer';
+                    btn.style.display = hide ? 'none' : '';
+                },
+
+                deleteProject: (idx) => {
+                    const i = idx !== undefined && idx !== null ? idx : State.currP;
+                    const proj = State.projects[i];
+                    if (!proj) return Notify.show('No project selected', 'error');
+                    if (proj.role === 'viewer') return Notify.show('Cannot delete read-only project', 'error');
+
+                    Modals.confirm('Delete Project', `Delete "${proj.name}" and all its tasks? Linked flashcards will be removed too.`, () => {
+                        const id = proj.id;
+                        State.projects.splice(i, 1);
+                        const deckIdx = State.decks.findIndex(d => d.id === id);
+                        if (deckIdx !== -1) State.decks.splice(deckIdx, 1);
+                        if (State.currP >= State.projects.length) {
+                            State.currP = Math.max(0, State.projects.length - 1);
+                        }
+                        if (State.currD >= State.decks.length) {
+                            State.currD = Math.max(0, State.decks.length - 1);
+                        }
+                        DB.saveCurrentData();
+                        Tasks.renderSidebar();
+                        FC.renderHub();
+                        Notify.show('Project deleted');
+                    });
                 },
 
                 switch: (i) => {
@@ -5822,6 +6112,7 @@
                 renderBoard: () => {
                     const p = State.projects[State.currP];
                     document.getElementById('proj-header').innerText = p ? p.name : 'No Project';
+                    Tasks.updateDeleteButton();
                     const container = document.getElementById('task-rows');
                     if (!container) return;
                     if (!p || !p.tasks.length) {
