@@ -1582,8 +1582,29 @@
                 width: 100%;
                 height: 100%;
                 display: flex;
+                flex-direction: column;
                 background: var(--bg-main);
                 overflow: hidden;
+                min-height: 0;
+            }
+
+            .task-workspace {
+                flex: 1;
+                display: flex;
+                min-height: 0;
+                overflow: hidden;
+            }
+
+            .task-header .fc-header-main {
+                min-width: 0;
+            }
+
+            .task-back-btn {
+                flex-shrink: 0;
+            }
+
+            .task-panel-backdrop {
+                display: none;
             }
 
             .task-sidebar {
@@ -1729,6 +1750,16 @@
 
             .task-detail-panel.open {
                 transform: translateX(0);
+            }
+
+            .task-detail-panel .task-panel-back-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                margin-bottom: 20px;
+                padding-bottom: 16px;
+                border-bottom: 1px solid var(--border-color);
             }
 
             .task-comment {
@@ -2178,6 +2209,61 @@
             }
 
             #mod-whiteboard.hidden {
+                display: none !important;
+            }
+
+            /* Whiteboard immersive fullscreen (covers app chrome) */
+            body.wb-fullscreen-active {
+                overflow: hidden;
+            }
+
+            body.wb-fullscreen-active #mod-whiteboard {
+                position: fixed;
+                inset: 0;
+                width: 100vw;
+                height: 100vh;
+                height: 100dvh;
+                max-width: none;
+                max-height: none;
+                z-index: 10020;
+                margin: 0;
+                padding: 0;
+                border-radius: 0;
+            }
+
+            body.wb-fullscreen-active #app-shell .sidebar,
+            body.wb-fullscreen-active #app-shell .mobile-tab-bar {
+                visibility: hidden;
+                pointer-events: none;
+            }
+
+            body.wb-fullscreen-active #mod-whiteboard .mobile-nav-btn {
+                display: none !important;
+            }
+
+            body.wb-fullscreen-active .wb-canvas-wrap {
+                padding: 8px 10px 10px;
+            }
+
+            body.wb-fullscreen-active .wb-viewport {
+                border-radius: var(--radius-md);
+            }
+
+            body.wb-fullscreen-active .wb-panel {
+                top: 0;
+                bottom: 0;
+            }
+
+            body.wb-fullscreen-active .wb-panel-backdrop:not(.hidden) {
+                bottom: 0;
+            }
+
+            .wb-fs-label {
+                margin-left: 4px;
+            }
+
+            #wb-btn-enter-fs.hidden,
+            #wb-btn-exit-fs.hidden {
                 display: none !important;
             }
 
@@ -2898,7 +2984,8 @@
         @media (max-width: 900px) {
             .piano-header { padding: 0 20px; height: 64px; margin-top: 20px; width: calc(100% - 40px); }
             .piano-header .mobile-nav-btn,
-            .fc-header .mobile-nav-btn { display: inline-flex; }
+            .fc-header .mobile-nav-btn,
+            .task-header .mobile-nav-btn { display: inline-flex; }
             .piano-header > div:first-child { font-size: 1rem; }
             .piano-case { padding: 20px; border-radius: 14px; }
             .keys-scroll { -webkit-overflow-scrolling: touch; }
@@ -3127,6 +3214,51 @@
             .wb-export-label {
                 display: none;
             }
+
+            .task-header .fc-header-actions {
+                flex-wrap: wrap;
+            }
+
+            .task-header .fc-header-actions .btn .btn-label {
+                display: none;
+            }
+
+            .task-board-header {
+                padding: 16px 14px 0;
+            }
+
+            .task-list-container {
+                padding: 0 14px 20px;
+            }
+
+            .task-detail-panel {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .task-detail-panel.open {
+                z-index: 10003;
+            }
+
+            .task-panel-backdrop.open {
+                display: block;
+                position: fixed;
+                inset: 0;
+                bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+                background: rgba(0, 0, 0, 0.45);
+                z-index: 10002;
+            }
+
+            .wb-fs-label {
+                display: none;
+            }
+
+            .wb-header-actions {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex-shrink: 0;
+            }
         }
 
             @media (max-width: 600px) {
@@ -3149,7 +3281,8 @@
             body.sidebar-open { overflow: hidden; }
             .piano-header { padding: 0 12px; height: 56px; margin-top: 12px; width: calc(100% - 24px); }
             .piano-header .mobile-nav-btn,
-            .fc-header .mobile-nav-btn { display: inline-flex; }
+            .fc-header .mobile-nav-btn,
+            .task-header .mobile-nav-btn { display: inline-flex; }
             .piano-stage { padding: 10px 0; }
             .piano-case { padding: 16px; border-radius: 12px; width: calc(100% - 32px); }
             .piano-case > div:first-child {
@@ -3616,7 +3749,30 @@
                             </div>
 
                             <!-- TASKS MODULE -->
-                            <div id="mod-tasks" class="hidden module-flex">
+                            <div id="mod-tasks" class="hidden module-flex-column">
+                                <div class="fc-header task-header">
+                                    <div class="fc-header-main">
+                                        <button type="button" class="mobile-nav-btn" onclick="UI.toggleSidebar()" aria-label="Open menu">
+                                            <i class="fa-solid fa-bars"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-secondary task-back-btn" onclick="Tasks.goBack()"
+                                            aria-label="Go back">
+                                            <i class="fa-solid fa-arrow-left"></i>
+                                            <span class="btn-label">Back</span>
+                                        </button>
+                                        <h2 class="font-head fc-title">Task Arena</h2>
+                                    </div>
+                                    <div class="fc-header-actions">
+                                        <button type="button" class="btn btn-secondary btn-sm" onclick="Tasks.jumpToFlashcards()">
+                                            <i class="fa-solid fa-layer-group"></i><span class="btn-label"> Cards</span>
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm" onclick="Modals.prompt('New Project','Project Name:', Tasks.createProject)">
+                                            <i class="fa-solid fa-plus"></i><span class="btn-label"> Project</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="task-workspace">
                                 <div class="task-sidebar">
                                     <div
                                         style="font-size: 0.7rem; font-weight: 800; color: var(--text-secondary); margin-bottom: 15px; letter-spacing: 1px;">
@@ -3636,16 +3792,16 @@
                                                 id="proj-header">Projects</h2>
                                             <p style="color: var(--text-secondary); font-size: 0.9rem;">Workspace: Main</p>
                                         </div>
-                                        <div class="flex gap-10">
-                                            <button class="btn btn-secondary" onclick="Tasks.jumpToFlashcards()">
-                                                <i class="fa-solid fa-layer-group"></i> Go to Flashcards
+                                        <div class="flex gap-10 task-board-actions">
+                                            <button type="button" class="btn btn-secondary" onclick="Tasks.share()">
+                                                <i class="fa-solid fa-share-nodes"></i><span class="btn-label"> Share</span>
                                             </button>
-                                            <button class="btn btn-secondary" onclick="Tasks.share()">
-                                                <i class="fa-solid fa-share-nodes"></i> Share Project
-                                            </button>
-                                            <button class="btn btn-primary" onclick="Tasks.addTask()">+ New Task</button>
+                                            <button type="button" class="btn btn-primary" onclick="Tasks.addTask()">+ New Task</button>
                                         </div>
                                     </div>
+
+                                    <div class="task-panel-backdrop" id="task-panel-backdrop" onclick="Tasks.closePanel()"
+                                        aria-hidden="true"></div>
 
                                     <div class="task-list-container">
                                         <div class="task-cols">
@@ -3660,21 +3816,22 @@
 
                                     <!-- Task Detail Panel -->
                                     <div id="task-panel" class="task-detail-panel">
-                                        <div class="flex justify-between" style="margin-bottom: 30px;">
+                                        <div class="task-panel-back-row">
+                                            <button type="button" class="btn btn-secondary task-back-btn" onclick="Tasks.closePanel()">
+                                                <i class="fa-solid fa-arrow-left"></i>
+                                                <span class="btn-label">Back to list</span>
+                                            </button>
                                             <div class="flex gap-10">
-                                                <button class="btn btn-secondary"
+                                                <button type="button" class="btn btn-secondary"
                                                     style="color: var(--status-success); border-color: var(--status-success);"
                                                     onclick="Tasks.complete()">
                                                     <i class="fa-solid fa-check"></i>
                                                 </button>
-                                                <button class="btn btn-danger"
+                                                <button type="button" class="btn btn-danger"
                                                     onclick="Modals.confirm('Delete Task', 'Are you sure?', Tasks.deleteTask)">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </div>
-                                            <button class="btn btn-secondary" style="border:none;" onclick="Tasks.closePanel()">
-                                                <i class="fa-solid fa-xmark"></i>
-                                            </button>
                                         </div>
 
                                         <input type="text" id="edit-title" class="input-std"
@@ -3741,6 +3898,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                 </div>
                             </div>
 
@@ -3861,7 +4019,17 @@
                                 </button>
                                 <h2 class="module-title font-head">Whiteboard</h2>
                             </div>
-                            <div class="module-header-right">
+                            <div class="module-header-right wb-header-actions">
+                                <button type="button" id="wb-btn-enter-fs" class="btn btn-secondary btn-sm hidden"
+                                    onclick="Whiteboard.enterFullscreen()" title="Enter full screen" aria-label="Enter full screen">
+                                    <i class="fa-solid fa-expand"></i>
+                                    <span class="wb-fs-label">Full screen</span>
+                                </button>
+                                <button type="button" id="wb-btn-exit-fs" class="btn btn-secondary btn-sm"
+                                    onclick="Whiteboard.exitFullscreen()" title="Exit full screen" aria-label="Exit full screen">
+                                    <i class="fa-solid fa-compress"></i>
+                                    <span class="wb-fs-label">Exit</span>
+                                </button>
                                 <button type="button" class="btn btn-secondary btn-sm wb-panel-toggle wb-mobile-panel-btn"
                                     onclick="Whiteboard.toggleMobilePanel()" aria-label="Boards and layers">
                                     <i class="fa-solid fa-layer-group"></i>
@@ -4621,8 +4789,10 @@
 
             const Nav = {
                 currentModule: 'piano',
+                previousModule: 'piano',
                 
                 to: (tab, el) => {
+                    if (tab !== Nav.currentModule) Nav.previousModule = Nav.currentModule;
                     Nav.currentModule = tab;
                     const wbPanel = document.getElementById('wb-side-panel');
                     const wbBackdrop = document.getElementById('wb-panel-backdrop');
@@ -4641,15 +4811,20 @@
                     if (tab === 'whiteboard') {
                         if (typeof Whiteboard !== 'undefined') {
                             if (!Whiteboard._inited) Whiteboard.init();
-                            else Whiteboard.resizeCanvas();
+                            Whiteboard.setFullscreen(true);
                         }
                         window.dispatchEvent(new Event('resize'));
+                    } else {
+                        document.body.classList.remove('wb-fullscreen-active');
+                        if (typeof Whiteboard !== 'undefined') Whiteboard.fullscreen = false;
                     }
                     window.scrollTo(0, 0);
                 },
                 
                 back: () => {
                     document.getElementById('mod-whiteboard').classList.add('hidden');
+                    document.body.classList.remove('wb-fullscreen-active');
+                    if (typeof Whiteboard !== 'undefined') Whiteboard.fullscreen = false;
                     if (Nav.currentModule === 'whiteboard') {
                         Nav.currentModule = 'piano';
                     }
@@ -5366,11 +5541,12 @@
                 },
 
                 jumpToTasks: () => {
+                    Tasks.returnTo = { module: 'flashcards', deckIdx: State.currD };
                     FC.closeOverview();
                     const deckId = State.decks[State.currD].id;
                     const pIdx = State.projects.findIndex(p => p.id === deckId);
                     if (pIdx !== -1) {
-                        const taskNav = document.querySelectorAll('.nav-item')[2];
+                        const taskNav = document.querySelector('.nav-item[onclick*="tasks"]');
                         Nav.to('tasks', taskNav);
                         Tasks.switch(pIdx);
                     }
@@ -5556,6 +5732,30 @@
 
             // ========== TASKS MODULE ==========
             const Tasks = {
+                returnTo: null,
+
+                goBack: () => {
+                    const panel = document.getElementById('task-panel');
+                    if (panel && panel.classList.contains('open')) {
+                        Tasks.closePanel();
+                        return;
+                    }
+                    if (Tasks.returnTo && Tasks.returnTo.module === 'flashcards') {
+                        const deckIdx = Tasks.returnTo.deckIdx;
+                        Tasks.returnTo = null;
+                        const fcNav = document.querySelector('.nav-item[onclick*="flashcards"]');
+                        Nav.to('flashcards', fcNav);
+                        FC.openOverview(deckIdx);
+                        return;
+                    }
+                    const dest = (Nav.previousModule && Nav.previousModule !== 'tasks')
+                        ? Nav.previousModule
+                        : 'piano';
+                    const navEl = document.querySelector(`.nav-item[onclick*="'${dest}'"]`)
+                        || document.querySelector(`.mobile-tab-item[data-tab="${dest}"]`);
+                    Nav.to(dest, navEl);
+                },
+
                 renderSidebar: () => {
                     const container = document.getElementById('project-list');
                     if (!container) return;
@@ -5669,6 +5869,8 @@
                     Tasks.renderComments();
 
                     document.getElementById('task-panel').classList.add('open');
+                    const backdrop = document.getElementById('task-panel-backdrop');
+                    if (backdrop) backdrop.classList.add('open');
                 },
 
                 renderComments: () => {
@@ -5751,6 +5953,8 @@
                         Tasks.renderBoard();
                     }
                     document.getElementById('task-panel').classList.remove('open');
+                    const backdrop = document.getElementById('task-panel-backdrop');
+                    if (backdrop) backdrop.classList.remove('open');
                     State.activeTask = null;
                 },
 
@@ -5786,6 +5990,8 @@
                     DB.saveCurrentData();
                     State.activeTask = null;
                     document.getElementById('task-panel').classList.remove('open');
+                    const backdrop = document.getElementById('task-panel-backdrop');
+                    if (backdrop) backdrop.classList.remove('open');
                     Tasks.renderBoard();
                     Modals.close();
                     Notify.show('Task deleted');
@@ -5803,7 +6009,8 @@
                 jumpToFlashcards: () => {
                     const deckIdx = State.decks.findIndex(d => d.id === State.projects[State.currP].id);
                     if (deckIdx !== -1) {
-                        const fcNav = document.querySelectorAll('.nav-item')[1];
+                        Tasks.returnTo = null;
+                        const fcNav = document.querySelector('.nav-item[onclick*="flashcards"]');
                         Nav.to('flashcards', fcNav);
                         FC.openOverview(deckIdx);
                     }
@@ -6309,6 +6516,23 @@
                 pendingTextPos: null,
                 selectedNoteColor: '#FFF59D',
                 _inited: false,
+                fullscreen: false,
+
+                setFullscreen: (on) => {
+                    Whiteboard.fullscreen = !!on;
+                    document.body.classList.toggle('wb-fullscreen-active', Whiteboard.fullscreen);
+                    const enterBtn = document.getElementById('wb-btn-enter-fs');
+                    const exitBtn = document.getElementById('wb-btn-exit-fs');
+                    if (enterBtn) enterBtn.classList.toggle('hidden', Whiteboard.fullscreen);
+                    if (exitBtn) exitBtn.classList.toggle('hidden', !Whiteboard.fullscreen);
+                    requestAnimationFrame(() => {
+                        Whiteboard.resizeCanvas();
+                        window.dispatchEvent(new Event('resize'));
+                    });
+                },
+
+                enterFullscreen: () => Whiteboard.setFullscreen(true),
+                exitFullscreen: () => Whiteboard.setFullscreen(false),
 
                 resizeCanvas: () => {
                     if (!Whiteboard.canvas) return;
@@ -6388,6 +6612,7 @@
                         }
                     });
 
+                    Whiteboard.setFullscreen(true);
                     Whiteboard._inited = true;
                 },
 
