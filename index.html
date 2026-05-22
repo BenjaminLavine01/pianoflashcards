@@ -4247,6 +4247,11 @@
                                         <button type="submit" class="btn btn-primary w-full">Login</button>
                                     </form>
                                     <p id="auth-backend-status" class="auth-backend-hint"></p>
+                                    <p id="auth-resend-row" style="text-align: center; margin-top: 14px; display: none;">
+                                        <span style="color: var(--text-secondary); font-size: 0.88rem;">Email not confirmed?</span>
+                                        <a href="#" onclick="Auth.resendConfirmation(); return false;"
+                                            style="color: var(--accent-color); font-weight: 700; font-size: 0.88rem; margin-left: 6px;">Resend link</a>
+                                    </p>
                                     <p style="text-align: center; margin-top: 20px; color: var(--text-secondary);">
                                         No account? <a onclick="Auth.toggle('signup')"
                                             style="color: var(--accent-color); cursor: pointer; font-weight: 700;">Sign Up</a>
@@ -5299,14 +5304,34 @@
                     };
                 },
 
+                authRedirectUrl: () => window.location.origin,
+
+                isUnconfirmedError: (err) => {
+                    const msg = (err?.message || '').toLowerCase();
+                    const code = (err?.code || '').toLowerCase();
+                    return msg.includes('email not confirmed') || code.includes('email_not_confirmed');
+                },
+
                 signUp: async (name, email, password) => {
                     const { data, error } = await CloudAuth.client.auth.signUp({
                         email,
                         password,
-                        options: { data: { full_name: name, name } }
+                        options: {
+                            data: { full_name: name, name },
+                            emailRedirectTo: CloudAuth.authRedirectUrl()
+                        }
                     });
                     if (error) throw error;
                     return data;
+                },
+
+                resendConfirmation: async (email) => {
+                    const { error } = await CloudAuth.client.auth.resend({
+                        type: 'signup',
+                        email,
+                        options: { emailRedirectTo: CloudAuth.authRedirectUrl() }
+                    });
+                    if (error) throw error;
                 },
 
                 signIn: async (email, password) => {
@@ -5534,6 +5559,26 @@
                     ['form-login', 'form-signup', 'form-forgot'].forEach(id => document.getElementById(id).classList.add('hidden'));
                     document.getElementById('form-' + mode).classList.remove('hidden');
                     if (mode === 'forgot') Auth.setForgotStep(1);
+                    Auth.setResendLinkVisible(mode === 'login' && CloudAuth.isEnabled());
+                },
+
+                setResendLinkVisible: (show) => {
+                    const row = document.getElementById('auth-resend-row');
+                    if (row) row.style.display = show ? 'block' : 'none';
+                },
+
+                resendConfirmation: async () => {
+                    const email = (document.getElementById('log-email')?.value || '').trim();
+                    if (!email) return Notify.show('Enter your email above first', 'error');
+                    if (!CloudAuth.isEnabled() || !CloudAuth.ready) {
+                        return Notify.show('Cloud login is not ready', 'error');
+                    }
+                    try {
+                        await CloudAuth.resendConfirmation(email);
+                        Notify.show('Confirmation email sent — check inbox and spam');
+                    } catch (err) {
+                        Notify.show(err.message || 'Could not resend email', 'error');
+                    }
                 },
 
                 setForgotStep: (step) => {
@@ -5574,9 +5619,19 @@
 
                     if (CloudAuth.isEnabled() && CloudAuth.ready) {
                         try {
-                            await CloudAuth.signUp(name, email, pass);
-                            Notify.show('Check your email to confirm, then log in.');
+                            const data = await CloudAuth.signUp(name, email, pass);
+                            if (data?.session) {
+                                const u = await CloudAuth.sessionUser();
+                                if (u) {
+                                    Auth.enterApp({ ...u, cloud: true });
+                                    Notify.show('Welcome, ' + u.name);
+                                    return;
+                                }
+                            }
+                            Notify.show('Account created — open the confirmation link in your email, then log in.');
                             Auth.toggle('login');
+                            document.getElementById('log-email').value = email;
+                            Auth.setResendLinkVisible(true);
                         } catch (err) {
                             Notify.show(err.message || 'Sign up failed', 'error');
                         }
@@ -5606,7 +5661,12 @@
                             Auth.enterApp({ ...u, cloud: true });
                             Notify.show('Welcome back, ' + u.name);
                         } catch (err) {
-                            Notify.show(err.message || 'Invalid credentials', 'error');
+                            if (CloudAuth.isUnconfirmedError(err)) {
+                                Auth.setResendLinkVisible(true);
+                                Notify.show('Email not confirmed — check your inbox or tap Resend link below.', 'error');
+                            } else {
+                                Notify.show(err.message || 'Invalid credentials', 'error');
+                            }
                         }
                         return;
                     }
@@ -7141,6 +7201,7 @@
                 await loadAppConfig();
                 await CloudAuth.init();
                 await Auth.updateBackendHint();
+                Auth.setResendLinkVisible(CloudAuth.isEnabled());
                 await Auth.tryRestoreSession();
             })();
 
