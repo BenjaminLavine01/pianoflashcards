@@ -2231,12 +2231,13 @@
                 border-radius: 0;
             }
 
-            body.wb-fullscreen-active #app-shell .sidebar {
+            /* Only hide app chrome when whiteboard is the active module in fullscreen */
+            body.wb-fullscreen-active.wb-module-active #app-shell .sidebar {
                 visibility: hidden;
                 pointer-events: none;
             }
 
-            body.wb-fullscreen-active #app-shell .mobile-tab-bar {
+            body.wb-fullscreen-active.wb-module-active #app-shell .mobile-tab-bar {
                 display: none !important;
             }
 
@@ -3068,8 +3069,11 @@
                 --mobile-tab-h: calc(56px + env(safe-area-inset-bottom, 0px));
             }
 
+            #app-shell:not(.hidden) #mobile-tab-bar,
             #app-shell:not(.hidden) .mobile-tab-bar {
                 display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
                 position: fixed;
                 bottom: 0;
                 left: 0;
@@ -4925,7 +4929,6 @@
                     FC.renderHub();
                     Tasks.renderSidebar();
                     Pathway.init();
-                    Whiteboard.init();
                     Theme.apply();
                     Theme.bindSwatches();
                 },
@@ -4968,9 +4971,12 @@
                         document.getElementById('app-username').innerText = u.name;
                         document.getElementById('app-avatar').innerText = u.name[0] || '?';
                         document.getElementById('auth-screen').classList.add('hidden');
-                        document.getElementById('app-shell').classList.remove('hidden');
-                        document.getElementById('app-shell').style.opacity = 1;
+                        const shell = document.getElementById('app-shell');
+                        shell.classList.remove('hidden');
+                        shell.style.opacity = 1;
+                        Nav.resetAppChrome();
                         DB.loadUserSession(u);
+                        Nav.to('piano');
                         Piano.initKeys();
                         Notify.show('Welcome back, ' + u.name);
                     } else {
@@ -4983,6 +4989,18 @@
             const Nav = {
                 currentModule: 'piano',
                 previousModule: 'piano',
+
+                resetAppChrome: () => {
+                    document.body.classList.remove('wb-fullscreen-active', 'wb-module-active');
+                    if (typeof Whiteboard !== 'undefined') {
+                        Whiteboard.fullscreen = false;
+                        const enterBtn = document.getElementById('wb-btn-enter-fs');
+                        const exitBtn = document.getElementById('wb-btn-exit-fs');
+                        if (enterBtn) enterBtn.classList.remove('hidden');
+                        if (exitBtn) exitBtn.classList.add('hidden');
+                    }
+                    UI.closeMobileDrawers();
+                },
                 
                 to: (tab, el) => {
                     if (tab !== Nav.currentModule) Nav.previousModule = Nav.currentModule;
@@ -4998,6 +5016,7 @@
                     const target = document.getElementById('mod-' + tab);
                     if (target) target.classList.remove('hidden');
                     if (document.querySelector('.sidebar.mobile-open')) UI.toggleSidebar();
+                    document.body.classList.toggle('wb-module-active', tab === 'whiteboard');
                     if (tab === 'whiteboard') {
                         if (typeof Whiteboard !== 'undefined') {
                             if (!Whiteboard._inited) Whiteboard.init();
@@ -5016,7 +5035,7 @@
                 
                 back: () => {
                     document.getElementById('mod-whiteboard').classList.add('hidden');
-                    document.body.classList.remove('wb-fullscreen-active');
+                    document.body.classList.remove('wb-fullscreen-active', 'wb-module-active');
                     if (typeof Whiteboard !== 'undefined') Whiteboard.fullscreen = false;
                     if (Nav.currentModule === 'whiteboard') {
                         Nav.currentModule = 'piano';
@@ -6722,7 +6741,9 @@
 
                 setFullscreen: (on) => {
                     Whiteboard.fullscreen = !!on;
-                    document.body.classList.toggle('wb-fullscreen-active', Whiteboard.fullscreen);
+                    const onWhiteboard = Nav.currentModule === 'whiteboard';
+                    document.body.classList.toggle('wb-module-active', onWhiteboard);
+                    document.body.classList.toggle('wb-fullscreen-active', Whiteboard.fullscreen && onWhiteboard);
                     const enterBtn = document.getElementById('wb-btn-enter-fs');
                     const exitBtn = document.getElementById('wb-btn-exit-fs');
                     if (enterBtn) enterBtn.classList.toggle('hidden', Whiteboard.fullscreen);
@@ -6814,7 +6835,6 @@
                         }
                     });
 
-                    Whiteboard.setFullscreen(!UI.isMobile());
                     Whiteboard._inited = true;
                 },
 
