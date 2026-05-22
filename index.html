@@ -946,96 +946,164 @@
             .piano-stage {
                 flex: 1;
                 display: flex;
+                flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 width: 100%;
-                overflow: hidden;
+                min-height: 0;
+                overflow: auto;
+                padding: 12px 16px 20px;
+                background:
+                    radial-gradient(ellipse 70% 50% at 50% 0%, var(--accent-soft), transparent 60%),
+                    linear-gradient(180deg, rgba(15, 23, 42, 0.04) 0%, transparent 45%);
             }
 
             .piano-case {
-                background: var(--bg-surface);
-                padding: 50px;
-                border-radius: 30px;
-                box-shadow: var(--shadow-lg);
-                border: 1px solid var(--border-color);
+                background: linear-gradient(165deg, #1a1a1f 0%, #0d0d10 45%, #15151a 100%);
+                padding: 28px 20px 28px;
+                border-radius: 22px 22px 10px 10px;
+                box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(255, 255, 255, 0.06);
                 display: flex;
                 flex-direction: column;
-                align-items: center;
+                align-items: stretch;
                 position: relative;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .piano-case::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 20px;
+                right: 20px;
+                height: 3px;
+                background: var(--brand-gradient);
+                border-radius: 0 0 4px 4px;
+                opacity: 0.9;
+            }
+
+            .piano-controls {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px 16px;
+                align-items: center;
+                margin-bottom: 18px;
+                padding: 14px 16px;
+                background: rgba(255, 255, 255, 0.04);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 12px;
+            }
+
+            .piano-controls label {
+                font-weight: 600;
+                font-size: 0.75rem;
+                color: rgba(255, 255, 255, 0.5);
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+            }
+
+            .piano-controls .input-std,
+            .piano-controls select {
+                background: rgba(0, 0, 0, 0.35);
+                border-color: rgba(255, 255, 255, 0.12);
+                color: #f4f4f5;
+            }
+
+            .piano-controls #vol-slider {
+                flex: 1;
+                min-width: 80px;
+                accent-color: var(--accent-color);
+            }
+
+            .piano-controls .sound-select {
+                min-width: 150px;
+            }
+
+            .keys-scroll {
+                overflow-x: auto;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+                padding: 8px 4px 10px;
+                border-radius: 8px;
+                background: linear-gradient(180deg, #0a0a0c 0%, #121216 100%);
+                box-shadow: inset 0 4px 16px rgba(0, 0, 0, 0.55);
             }
 
             .keys-wrapper {
                 display: flex;
                 position: relative;
-                height: 280px;
+                height: clamp(180px, 30vh, 280px);
+                min-width: min-content;
             }
 
             .key {
-                border: 1px solid #94A3B8;
-                border-top: none;
-                border-radius: 0 0 5px 5px;
+                border: none;
+                border-radius: 0 0 8px 8px;
                 cursor: pointer;
                 position: relative;
                 display: flex;
                 align-items: flex-end;
                 justify-content: center;
-                padding-bottom: 10px;
-                font-weight: 700;
-                font-size: 12px;
+                touch-action: manipulation;
                 user-select: none;
-                transition: transform 0.05s, background 0.1s;
+                transition: transform 0.08s var(--ease-bounce), box-shadow 0.08s;
             }
 
             .key-white {
-                width: 50px;
+                width: 44px;
                 height: 100%;
-                background: white;
+                background: linear-gradient(180deg, #fefefe 0%, #f0f1f4 55%, #e2e5ea 100%);
                 z-index: 1;
-                color: #475569;
+                color: #64748b;
+                box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.06), 2px 4px 8px rgba(0, 0, 0, 0.12);
+                margin-right: 1px;
             }
 
             .key-white.active {
-                background: #F1F5F9;
-                border-bottom: 8px solid var(--accent-color);
-                transform: translateY(2px);
+                transform: translateY(3px);
+                box-shadow: inset 0 -3px 0 var(--accent-color), 0 0 18px var(--accent-glow);
             }
 
             .key-black {
-                width: 30px;
-                height: 60%;
-                background: #1E293B;
+                width: 26px;
+                height: 62%;
+                background: linear-gradient(180deg, #3d4450 0%, #1a1d24 40%, #0a0a0c 100%);
                 position: absolute;
                 z-index: 2;
-                margin-left: -15px;
-                border-bottom: 8px solid #0F172A;
-                border-radius: 0 0 3px 3px;
-                color: rgba(255, 255, 255, 0.5);
+                border-radius: 0 0 6px 6px;
+                color: rgba(255, 255, 255, 0.4);
+                box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
             }
 
             .key-black.active {
-                background: #334155;
-                border-bottom: 2px solid var(--accent-color);
                 transform: translateY(2px);
+                box-shadow: inset 0 -2px 0 var(--accent-color), 0 0 14px var(--accent-glow);
             }
 
             .key-label {
                 position: absolute;
-                bottom: 34px;
-                font-size: 12px;
+                bottom: 26px;
+                font-size: 9px;
                 font-weight: 700;
-                opacity: 0.95;
                 text-transform: uppercase;
                 pointer-events: none;
-                padding: 4px 8px;
-                border-radius: 8px;
-                background: rgba(0, 0, 0, 0.04);
-                color: var(--text-primary);
+                padding: 2px 5px;
+                border-radius: 4px;
+                background: rgba(0, 0, 0, 0.06);
+                color: #64748b;
             }
 
             .key-black .key-label {
-                bottom: 40px;
-                color: white;
-                background: rgba(255, 255, 255, 0.08);
+                bottom: 18px;
+                color: rgba(255, 255, 255, 0.7);
+                background: rgba(255, 255, 255, 0.1);
+                font-size: 8px;
+            }
+
+            .mobile-tab-bar {
+                display: none;
             }
 
             /* FLASHCARDS MODULE */
@@ -2686,8 +2754,9 @@
             .fc-header .mobile-nav-btn { display: inline-flex; }
             .piano-header > div:first-child { font-size: 1rem; }
             .piano-case { padding: 20px; border-radius: 14px; }
-            .keys-wrapper { height: clamp(150px, 36vh, 220px); overflow-x: auto; -webkit-overflow-scrolling: touch; }
-            .key-white { width: clamp(36px, 9vw, 50px) !important; min-width: 36px; }
+            .keys-scroll { -webkit-overflow-scrolling: touch; }
+            .keys-wrapper { height: clamp(150px, 36vh, 220px); }
+            .key-white { width: clamp(32px, 8vw, 44px) !important; min-width: 32px; }
             .key-black { width: calc(var(--white-key-width) * 0.6); min-width: 24px; }
             .btn { padding: 10px 14px; font-size: 0.95rem; }
 
@@ -2737,6 +2806,68 @@
             .swipe-hint { display: block; }
         }
 
+            @media (max-width: 768px) {
+            .mobile-tab-bar {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 10001;
+                background: var(--bg-surface);
+                border-top: 1px solid var(--border-color);
+                padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+                justify-content: space-around;
+                align-items: stretch;
+                gap: 4px;
+                backdrop-filter: var(--glass-blur);
+                box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12);
+            }
+
+            .mobile-tab-item {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 3px;
+                padding: 8px 4px;
+                border: none;
+                background: transparent;
+                color: var(--text-secondary);
+                font-size: 0.65rem;
+                font-weight: 700;
+                border-radius: var(--radius-md);
+                cursor: pointer;
+                transition: all 0.2s;
+                min-width: 0;
+            }
+
+            .mobile-tab-item i {
+                font-size: 1.15rem;
+            }
+
+            .mobile-tab-item.active {
+                color: var(--accent-color);
+                background: var(--active-bg);
+            }
+
+            #app-shell {
+                flex-direction: column;
+            }
+
+            #app-shell > main {
+                flex: 1;
+                min-height: 0;
+                overflow: hidden !important;
+                padding-bottom: 62px;
+            }
+
+            [id^="mod-"]:not(.hidden) {
+                height: 100% !important;
+            }
+        }
+
             @media (max-width: 600px) {
             .landing-container {
                 padding: 20px 0;
@@ -2750,7 +2881,8 @@
                 font-size: 2rem;
             }
 
-            body { overflow: auto; }
+            body { overflow: hidden; }
+            #app-shell { height: 100vh; height: 100dvh; overflow: hidden; }
             .sidebar { left: -110% !important; position: fixed !important; top: 0; bottom: 0; width: 80% !important; max-width: 320px !important; z-index: 9999; transition: left 0.3s var(--ease-bounce); }
             .sidebar.mobile-open { left: 0 !important; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
             body.sidebar-open { overflow: hidden; }
@@ -2765,13 +2897,14 @@
             }
             .piano-case label { font-size: 0.85rem; }
             .piano-case #vol-slider { flex: 1; min-width: 100px; }
-            .keys-wrapper { height: clamp(130px, 34vh, 180px); }
-            .key { font-size: 11px; }
-            .key-white { width: clamp(34px, 12vw, 48px) !important; }
+            .keys-wrapper { height: clamp(130px, 32vh, 180px); }
+            .key-white { width: clamp(28px, 10vw, 40px) !important; min-width: 28px; }
+            .piano-controls { gap: 10px; }
+            .piano-controls .sound-select { min-width: 100%; flex: 1 1 100%; }
             .key-black { height: 58%; }
             .key { touch-action: manipulation; -webkit-user-select: none; }
             .btn-icon-sm { padding: 8px; font-size: 0.9rem; }
-            #app-shell main { overflow: auto !important; }
+            #app-shell > main { overflow: hidden !important; padding-bottom: 62px; }
             .sidebar-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9998; backdrop-filter: blur(4px); }
             .key-label { bottom: 16px; font-size: 11px; padding: 3px 6px; border-radius: 6px; }
 
@@ -2901,11 +3034,6 @@
         }
 
         /* ── Global polish ── */
-        .piano-case {
-            background: var(--bg-surface) !important;
-            border: 1px solid var(--border-color) !important;
-            box-shadow: var(--shadow-md);
-        }
 
         .task-board-header,
         .fc-header {
@@ -3074,18 +3202,26 @@
                                 </div>
                                 <div class="piano-stage">
                                     <div class="piano-case">
-                                        <div style="margin-bottom: 30px; display: flex; gap: 20px; align-items: center;">
-                                            <label style="font-weight: 600; color: var(--text-secondary);">Volume</label>
-                                            <input type="range" id="vol-slider" min="0" max="100" value="50">
-                                            <label style="font-weight: 600; color: var(--text-secondary);">Waveform</label>
-                                            <select id="wave-type" class="input-std" style="width: 120px; padding: 5px;">
-                                                <option value="sine">Grand (Sine)</option>
-                                                <option value="triangle">Soft (Tri)</option>
-                                                <option value="sawtooth">Synth (Saw)</option>
+                                        <div class="piano-controls">
+                                            <label>Volume</label>
+                                            <input type="range" id="vol-slider" min="0" max="100" value="55">
+                                            <label>Sound</label>
+                                            <select id="wave-type" class="input-std sound-select">
+                                                <option value="stay" selected>Stay · Resonant</option>
+                                                <option value="grand">Concert Grand</option>
+                                                <option value="warm">Warm Studio</option>
+                                                <option value="soft">Soft Felt</option>
+                                                <option value="electric">Electric EP</option>
+                                                <option value="bell">Glass Bell</option>
+                                                <option value="synth">Ambient Pad</option>
                                             </select>
-                                            <button class="btn btn-secondary" onclick="Piano.openBindEditor()">Keybinds</button>
+                                            <button class="btn btn-secondary" onclick="Piano.openBindEditor()" style="margin-left: auto;">
+                                                <i class="fa-solid fa-keyboard"></i> Keys
+                                            </button>
                                         </div>
-                                        <div class="keys-wrapper" id="piano-keys"></div>
+                                        <div class="keys-scroll">
+                                            <div class="keys-wrapper" id="piano-keys"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -3619,6 +3755,24 @@
                     </div>
                     </div>
                     </main>
+
+                    <nav class="mobile-tab-bar" id="mobile-tab-bar" aria-label="App navigation">
+                        <button type="button" class="mobile-tab-item active" data-tab="piano" onclick="Nav.to('piano')">
+                            <i class="fa-solid fa-music"></i><span>Piano</span>
+                        </button>
+                        <button type="button" class="mobile-tab-item" data-tab="flashcards" onclick="Nav.to('flashcards')">
+                            <i class="fa-solid fa-layer-group"></i><span>Cards</span>
+                        </button>
+                        <button type="button" class="mobile-tab-item" data-tab="tasks" onclick="Nav.to('tasks')">
+                            <i class="fa-solid fa-list-check"></i><span>Tasks</span>
+                        </button>
+                        <button type="button" class="mobile-tab-item" data-tab="pathway" onclick="Nav.to('pathway')">
+                            <i class="fa-solid fa-route"></i><span>Learn</span>
+                        </button>
+                        <button type="button" class="mobile-tab-item" data-tab="whiteboard" onclick="Nav.to('whiteboard')">
+                            <i class="fa-solid fa-pen-ruler"></i><span>Board</span>
+                        </button>
+                    </nav>
                     </div>
 
                     <!-- MODALS -->
@@ -4032,6 +4186,26 @@
                 }
             };
 
+            const UI = {
+                toggleSidebar: () => {
+                    const sb = document.querySelector('.sidebar');
+                    if (!sb) return;
+                    const isOpen = sb.classList.toggle('mobile-open');
+                    document.body.classList.toggle('sidebar-open', isOpen);
+                    const existing = document.querySelector('.sidebar-backdrop');
+                    if (isOpen) {
+                        if (!existing) {
+                            const backdrop = document.createElement('div');
+                            backdrop.className = 'sidebar-backdrop';
+                            backdrop.onclick = () => UI.toggleSidebar();
+                            document.body.appendChild(backdrop);
+                        }
+                    } else if (existing) {
+                        existing.remove();
+                    }
+                }
+            };
+
             const Storage = {
                 set: (key, value) => {
                     try {
@@ -4147,26 +4321,6 @@
                     if (savedTheme.accent) State.themeAccent = savedTheme.accent;
                     if (savedTheme.mode) State.theme = savedTheme.mode;
                     document.body.className = 'theme-' + State.theme;
-                    const UI = {
-                        toggleSidebar: () => {
-                            const sb = document.querySelector('.sidebar');
-                            if (!sb) return;
-                            const isOpen = sb.classList.toggle('mobile-open');
-                            document.body.classList.toggle('sidebar-open', isOpen);
-                            const existing = document.querySelector('.sidebar-backdrop');
-                            if (isOpen) {
-                                // create backdrop to capture outside taps
-                                if (!existing) {
-                                    const backdrop = document.createElement('div');
-                                    backdrop.className = 'sidebar-backdrop';
-                                    backdrop.onclick = () => UI.toggleSidebar();
-                                    document.body.appendChild(backdrop);
-                                }
-                            } else {
-                                if (existing) existing.remove();
-                            }
-                        }
-                    };
                     Piano.render();
                     FC.renderHub();
                     Tasks.renderSidebar();
@@ -4232,14 +4386,19 @@
                 to: (tab, el) => {
                     Nav.currentModule = tab;
                     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    document.querySelectorAll('.mobile-tab-item').forEach(i => i.classList.remove('active'));
+                    if (!el) el = document.querySelector(`.nav-item[onclick*="'${tab}'"]`);
                     if (el) el.classList.add('active');
+                    const mobTab = document.querySelector(`.mobile-tab-item[data-tab="${tab}"]`);
+                    if (mobTab) mobTab.classList.add('active');
                     document.querySelectorAll('[id^="mod-"]').forEach(m => m.classList.add('hidden'));
                     const target = document.getElementById('mod-' + tab);
                     if (target) target.classList.remove('hidden');
                     if (document.querySelector('.sidebar.mobile-open')) UI.toggleSidebar();
-                    if (tab === 'whiteboard' && Whiteboard._inited) {
+                    if (tab === 'whiteboard' && typeof Whiteboard !== 'undefined' && Whiteboard._inited) {
                         window.dispatchEvent(new Event('resize'));
                     }
+                    window.scrollTo(0, 0);
                 },
                 
                 back: () => {
@@ -4402,74 +4561,237 @@
 
             // ========== PIANO MODULE ==========
             const Piano = {
-                notes: [
-                    { n: 'C3', t: 'w' }, { n: 'C#3', t: 'b' }, { n: 'D3', t: 'w' }, { n: 'D#3', t: 'b' }, { n: 'E3', t: 'w' },
-                    { n: 'F3', t: 'w' }, { n: 'F#3', t: 'b' }, { n: 'G3', t: 'w' }, { n: 'G#3', t: 'b' }, { n: 'A3', t: 'w' },
-                    { n: 'A#3', t: 'b' }, { n: 'B3', t: 'w' }, { n: 'C4', t: 'w' }, { n: 'C#4', t: 'b' }, { n: 'D4', t: 'w' },
-                    { n: 'D#4', t: 'b' }, { n: 'E4', t: 'w' }, { n: 'F4', t: 'w' }, { n: 'F#4', t: 'b' }, { n: 'G4', t: 'w' },
-                    { n: 'G#4', t: 'b' }, { n: 'A4', t: 'w' }, { n: 'A#4', t: 'b' }, { n: 'B4', t: 'w' }, { n: 'C5', t: 'w' },
-                    { n: 'C#5', t: 'b' }, { n: 'D5', t: 'w' }, { n: 'D#5', t: 'b' }, { n: 'E5', t: 'w' }
-                ],
+                notes: [],
+                masterGain: null,
+                reverb: null,
+                reverbGain: null,
+
+                buildNotes: () => {
+                    const names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+                    const black = new Set([1, 3, 6, 8, 10]);
+                    const list = [];
+                    for (let o = 2; o <= 6; o++) {
+                        for (let i = 0; i < 12; i++) {
+                            list.push({ n: names[i] + o, t: black.has(i) ? 'b' : 'w' });
+                        }
+                    }
+                    return list;
+                },
+
+                noteToFreq: (note) => {
+                    const m = note.match(/^([A-G]#?)(\d+)$/);
+                    if (!m) return 440;
+                    const names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+                    const midi = (parseInt(m[2], 10) + 1) * 12 + names.indexOf(m[1]);
+                    return 440 * Math.pow(2, (midi - 69) / 12);
+                },
+
+                makeReverbImpulse: (duration, decay) => {
+                    const rate = State.audioCtx.sampleRate;
+                    const len = Math.floor(rate * duration);
+                    const buf = State.audioCtx.createBuffer(2, len, rate);
+                    for (let ch = 0; ch < 2; ch++) {
+                        const d = buf.getChannelData(ch);
+                        for (let i = 0; i < len; i++) {
+                            d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+                        }
+                    }
+                    return buf;
+                },
+
+                initAudio: () => {
+                    if (!State.audioCtx) {
+                        State.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (State.audioCtx.state === 'suspended') State.audioCtx.resume();
+                    if (Piano.masterGain) return;
+                    Piano.masterGain = State.audioCtx.createGain();
+                    Piano.masterGain.gain.value = 0.85;
+                    Piano.reverb = State.audioCtx.createConvolver();
+                    Piano.reverb.buffer = Piano.makeReverbImpulse(2.8, 2.2);
+                    Piano.reverbGain = State.audioCtx.createGain();
+                    Piano.reverbGain.gain.value = 0.4;
+                    Piano.reverb.connect(Piano.reverbGain);
+                    Piano.reverbGain.connect(Piano.masterGain);
+                    Piano.masterGain.connect(State.audioCtx.destination);
+                },
+
+                connectVoices: (voices, dry, wet, now) => {
+                    voices.forEach(v => {
+                        v.gain.gain.setValueAtTime(0, now);
+                        v.gain.gain.linearRampToValueAtTime(v.peak, now + v.attack);
+                        v.gain.gain.exponentialRampToValueAtTime(0.001, now + v.release);
+                        v.osc.connect(v.gain);
+                        v.gain.connect(dry);
+                        v.gain.connect(wet);
+                        v.osc.start(now);
+                        v.osc.stop(now + v.release + 0.05);
+                    });
+                },
+
+                voice: (freq, type, detune, peak, attack, release) => {
+                    const osc = State.audioCtx.createOscillator();
+                    const gain = State.audioCtx.createGain();
+                    osc.type = type;
+                    osc.frequency.value = freq;
+                    osc.detune.value = detune;
+                    return { osc, gain, peak, attack, release };
+                },
+
+                playStay: (freq, vol, now, dry, wet) => {
+                    const partials = [
+                        { m: 1, g: 1, d: 0 }, { m: 1, g: 0.32, d: 9 }, { m: 1, g: 0.32, d: -8 },
+                        { m: 2, g: 0.22, d: 3 }, { m: 3, g: 0.1, d: 0 }, { m: 0.5, g: 0.07, d: 0 }
+                    ];
+                    const voices = partials.map(p => {
+                        const v = Piano.voice(freq * p.m, 'sine', p.d, p.g * vol * 0.14, 0.015, 3.8);
+                        v.osc.frequency.value = freq * p.m;
+                        v.osc.detune.value = p.d;
+                        return v;
+                    });
+                    Piano.connectVoices(voices, dry, wet, now);
+                },
+
+                playGrand: (freq, vol, now, dry, wet) => {
+                    const voices = [
+                        (() => { const v = Piano.voice(freq, 'triangle', 0, vol * 0.2, 0.005, 1.8); v.osc.frequency.value = freq; return v; })(),
+                        (() => { const v = Piano.voice(freq * 2, 'sine', 0, vol * 0.06, 0.01, 1.2); v.osc.frequency.value = freq * 2; return v; })(),
+                        (() => { const v = Piano.voice(freq * 3, 'sine', 0, vol * 0.03, 0.015, 0.8); v.osc.frequency.value = freq * 3; return v; })()
+                    ];
+                    Piano.connectVoices(voices, dry, wet, now);
+                },
+
+                playWarm: (freq, vol, now, dry, wet) => {
+                    const filter = State.audioCtx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.value = 2400;
+                    const v = Piano.voice(freq, 'sine', 0, vol * 0.22, 0.02, 2.2);
+                    v.osc.frequency.value = freq;
+                    v.gain.connect(filter);
+                    filter.connect(dry);
+                    filter.connect(wet);
+                    v.gain.gain.setValueAtTime(0, now);
+                    v.gain.gain.linearRampToValueAtTime(vol * 0.22, now + 0.02);
+                    v.gain.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
+                    v.osc.start(now);
+                    v.osc.stop(now + 2.3);
+                },
+
+                playSoft: (freq, vol, now, dry, wet) => {
+                    const v = Piano.voice(freq, 'triangle', 0, vol * 0.18, 0.03, 1.4);
+                    v.osc.frequency.value = freq;
+                    Piano.connectVoices([v], dry, wet, now);
+                },
+
+                playElectric: (freq, vol, now, dry, wet) => {
+                    const filter = State.audioCtx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(3000, now);
+                    filter.frequency.exponentialRampToValueAtTime(600, now + 0.6);
+                    const v1 = Piano.voice(freq, 'sawtooth', -4, vol * 0.1, 0.002, 1.2);
+                    const v2 = Piano.voice(freq, 'sawtooth', 5, vol * 0.08, 0.002, 1.2);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq;
+                    [v1, v2].forEach(v => {
+                        v.gain.gain.setValueAtTime(0, now);
+                        v.gain.gain.linearRampToValueAtTime(v.peak, now + 0.01);
+                        v.gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                        v.osc.connect(v.gain);
+                        v.gain.connect(filter);
+                        v.osc.start(now);
+                        v.osc.stop(now + 1.3);
+                    });
+                    filter.connect(dry);
+                    filter.connect(wet);
+                },
+
+                playBell: (freq, vol, now, dry, wet) => {
+                    [1, 2.4, 3.8, 5.2].forEach((m, i) => {
+                        const v = Piano.voice(freq * m, 'sine', 0, vol * (0.12 / (i + 1)), 0.001, 2.5 - i * 0.3);
+                        v.osc.frequency.value = freq * m;
+                        Piano.connectVoices([v], dry, wet, now);
+                    });
+                },
+
+                playSynth: (freq, vol, now, dry, wet) => {
+                    const v = Piano.voice(freq, 'sawtooth', 0, vol * 0.07, 0.08, 2.5);
+                    v.osc.frequency.value = freq;
+                    Piano.connectVoices([v], dry, wet, now);
+                },
+
                 initKeys: () => {
+                    Piano.notes = Piano.buildNotes();
                     document.addEventListener('keydown', Piano.handleKeyDown);
                 },
+
                 render: () => {
                     const box = document.getElementById('piano-keys');
                     if (!box) return;
+                    if (!Piano.notes.length) Piano.notes = Piano.buildNotes();
                     box.innerHTML = '';
                     let pos = 0;
-                    // start with a fallback white key width; actual widths will be measured after rendering
-                    let lastWhiteW = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--white-key-width')) || 50;
+                    let lastWhiteW = 44;
+                    let lastOctave = '';
                     Piano.notes.forEach(k => {
                         const el = document.createElement('div');
                         el.dataset.note = k.n;
                         const labelText = (State.keyMap[k.n] || '').toUpperCase();
+                        const octave = k.n.replace(/[^0-9]/g, '');
                         if (k.t === 'w') {
                             el.className = 'key key-white';
-                            el.innerHTML = `<span class="key-label">${labelText}</span>`;
+                            if (octave !== lastOctave) {
+                                lastOctave = octave;
+                                el.innerHTML = `<span class="key-label">${labelText}</span><span class="octave-marker" style="left:4px;">C${octave}</span>`;
+                            } else {
+                                el.innerHTML = `<span class="key-label">${labelText}</span>`;
+                            }
                             box.appendChild(el);
-                            // measure actual rendered white key width (let CSS clamp take effect)
                             const w = el.offsetWidth || lastWhiteW;
                             pos += w;
                             lastWhiteW = w;
                         } else {
                             el.className = 'key key-black';
-                            const blackW = Math.round(lastWhiteW * 0.6);
+                            const blackW = Math.round(lastWhiteW * 0.58);
                             el.style.width = blackW + 'px';
-                            el.style.left = (pos - Math.round(lastWhiteW * 0.3)) + 'px';
+                            el.style.left = (pos - Math.round(lastWhiteW * 0.29)) + 'px';
                             el.innerHTML = `<span class="key-label">${labelText}</span>`;
                             box.appendChild(el);
                         }
-                        el.onmousedown = () => Piano.play(k.n, el);
-                        el.ontouchstart = (e) => { e.preventDefault(); Piano.play(k.n, el); };
+                        const playKey = (e) => {
+                            if (e) e.preventDefault();
+                            Piano.play(k.n, el);
+                        };
+                        el.addEventListener('mousedown', playKey);
+                        el.addEventListener('touchstart', playKey, { passive: false });
                     });
-                    // ensure keys can overflow horizontally on narrow screens
                     box.style.width = 'max-content';
                 },
+
                 play: (note, el) => {
-                    if (!State.audioCtx) State.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    const osc = State.audioCtx.createOscillator();
-                    const gain = State.audioCtx.createGain();
-                    const freqs = {
-                        'C3': 130.8, 'C#3': 138.6, 'D3': 146.8, 'D#3': 155.6, 'E3': 164.8, 'F3': 174.6, 'F#3': 185.0, 'G3': 196.0,
-                        'G#3': 207.6, 'A3': 220.0, 'A#3': 233.1, 'B3': 246.9, 'C4': 261.6, 'C#4': 277.2, 'D4': 293.7, 'D#4': 311.1,
-                        'E4': 329.6, 'F4': 349.2, 'F#4': 370.0, 'G4': 392.0, 'G#4': 415.3, 'A4': 440.0, 'A#4': 466.2, 'B4': 493.9,
-                        'C5': 523.3, 'C#5': 554.4, 'D5': 587.3, 'D#5': 622.3, 'E5': 659.3
-                    };
-                    osc.type = document.getElementById('wave-type').value;
-                    osc.frequency.value = freqs[note];
+                    Piano.initAudio();
+                    const freq = Piano.noteToFreq(note);
+                    const preset = document.getElementById('wave-type').value;
                     const now = State.audioCtx.currentTime;
                     const vol = document.getElementById('vol-slider').value / 100;
-                    gain.gain.setValueAtTime(0, now);
-                    gain.gain.linearRampToValueAtTime(vol, now + 0.01);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
-                    osc.connect(gain);
-                    gain.connect(State.audioCtx.destination);
-                    osc.start();
-                    osc.stop(now + 1);
+                    const dry = State.audioCtx.createGain();
+                    const wet = State.audioCtx.createGain();
+                    dry.gain.value = 0.65 * vol;
+                    wet.gain.value = (preset === 'stay' || preset === 'grand' || preset === 'warm') ? 0.45 * vol : 0.2 * vol;
+                    dry.connect(Piano.masterGain);
+                    wet.connect(Piano.reverb);
+                    const engines = {
+                        stay: Piano.playStay,
+                        grand: Piano.playGrand,
+                        warm: Piano.playWarm,
+                        soft: Piano.playSoft,
+                        electric: Piano.playElectric,
+                        bell: Piano.playBell,
+                        synth: Piano.playSynth
+                    };
+                    (engines[preset] || Piano.playGrand)(freq, vol, now, dry, wet);
                     if (el) {
                         el.classList.add('active');
-                        setTimeout(() => el.classList.remove('active'), 200);
+                        setTimeout(() => el.classList.remove('active'), preset === 'stay' ? 320 : 180);
                     }
                 },
                 handleKeyDown: (e) => {
@@ -6701,6 +7023,7 @@
     console.log('✅ Pathway video & edit features loaded');
 
             Theme.init();
+            Piano.notes = Piano.buildNotes();
 
                     </script>
         </body>
