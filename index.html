@@ -6029,9 +6029,6 @@
 
                 playResonance: (freq, vol, now, dry, wet) => {
                     // HOME - Resonance inspired: Warm analog pad with rich harmonics
-                    const filter = State.audioCtx.createBiquadFilter();
-                    filter.type = 'lowpass';
-                    filter.frequency.value = 4200;
                     const partials = [
                         { m: 1, g: 1, d: 0 }, { m: 1, g: 0.5, d: 10 }, { m: 1, g: 0.48, d: -9 },
                         { m: 2, g: 0.32, d: 5 }, { m: 3, g: 0.18, d: 3 }, { m: 0.5, g: 0.12, d: -4 }
@@ -6040,65 +6037,33 @@
                         const v = Piano.voice(freq * p.m, 'sine', p.d, p.g * vol * 0.17, 0.04, 5.2);
                         v.osc.frequency.value = freq * p.m;
                         v.osc.detune.value = p.d;
-                        v.gain.connect(filter);
                         return v;
                     });
-                    filter.connect(dry);
-                    filter.connect(wet);
                     Piano.connectVoices(voices, dry, wet, now);
                 },
 
                 playLetGo: (freq, vol, now, dry, wet) => {
                     // Ark Patrol & Veronika Redd - Let Go: Ethereal, uplifting, airy
-                    const filter = State.audioCtx.createBiquadFilter();
-                    filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(5000, now);
-                    filter.frequency.exponentialRampToValueAtTime(1200, now + 3);
                     const v1 = Piano.voice(freq, 'sine', 1, vol * 0.2, 0.04, 3.5);
                     const v2 = Piano.voice(freq * 0.5, 'sine', -2, vol * 0.1, 0.05, 3.2);
                     const v3 = Piano.voice(freq * 2, 'sine', 3, vol * 0.06, 0.03, 2.8);
                     v1.osc.frequency.value = freq;
                     v2.osc.frequency.value = freq * 0.5;
                     v3.osc.frequency.value = freq * 2;
-                    [v1, v2, v3].forEach(v => {
-                        v.gain.connect(filter);
-                        v.gain.gain.setValueAtTime(0, now);
-                        v.gain.gain.linearRampToValueAtTime(v.peak, now + v.attack);
-                        v.gain.gain.exponentialRampToValueAtTime(0.001, now + v.release);
-                        v.osc.start(now);
-                        v.osc.stop(now + v.release + 0.1);
-                    });
-                    filter.connect(dry);
-                    filter.connect(wet);
+                    const voices = [v1, v2, v3];
+                    Piano.connectVoices(voices, dry, wet, now);
                 },
 
                 playROI: (freq, vol, now, dry, wet) => {
                     // Videoclub - ROI: Crystalline, bright, clear digital character
-                    const filterHi = State.audioCtx.createBiquadFilter();
-                    const filterLo = State.audioCtx.createBiquadFilter();
-                    filterHi.type = 'highpass';
-                    filterHi.frequency.value = 1600;
-                    filterLo.type = 'lowpass';
-                    filterLo.frequency.value = 8000;
                     const v1 = Piano.voice(freq, 'sine', 2, vol * 0.22, 0.005, 1.8);
                     const v2 = Piano.voice(freq * 2.4, 'sine', -3, vol * 0.12, 0.007, 1.4);
                     const v3 = Piano.voice(freq * 3.8, 'sine', 1, vol * 0.06, 0.009, 1.1);
                     v1.osc.frequency.value = freq;
                     v2.osc.frequency.value = freq * 2.4;
                     v3.osc.frequency.value = freq * 3.8;
-                    [v1, v2, v3].forEach(v => {
-                        v.gain.connect(filterHi);
-                    });
-                    filterHi.connect(filterLo);
-                    filterLo.connect(dry);
-                    filterLo.connect(wet);
-                    [v1, v2, v3].forEach((v, i) => {
-                        v.gain.gain.setValueAtTime(0, now);
-                        v.gain.gain.linearRampToValueAtTime(v.peak, now + v.attack);
-                        v.gain.gain.exponentialRampToValueAtTime(0.001, now + v.release);
-                        v.osc.start(now);
-                        v.osc.stop(now + v.release + 0.1);
-                    });
+                    const voices = [v1, v2, v3];
+                    Piano.connectVoices(voices, dry, wet, now);
                 },
 
                 playSoft: (freq, vol, now, dry, wet) => {
