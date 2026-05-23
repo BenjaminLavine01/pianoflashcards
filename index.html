@@ -4370,9 +4370,6 @@
                                 <div class="nav-item" onclick="Nav.to('tasks', this)">
                                     <i class="fa-solid fa-list-check"></i> <span>Task Arena</span>
                                 </div>
-                                <div class="nav-item" onclick="Nav.to('songguide', this)">
-                                    <i class="fa-solid fa-book"></i> <span>Song Guide</span>
-                                </div>
                             </nav>
 
                             <div class="settings-widget">
@@ -4759,27 +4756,7 @@
                                 </div>
                             </div>
 
-                            <!-- SONG GUIDE MODULE -->
-                            <div id="mod-songguide" class="hidden module-flex-column" style="position:relative;">
-                                <div style="padding:16px; border-bottom:1px solid var(--border-color); display:flex; gap:8px; align-items:center;">
-                                    <input type="text" id="song-search" class="input-std" placeholder="Search songs..." style="flex:1;" oninput="SongGuide.search()">
-                                    <button class="btn btn-secondary btn-sm" onclick="SongGuide.clearSearch()" style="width:36px; height:36px; padding:0;"><i class="fa-solid fa-xmark"></i></button>
-                                    <button id="spotify-auth-btn" class="btn btn-sm" onclick="SpotifyAuth.startAuth()" style="background:#1DB954; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; display:none;"><i class="fa-solid fa-spotify"></i> Spotify</button>
-                                </div>
-                                <div style="flex:1; overflow-y:auto; padding:16px;">
-                                    <div id="song-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
-                                        <!-- Songs will be rendered here -->
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div id="song-detail-panel" style="display:none; position:fixed; right:0; top:0; width:min(100%, 400px); height:100vh; background:var(--bg-surface); border-left:1px solid var(--border-color); z-index:1000; overflow-y:auto; box-shadow:var(--shadow-md);">
-                                <div style="position:sticky; top:0; padding:16px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; background:var(--bg-surface); z-index:10;">
-                                    <h2 id="song-detail-title" style="font-size:1.2rem; margin:0; flex:1;">Song Guide</h2>
-                                    <button class="btn btn-secondary btn-sm" onclick="SongGuide.closeDetail()" style="width:36px; height:36px; padding:0;"><i class="fa-solid fa-times"></i></button>
-                                </div>
-                                <div id="song-detail-content" style="padding:16px;"></div>
-                            </div>
                     </main>
                     </div>
 
@@ -4792,9 +4769,6 @@
                         </button>
                         <button type="button" class="mobile-tab-item" data-tab="tasks" onclick="Nav.to('tasks')">
                             <i class="fa-solid fa-list-check"></i><span>Tasks</span>
-                        </button>
-                        <button type="button" class="mobile-tab-item" data-tab="songguide" onclick="Nav.to('songguide')">
-                            <i class="fa-solid fa-book"></i><span>Guide</span>
                         </button>
                     </nav>
 
@@ -7332,7 +7306,12 @@
             // ========== SPOTIFY AUTH (PKCE) ==========
             const SpotifyAuth = {
                 clientId: '5c2a3bde85cb4d17a301c8e32b1f28e7',
-                redirectUri: window.location.origin + window.location.pathname,
+                redirectUri: (() => {
+                    const url = new URL(window.location);
+                    url.search = '';
+                    url.hash = '';
+                    return url.toString().replace(/\/$/, '');
+                })(),
                 accessToken: null,
                 expiresAt: null,
 
@@ -7353,28 +7332,39 @@
                 },
 
                 startAuth: async () => {
-                    const verifier = SpotifyAuth.generateCodeVerifier();
-                    const challenge = await SpotifyAuth.generateCodeChallenge(verifier);
-                    
-                    localStorage.setItem('spotify_verifier', verifier);
-                    
-                    const params = new URLSearchParams({
-                        client_id: SpotifyAuth.clientId,
-                        response_type: 'code',
-                        redirect_uri: SpotifyAuth.redirectUri,
-                        code_challenge: challenge,
-                        code_challenge_method: 'S256',
-                        scope: 'playlist-read-private'
-                    });
-                    
-                    window.location.href = 'https://accounts.spotify.com/authorize?' + params;
+                    try {
+                        const verifier = SpotifyAuth.generateCodeVerifier();
+                        const challenge = await SpotifyAuth.generateCodeChallenge(verifier);
+                        
+                        localStorage.setItem('spotify_verifier', verifier);
+                        console.log('Starting Spotify auth...');
+                        
+                        const params = new URLSearchParams({
+                            client_id: SpotifyAuth.clientId,
+                            response_type: 'code',
+                            redirect_uri: SpotifyAuth.redirectUri,
+                            code_challenge: challenge,
+                            code_challenge_method: 'S256',
+                            scope: 'playlist-read-private'
+                        });
+                        
+                        window.location.href = 'https://accounts.spotify.com/authorize?' + params;
+                    } catch (e) {
+                        console.error('Auth start error:', e);
+                        Notify.show('Error starting Spotify auth', 'error');
+                    }
                 },
 
                 handleCallback: async (code) => {
                     const verifier = localStorage.getItem('spotify_verifier');
-                    if (!verifier) return;
+                    if (!verifier) {
+                        console.error('No verifier found');
+                        Notify.show('Authentication failed: No verifier found', 'error');
+                        return;
+                    }
 
                     try {
+                        console.log('Exchanging code for token...');
                         const res = await fetch('https://accounts.spotify.com/api/token', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -7387,18 +7377,26 @@
                             })
                         });
 
+                        const data = await res.json();
                         if (res.ok) {
-                            const data = await res.json();
+                            console.log('Token received successfully');
                             SpotifyAuth.accessToken = data.access_token;
                             SpotifyAuth.expiresAt = Date.now() + (data.expires_in * 1000);
                             DB.setData('spotify_token', SpotifyAuth.accessToken);
                             DB.setData('spotify_expires', SpotifyAuth.expiresAt);
                             localStorage.removeItem('spotify_verifier');
                             Notify.show('Spotify connected!', 'success');
+                            // Clean URL
                             window.history.replaceState({}, document.title, SpotifyAuth.redirectUri);
+                            // Update UI
+                            setTimeout(() => SongGuide.init(), 500);
+                        } else {
+                            console.error('Token exchange failed:', data);
+                            Notify.show('Spotify connection failed: ' + (data.error_description || 'Unknown error'), 'error');
                         }
                     } catch (e) {
                         console.error('Spotify auth error:', e);
+                        Notify.show('Spotify connection error: ' + e.message, 'error');
                     }
                 },
 
@@ -7406,20 +7404,39 @@
                     return SpotifyAuth.accessToken && SpotifyAuth.expiresAt > Date.now();
                 },
 
+                disconnect: () => {
+                    SpotifyAuth.accessToken = null;
+                    SpotifyAuth.expiresAt = null;
+                    DB.setData('spotify_token', null);
+                    DB.setData('spotify_expires', null);
+                    localStorage.removeItem('spotify_verifier');
+                    Notify.show('Disconnected from Spotify', 'info');
+                },
+
                 init: async () => {
+                    console.log('SpotifyAuth.init() called');
+                    console.log('Redirect URI:', SpotifyAuth.redirectUri);
+                    console.log('Client ID:', SpotifyAuth.clientId);
+                    
                     const saved = DB.getData('spotify_token');
                     const expires = DB.getData('spotify_expires');
                     
                     if (saved && expires && expires > Date.now()) {
                         SpotifyAuth.accessToken = saved;
                         SpotifyAuth.expiresAt = expires;
+                        console.log('Spotify token restored from storage');
+                    } else {
+                        console.log('No valid Spotify token in storage');
                     }
 
                     // Handle OAuth callback
                     const params = new URLSearchParams(window.location.search);
                     if (params.has('code')) {
+                        console.log('Spotify callback code detected');
                         await SpotifyAuth.handleCallback(params.get('code'));
                     }
+                    
+                    console.log('SpotifyAuth authenticated:', SpotifyAuth.isAuthenticated());
                 }
             };
 
@@ -7477,12 +7494,35 @@
                     const saved = DB.getData('sg_favorites');
                     SongGuide.favorites = saved ? saved : [];
                     
-                    // Show/hide Spotify auth button
+                    // Always show Spotify auth button
                     const spotifyBtn = document.getElementById('spotify-auth-btn');
-                    if (spotifyBtn && !SpotifyAuth.isAuthenticated()) {
+                    if (spotifyBtn) {
+                        console.log('Spotify button found, setting up...');
+                        console.log('SpotifyAuth.isAuthenticated():', SpotifyAuth.isAuthenticated());
+                        console.log('SpotifyAuth.accessToken:', SpotifyAuth.accessToken ? '(has token)' : 'null');
+                        
                         spotifyBtn.style.display = 'inline-flex';
+                        if (SpotifyAuth.isAuthenticated()) {
+                            spotifyBtn.textContent = '✓ Connected';
+                            spotifyBtn.style.background = '#1DB954';
+                            spotifyBtn.style.cursor = 'default';
+                            spotifyBtn.onclick = () => {
+                                Notify.show('Connected to Spotify', 'info');
+                            };
+                        } else {
+                            spotifyBtn.innerHTML = '<i class="fa-solid fa-spotify"></i> Connect';
+                            spotifyBtn.style.background = 'rgba(29, 185, 84, 0.5)';
+                            spotifyBtn.style.cursor = 'pointer';
+                            spotifyBtn.onclick = () => {
+                                console.log('Spotify connect button clicked');
+                                SpotifyAuth.startAuth();
+                            };
+                        }
+                    } else {
+                        console.error('Spotify button NOT found!');
                     }
                     
+                    console.log('SongGuide.init() - Spotify authenticated:', SpotifyAuth.isAuthenticated());
                     SongGuide.renderSongs(SongGuide.songs);
                 },
 
@@ -7501,11 +7541,13 @@
                     // Search Spotify if authenticated
                     if (SpotifyAuth.isAuthenticated()) {
                         try {
+                            console.log('Searching Spotify for:', query);
                             const res = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=10`, {
                                 headers: { 'Authorization': 'Bearer ' + SpotifyAuth.accessToken }
                             });
                             if (res.ok) {
                                 const data = await res.json();
+                                console.log('Spotify results:', data.tracks.items.length);
                                 SongGuide.spotifyResults = data.tracks.items.map(track => ({
                                     id: 'spotify_' + track.id,
                                     title: track.name,
@@ -7519,10 +7561,20 @@
                                     notes: [],
                                     timings: []
                                 }));
+                            } else {
+                                console.error('Spotify API error:', res.status, res.statusText);
+                                if (res.status === 401) {
+                                    SpotifyAuth.accessToken = null;
+                                    DB.setData('spotify_token', null);
+                                    Notify.show('Spotify session expired. Please reconnect.', 'error');
+                                }
                             }
                         } catch (e) {
                             console.error('Spotify search error:', e);
                         }
+                    } else {
+                        console.log('Spotify not authenticated');
+                        SongGuide.spotifyResults = [];
                     }
 
                     SongGuide.renderSongs([...filtered, ...SongGuide.spotifyResults]);
@@ -7750,11 +7802,6 @@
 
             Theme.init();
             Piano.notes = Piano.buildNotes();
-            
-            (async () => {
-                await SpotifyAuth.init();
-                SongGuide.init();
-            })();
 
             const loadAppConfig = async () => {
                 if (applyAppConfig(window.__SPARTAN_CONFIG__)) return;
