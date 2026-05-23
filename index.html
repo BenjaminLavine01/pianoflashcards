@@ -4424,6 +4424,11 @@
                                                         <option value="resonance">Warm Ether</option>
                                                         <option value="letgo">Ethereal Lift</option>
                                                         <option value="roi">Crystalline Shimmer</option>
+                                                        <option value="lofi">Lofi Chill</option>
+                                                        <option value="bright">Bright Pop</option>
+                                                        <option value="deepbass">Deep Bass</option>
+                                                        <option value="vintage">Vintage Warmth</option>
+                                                        <option value="digital">Digital Modern</option>
                                                         <option value="soft">Soft Felt</option>
                                                         <option value="electric">Electric EP</option>
                                                         <option value="bell">Glass Bell</option>
@@ -6108,6 +6113,59 @@
                     Piano.connectVoices([v], dry, wet, now);
                 },
 
+                playLofi: (freq, vol, now, dry, wet) => {
+                    // Lofi Chill: Warm, compressed, slightly saturated
+                    const v1 = Piano.voice(freq, 'sine', 0, vol * 0.28, 0.02, 2.2);
+                    const v2 = Piano.voice(freq * 1.9, 'sine', 1, vol * 0.14, 0.025, 1.8);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 1.9;
+                    Piano.connectVoices([v1, v2], dry, wet, now);
+                },
+
+                playBright: (freq, vol, now, dry, wet) => {
+                    // Bright Pop: Sharp attack, clear highs
+                    const v1 = Piano.voice(freq, 'square', 0, vol * 0.26, 0.002, 1.5);
+                    const v2 = Piano.voice(freq * 2.1, 'sine', 0, vol * 0.14, 0.003, 1.2);
+                    const v3 = Piano.voice(freq * 3.2, 'sine', 2, vol * 0.08, 0.004, 0.9);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 2.1;
+                    v3.osc.frequency.value = freq * 3.2;
+                    Piano.connectVoices([v1, v2, v3], dry, wet, now);
+                },
+
+                playDeepBass: (freq, vol, now, dry, wet) => {
+                    // Deep Bass: Rich lows, powerful fundamentals
+                    const v1 = Piano.voice(freq, 'sine', 0, vol * 0.35, 0.035, 3.2);
+                    const v2 = Piano.voice(freq * 0.5, 'sine', -2, vol * 0.18, 0.04, 3.5);
+                    const v3 = Piano.voice(freq * 2, 'sine', 1, vol * 0.09, 0.02, 2.0);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 0.5;
+                    v3.osc.frequency.value = freq * 2;
+                    Piano.connectVoices([v1, v2, v3], dry, wet, now);
+                },
+
+                playVintage: (freq, vol, now, dry, wet) => {
+                    // Vintage Warmth: Mellow, analog character
+                    const v1 = Piano.voice(freq, 'triangle', 0, vol * 0.24, 0.03, 2.8);
+                    const v2 = Piano.voice(freq * 1.5, 'sine', 3, vol * 0.12, 0.032, 2.4);
+                    const v3 = Piano.voice(freq * 0.7, 'sine', -2, vol * 0.1, 0.035, 2.6);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 1.5;
+                    v3.osc.frequency.value = freq * 0.7;
+                    Piano.connectVoices([v1, v2, v3], dry, wet, now);
+                },
+
+                playDigital: (freq, vol, now, dry, wet) => {
+                    // Digital Modern: Bright, clinical, futuristic
+                    const v1 = Piano.voice(freq, 'sine', 1, vol * 0.26, 0.004, 1.6);
+                    const v2 = Piano.voice(freq * 2.8, 'sine', -1, vol * 0.15, 0.005, 1.2);
+                    const v3 = Piano.voice(freq * 4.2, 'sine', 2, vol * 0.1, 0.006, 0.8);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 2.8;
+                    v3.osc.frequency.value = freq * 4.2;
+                    Piano.connectVoices([v1, v2, v3], dry, wet, now);
+                },
+
                 initKeys: () => {
                     Piano.notes = Piano.buildNotes();
                     document.addEventListener('keydown', Piano.handleKeyDown);
@@ -6212,8 +6270,8 @@
                     const vol = document.getElementById('vol-slider').value / 100;
                     const dry = State.audioCtx.createGain();
                     const wet = State.audioCtx.createGain();
-                    dry.gain.value = 0.65 * vol;
-                    wet.gain.value = (preset === 'stay' || preset === 'grand' || preset === 'resonance' || preset === 'letgo' || preset === 'roi') ? 0.45 * vol : 0.2 * vol;
+                    dry.gain.value = 0.8 * vol;
+                    wet.gain.value = (preset === 'stay' || preset === 'grand' || preset === 'resonance' || preset === 'letgo' || preset === 'roi' || preset === 'lofi' || preset === 'bright' || preset === 'deepbass' || preset === 'vintage' || preset === 'digital') ? 0.55 * vol : 0.3 * vol;
                     dry.connect(Piano.masterGain);
                     wet.connect(Piano.reverb);
                     const engines = {
@@ -6222,6 +6280,11 @@
                         resonance: Piano.playResonance,
                         letgo: Piano.playLetGo,
                         roi: Piano.playROI,
+                        lofi: Piano.playLofi,
+                        bright: Piano.playBright,
+                        deepbass: Piano.playDeepBass,
+                        vintage: Piano.playVintage,
+                        digital: Piano.playDigital,
                         soft: Piano.playSoft,
                         electric: Piano.playElectric,
                         bell: Piano.playBell,
