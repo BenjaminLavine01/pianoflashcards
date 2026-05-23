@@ -6271,9 +6271,11 @@
                     Piano.initAudio();
                     Piano.keyFx(el);
                     const freq = Piano.noteToFreq(note);
+                    // Normalize volume for equal loudness: boost low frequencies
+                    const freqNorm = Math.max(1, Math.min(2, 200 / Math.max(40, freq)));
                     const preset = document.getElementById('wave-type').value;
                     const now = State.audioCtx.currentTime;
-                    const vol = document.getElementById('vol-slider').value / 100;
+                    const vol = (document.getElementById('vol-slider').value / 100) * freqNorm;
                     const dry = State.audioCtx.createGain();
                     const wet = State.audioCtx.createGain();
                     dry.gain.value = 0.8 * vol;
