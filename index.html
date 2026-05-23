@@ -6230,15 +6230,15 @@
                         el.dataset.note = k.n;
                         el.style.setProperty('--key-i', keyIndex++);
                         el.classList.add('key-enter');
-                        const labelText = (State.keyMap[k.n] || '').toUpperCase();
+                        const keyBindLabel = (State.keyMap[k.n] || '').toUpperCase();
                         const octave = k.n.replace(/[^0-9]/g, '');
                         if (k.t === 'w') {
                             el.className = 'key key-white';
                             if (octave !== lastOctave) {
                                 lastOctave = octave;
-                                el.innerHTML = `<span class="key-label">${labelText}</span><span class="octave-marker" style="left:4px;">C${octave}</span>`;
+                                el.innerHTML = `<span class="key-label" style="top:8px;font-size:10px;font-weight:700;">${k.n}</span><span class="key-label" style="bottom:8px;font-size:8px;">${keyBindLabel}</span><span class="octave-marker" style="left:4px;">C${octave}</span>`;
                             } else {
-                                el.innerHTML = `<span class="key-label">${labelText}</span>`;
+                                el.innerHTML = `<span class="key-label" style="top:8px;font-size:10px;font-weight:700;">${k.n}</span><span class="key-label" style="bottom:8px;font-size:8px;">${keyBindLabel}</span>`;
                             }
                             box.appendChild(el);
                             const w = el.offsetWidth || lastWhiteW;
@@ -6249,7 +6249,7 @@
                             const blackW = Math.round(lastWhiteW * 0.58);
                             el.style.width = blackW + 'px';
                             el.style.left = (pos - Math.round(lastWhiteW * 0.29)) + 'px';
-                            el.innerHTML = `<span class="key-label">${labelText}</span>`;
+                            el.innerHTML = `<span class="key-label" style="top:6px;font-size:9px;font-weight:700;">${k.n}</span><span class="key-label" style="bottom:6px;font-size:7px;">${keyBindLabel}</span>`;
                             box.appendChild(el);
                         }
                         let touchX = 0;
