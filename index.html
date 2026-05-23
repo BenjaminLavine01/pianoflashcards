@@ -5312,6 +5312,24 @@
                     return msg.includes('email not confirmed') || code.includes('email_not_confirmed');
                 },
 
+                isRateLimitError: (err) => {
+                    const msg = (err?.message || '').toLowerCase();
+                    const code = (err?.code || '').toLowerCase();
+                    return msg.includes('rate limit') || msg.includes('too many') ||
+                        code.includes('rate_limit') || code === 'over_email_send_rate_limit';
+                },
+
+                formatAuthError: (err) => {
+                    if (!err) return 'Something went wrong';
+                    if (CloudAuth.isRateLimitError(err)) {
+                        return 'Email limit reached (Supabase free tier). Wait ~1 hour, stop clicking Resend, or in Supabase: Authentication → Email → turn OFF Confirm email, then sign up again or confirm user under Authentication → Users.';
+                    }
+                    if (CloudAuth.isUnconfirmedError(err)) {
+                        return 'Email not confirmed — use the link in your inbox, or Resend link below (after rate limit clears).';
+                    }
+                    return err.message || 'Something went wrong';
+                },
+
                 signUp: async (name, email, password) => {
                     const { data, error } = await CloudAuth.client.auth.signUp({
                         email,
@@ -5577,7 +5595,7 @@
                         await CloudAuth.resendConfirmation(email);
                         Notify.show('Confirmation email sent — check inbox and spam');
                     } catch (err) {
-                        Notify.show(err.message || 'Could not resend email', 'error');
+                        Notify.show(CloudAuth.formatAuthError(err), 'error');
                     }
                 },
 
@@ -5633,7 +5651,7 @@
                             document.getElementById('log-email').value = email;
                             Auth.setResendLinkVisible(true);
                         } catch (err) {
-                            Notify.show(err.message || 'Sign up failed', 'error');
+                            Notify.show(CloudAuth.formatAuthError(err), 'error');
                         }
                         return;
                     }
@@ -5661,12 +5679,8 @@
                             Auth.enterApp({ ...u, cloud: true });
                             Notify.show('Welcome back, ' + u.name);
                         } catch (err) {
-                            if (CloudAuth.isUnconfirmedError(err)) {
-                                Auth.setResendLinkVisible(true);
-                                Notify.show('Email not confirmed — check your inbox or tap Resend link below.', 'error');
-                            } else {
-                                Notify.show(err.message || 'Invalid credentials', 'error');
-                            }
+                            if (CloudAuth.isUnconfirmedError(err)) Auth.setResendLinkVisible(true);
+                            Notify.show(CloudAuth.formatAuthError(err), 'error');
                         }
                         return;
                     }
@@ -5696,7 +5710,7 @@
                         Auth.setForgotStep(2);
                         Notify.show('Verification code sent to your email');
                     } catch (err) {
-                        Notify.show(err.message || 'Could not send code', 'error');
+                        Notify.show(CloudAuth.formatAuthError(err), 'error');
                     }
                 },
 
@@ -5733,7 +5747,7 @@
                         document.getElementById('forgot-code').value = '';
                         Auth.toggle('login');
                     } catch (err) {
-                        Notify.show(err.message || 'Could not update password', 'error');
+                        Notify.show(CloudAuth.formatAuthError(err), 'error');
                     }
                 },
 
@@ -6845,6 +6859,7 @@
                 },
 
                 addTask: () => {
+                    if (!State.projects.length) return Notify.show('No projects added. Create a project first!', 'error');
                     const p = State.projects[State.currP];
                     if (!p) return;
                     if (p.role === 'viewer') return Notify.show('Read-only project', 'error');
