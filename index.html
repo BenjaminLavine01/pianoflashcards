@@ -5794,7 +5794,9 @@
                 
                 to: (tab, el) => {
                     if (tab === 'flashcards' && !State.decks.length) {
-                        return Notify.show('No flashcard decks created yet. Add one to get started!', 'error');
+                        console.log('Decks array is empty, showing warning');
+                        Notify.show('No flashcard decks created yet. Add one to get started!', 'error');
+                        return;
                     }
                     if (tab !== Nav.currentModule) Nav.previousModule = Nav.currentModule;
                     Nav.currentModule = tab;
