@@ -1156,6 +1156,7 @@
                 touch-action: manipulation;
                 user-select: none;
                 transition: transform 0.07s var(--ease-bounce), box-shadow 0.07s, filter 0.07s;
+                overflow: visible;
             }
 
             .key-white {
@@ -1206,23 +1207,29 @@
 
             .key-label {
                 position: absolute;
-                bottom: 28px;
-                font-size: 9px;
                 font-weight: 800;
                 text-transform: uppercase;
                 pointer-events: none;
-                padding: 3px 6px;
-                border-radius: 5px;
+                padding: 2px 4px;
+                border-radius: 3px;
                 background: rgba(0, 0, 0, 0.05);
                 color: #64748b;
                 z-index: 3;
+                line-height: 1;
+                white-space: nowrap;
+                max-width: 95%;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
-            .key-black .key-label {
-                bottom: 20px;
-                color: rgba(255, 255, 255, 0.75);
-                background: rgba(255, 255, 255, 0.12);
-                font-size: 8px;
+            .key-label[style*="top"] {
+                top: 4px;
+                font-size: 9px;
+            }
+
+            .key-label[style*="bottom"] {
+                bottom: 4px;
+                font-size: 7px;
             }
 
             @keyframes pianoGlowDrift {
@@ -4057,10 +4064,11 @@
             .keys-wrapper { height: clamp(130px, 32vh, 180px); }
             .key-white { width: clamp(28px, 10vw, 40px) !important; min-width: 28px; }
             .key-black { height: 58%; }
-            .key { touch-action: manipulation; -webkit-user-select: none; }
+            .key { touch-action: manipulation; -webkit-user-select: none; overflow: visible; }
             .btn-icon-sm { padding: 8px; font-size: 0.9rem; }
             #app-shell > main { overflow: hidden !important; }
-            .key-label { bottom: 16px; font-size: 11px; padding: 3px 6px; border-radius: 6px; }
+            .key-label { font-size: 8px; padding: 2px 4px; border-radius: 3px; line-height: 1; max-width: 95%; }
+            .key-black .key-label { color: rgba(255, 255, 255, 0.85); background: rgba(255, 255, 255, 0.15); font-size: 7px; }
 
             /* Flashcards mobile */
             .fc-header {
