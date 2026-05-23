@@ -4421,7 +4421,9 @@
                                                     <select id="wave-type" class="input-std sound-select">
                                                         <option value="stay" selected>Stay · Resonant</option>
                                                         <option value="grand">Concert Grand</option>
-                                                        <option value="warm">Warm Studio</option>
+                                                        <option value="resonance">Resonance Song</option>
+                                                        <option value="letgo">Let Go Song</option>
+                                                        <option value="roi">ROI Song</option>
                                                         <option value="soft">Soft Felt</option>
                                                         <option value="electric">Electric EP</option>
                                                         <option value="bell">Glass Bell</option>
@@ -6025,20 +6027,58 @@
                     Piano.connectVoices(voices, dry, wet, now);
                 },
 
-                playWarm: (freq, vol, now, dry, wet) => {
+                playResonance: (freq, vol, now, dry, wet) => {
+                    const partials = [
+                        { m: 1, g: 1, d: 0 }, { m: 1, g: 0.45, d: 8 }, { m: 1, g: 0.45, d: -7 },
+                        { m: 2, g: 0.28, d: 4 }, { m: 3, g: 0.15, d: 2 }, { m: 0.5, g: 0.1, d: -3 }
+                    ];
+                    const voices = partials.map(p => {
+                        const v = Piano.voice(freq * p.m, 'sine', p.d, p.g * vol * 0.16, 0.012, 4.2);
+                        v.osc.frequency.value = freq * p.m;
+                        v.osc.detune.value = p.d;
+                        return v;
+                    });
+                    Piano.connectVoices(voices, dry, wet, now);
+                },
+
+                playLetGo: (freq, vol, now, dry, wet) => {
                     const filter = State.audioCtx.createBiquadFilter();
                     filter.type = 'lowpass';
-                    filter.frequency.value = 2400;
-                    const v = Piano.voice(freq, 'sine', 0, vol * 0.22, 0.02, 2.2);
-                    v.osc.frequency.value = freq;
-                    v.gain.connect(filter);
+                    filter.frequency.setValueAtTime(3800, now);
+                    filter.frequency.exponentialRampToValueAtTime(800, now + 1.8);
+                    const v1 = Piano.voice(freq, 'triangle', 0, vol * 0.16, 0.025, 2.8);
+                    const v2 = Piano.voice(freq * 0.5, 'sine', 0, vol * 0.08, 0.03, 2.5);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 0.5;
+                    [v1, v2].forEach(v => {
+                        v.gain.connect(filter);
+                    });
                     filter.connect(dry);
                     filter.connect(wet);
-                    v.gain.gain.setValueAtTime(0, now);
-                    v.gain.gain.linearRampToValueAtTime(vol * 0.22, now + 0.02);
-                    v.gain.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
-                    v.osc.start(now);
-                    v.osc.stop(now + 2.3);
+                    Piano.connectVoices([v1, v2], dry, wet, now);
+                },
+
+                playROI: (freq, vol, now, dry, wet) => {
+                    const filter = State.audioCtx.createBiquadFilter();
+                    filter.type = 'highpass';
+                    filter.frequency.value = 1200;
+                    const voices = [
+                        (() => { const v = Piano.voice(freq, 'sine', 2, vol * 0.18, 0.006, 1.5); v.osc.frequency.value = freq; return v; })(),
+                        (() => { const v = Piano.voice(freq * 2.2, 'sine', -3, vol * 0.09, 0.008, 1.2); v.osc.frequency.value = freq * 2.2; return v; })(),
+                        (() => { const v = Piano.voice(freq * 3.5, 'sine', 1, vol * 0.05, 0.01, 0.9); v.osc.frequency.value = freq * 3.5; return v; })()
+                    ];
+                    voices.forEach(v => {
+                        v.gain.connect(filter);
+                    });
+                    filter.connect(dry);
+                    filter.connect(wet);
+                    voices.forEach((v, i) => {
+                        v.gain.gain.setValueAtTime(0, now);
+                        v.gain.gain.linearRampToValueAtTime(v.peak, now + v.attack);
+                        v.gain.gain.exponentialRampToValueAtTime(0.001, now + v.release);
+                        v.osc.start(now);
+                        v.osc.stop(now + v.release + 0.1);
+                    });
                 },
 
                 playSoft: (freq, vol, now, dry, wet) => {
@@ -6188,13 +6228,15 @@
                     const dry = State.audioCtx.createGain();
                     const wet = State.audioCtx.createGain();
                     dry.gain.value = 0.65 * vol;
-                    wet.gain.value = (preset === 'stay' || preset === 'grand' || preset === 'warm') ? 0.45 * vol : 0.2 * vol;
+                    wet.gain.value = (preset === 'stay' || preset === 'grand' || preset === 'resonance' || preset === 'letgo' || preset === 'roi') ? 0.45 * vol : 0.2 * vol;
                     dry.connect(Piano.masterGain);
                     wet.connect(Piano.reverb);
                     const engines = {
                         stay: Piano.playStay,
                         grand: Piano.playGrand,
-                        warm: Piano.playWarm,
+                        resonance: Piano.playResonance,
+                        letgo: Piano.playLetGo,
+                        roi: Piano.playROI,
                         soft: Piano.playSoft,
                         electric: Piano.playElectric,
                         bell: Piano.playBell,
