@@ -6842,6 +6842,10 @@
                     Tasks.updateDeleteButton();
                     const container = document.getElementById('task-rows');
                     if (!container) return;
+                    if (!State.projects.length) {
+                        container.innerHTML = '<div style="padding:40px 20px; text-align:center; color:var(--text-secondary)"><i class="fa-solid fa-inbox" style="font-size:3rem; margin-bottom:16px; opacity:0.5; display:block;"></i><div style="font-size:1.1rem; margin-bottom:8px;">No projects added yet</div><div style="font-size:0.9rem;">Create a new project using the <strong>+ New Project</strong> button in the sidebar to get started</div></div>';
+                        return;
+                    }
                     if (!p || !p.tasks.length) {
                         container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-secondary)">No tasks</div>';
                         return;
