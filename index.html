@@ -5793,13 +5793,6 @@
                 },
                 
                 to: (tab, el) => {
-                    // Prevent navigation to flashcards if no decks exist
-                    if (tab === 'flashcards') {
-                        if (!State.decks || State.decks.length === 0) {
-                            Notify.show('No flashcard decks created yet. Add one to get started!', 'error');
-                            return;
-                        }
-                    }
                     if (tab !== Nav.currentModule) Nav.previousModule = Nav.currentModule;
                     Nav.currentModule = tab;
                     UI.closeMobileDrawers();
@@ -7166,6 +7159,10 @@
                 },
 
                 jumpToFlashcards: () => {
+                    if (!State.decks || State.decks.length === 0) {
+                        Notify.show('No flashcard decks created yet. Add one to get started!', 'error');
+                        return;
+                    }
                     const deckIdx = State.decks.findIndex(d => d.id === State.projects[State.currP].id);
                     if (deckIdx !== -1) {
                         Tasks.returnTo = null;
