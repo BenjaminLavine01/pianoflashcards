@@ -1991,6 +1991,174 @@
                 overflow: hidden;
             }
 
+            /* KANBAN BOARD STYLES */
+            .task-view-toggle {
+                display: flex;
+                gap: 8px;
+                margin-left: auto;
+            }
+
+            .task-view-toggle button {
+                padding: 6px 14px;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                background: transparent;
+                color: var(--text-secondary);
+                cursor: pointer;
+                font-size: 0.9rem;
+                transition: all 0.2s ease;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .task-view-toggle button.active {
+                background: var(--accent-color);
+                color: white;
+                border-color: var(--accent-color);
+            }
+
+            .task-view-toggle button:hover:not(.active) {
+                background: var(--hover-bg);
+                border-color: var(--accent-color);
+            }
+
+            .kanban-board {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                padding: 0 40px 40px;
+                flex: 1;
+                overflow-y: auto;
+                height: 100%;
+            }
+
+            .kanban-column {
+                background: var(--bg-surface);
+                border-radius: 12px;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                border: 1px solid var(--border-color);
+            }
+
+            .kanban-column-header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 20px;
+                padding-bottom: 16px;
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .kanban-column-title {
+                font-weight: 700;
+                font-size: 1.1rem;
+                color: var(--text-primary);
+                flex: 1;
+            }
+
+            .kanban-column-count {
+                background: var(--accent-color);
+                color: white;
+                border-radius: 50%;
+                width: 28px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.85rem;
+                font-weight: 700;
+            }
+
+            .kanban-tasks {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                flex: 1;
+                overflow-y: auto;
+                min-height: 0;
+            }
+
+            .kanban-task-card {
+                background: var(--bg-main);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                padding: 16px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .kanban-task-card:hover {
+                border-color: var(--accent-color);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transform: translateY(-2px);
+            }
+
+            .kanban-task-card.completed {
+                opacity: 0.6;
+            }
+
+            .kanban-task-card.completed .kanban-task-title {
+                text-decoration: line-through;
+                color: var(--text-secondary);
+            }
+
+            .kanban-task-title {
+                font-weight: 600;
+                color: var(--text-primary);
+                word-break: break-word;
+            }
+
+            .kanban-task-meta {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                font-size: 0.8rem;
+            }
+
+            .kanban-task-priority {
+                padding: 2px 8px;
+                border-radius: 4px;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+
+            .kanban-task-priority.high {
+                background: rgba(239, 68, 68, 0.2);
+                color: #EF4444;
+            }
+
+            .kanban-task-priority.med {
+                background: rgba(245, 158, 11, 0.2);
+                color: #F59E0B;
+            }
+
+            .kanban-task-priority.low {
+                background: rgba(16, 185, 129, 0.2);
+                color: #10B981;
+            }
+
+            .kanban-task-assignee {
+                color: var(--text-secondary);
+                font-size: 0.75rem;
+            }
+
+            .kanban-task-date {
+                color: var(--text-secondary);
+                font-size: 0.75rem;
+            }
+
+            .kanban-empty-state {
+                text-align: center;
+                color: var(--text-secondary);
+                padding: 40px 20px;
+                font-size: 0.9rem;
+            }
+
             .task-board-header {
                 padding: 30px 40px 0;
                 display: flex;
@@ -3868,6 +4036,42 @@
                 flex-shrink: 0;
             }
 
+            /* Kanban mobile portrait styles */
+            @media (max-width: 768px) and (orientation: portrait) {
+                .kanban-board {
+                    grid-template-columns: 1fr;
+                    gap: 16px;
+                    padding: 0 12px 16px;
+                }
+
+                .kanban-column {
+                    padding: 14px;
+                }
+
+                .kanban-column-header {
+                    margin-bottom: 14px;
+                    padding-bottom: 10px;
+                }
+
+                .kanban-column-title {
+                    font-size: 1rem;
+                }
+
+                .kanban-task-card {
+                    padding: 12px;
+                }
+
+                .task-view-toggle {
+                    margin-left: auto;
+                    margin-bottom: 0;
+                }
+
+                .task-view-toggle button {
+                    padding: 4px 10px;
+                    font-size: 0.8rem;
+                }
+            }
+
             /* Task Arena — landscape phone */
             @media (max-width: 768px) and (orientation: landscape) {
                 .task-header {
@@ -3941,6 +4145,42 @@
                 #edit-desc,
                 #task-comment-input {
                     height: 72px !important;
+                }
+
+                /* Kanban landscape phone */
+                .kanban-board {
+                    grid-template-columns: repeat(3, minmax(250px, 1fr));
+                    gap: 12px;
+                    padding: 0 8px 8px;
+                    overflow-x: auto;
+                    overflow-y: hidden;
+                }
+
+                .kanban-column {
+                    padding: 12px;
+                    flex-shrink: 0;
+                }
+
+                .kanban-column-header {
+                    margin-bottom: 10px;
+                    padding-bottom: 8px;
+                }
+
+                .kanban-column-title {
+                    font-size: 0.95rem;
+                }
+
+                .kanban-task-card {
+                    padding: 10px;
+                    gap: 8px;
+                }
+
+                .kanban-task-title {
+                    font-size: 0.9rem;
+                }
+
+                .kanban-task-meta {
+                    gap: 6px;
                 }
 
                 /* Piano — landscape phone */
@@ -4640,6 +4880,14 @@
                                             <p class="task-workspace-label" style="color: var(--text-secondary); font-size: 0.9rem;">Workspace: Main</p>
                                         </div>
                                         <div class="flex gap-10 task-board-actions">
+                                            <div class="task-view-toggle">
+                                                <button type="button" class="active" id="btn-view-kanban" onclick="Tasks.toggleView('kanban')">
+                                                    <i class="fa-solid fa-columns"></i><span class="btn-label">Kanban</span>
+                                                </button>
+                                                <button type="button" id="btn-view-list" onclick="Tasks.toggleView('list')">
+                                                    <i class="fa-solid fa-list"></i><span class="btn-label">List</span>
+                                                </button>
+                                            </div>
                                             <button type="button" class="btn btn-secondary btn-danger-outline" id="btn-delete-project"
                                                 onclick="Tasks.deleteProject()" title="Delete this project">
                                                 <i class="fa-solid fa-trash"></i><span class="btn-label"> Delete</span>
@@ -4654,16 +4902,11 @@
                                     <div class="task-panel-backdrop" id="task-panel-backdrop" onclick="Tasks.closePanel()"
                                         aria-hidden="true"></div>
 
-                                    <div class="task-list-container">
-                                        <div class="task-cols">
-                                            <div></div>
-                                            <div>Name</div>
-                                            <div>Assignee</div>
-                                            <div>Due Date</div>
-                                            <div>Priority</div>
-                                        </div>
-                                        <div id="task-rows"></div>
-                                    </div>
+                                    <!-- Kanban Board View -->
+                                    <div id="tasks-kanban" class="kanban-board"></div>
+
+                                    <!-- List View -->
+                                    <div id="tasks-list" class="task-list-container hidden"></div>
 
                                     <!-- Task Detail Panel -->
                                     <div id="task-panel" class="task-detail-panel">
@@ -5201,6 +5444,7 @@
                 editCardIdx: null,
                 activeTask: null,
                 audioCtx: null,
+                taskView: 'kanban',
                 keyMap: {
                     'C3': 'z', 'C#3': 's', 'D3': 'x', 'D#3': 'd', 'E3': 'c', 'F3': 'v', 'F#3': 'g', 'G3': 'b', 'G#3': 'h', 'A3': 'n', 'A#3': 'j', 'B3': 'm',
                     'C4': 'q', 'C#4': '2', 'D4': 'w', 'D#4': '3', 'E4': 'e', 'F4': 'r', 'F#4': '5', 'G4': 't', 'G#4': '6', 'A4': 'y', 'A#4': '7', 'B4': 'u',
@@ -5469,6 +5713,7 @@
                         State.keyMap = data.keys || State.keyMap;
                         if (data.themeAccent) State.themeAccent = data.themeAccent;
                         if (data.themeMode) State.theme = data.themeMode;
+                        if (data.taskView) State.taskView = data.taskView;
                     } else {
                         State.decks = [];
                         State.projects = [];
@@ -5492,7 +5737,8 @@
                         projects: State.projects,
                         keys: State.keyMap,
                         themeAccent: State.themeAccent,
-                        themeMode: State.theme
+                        themeMode: State.theme,
+                        taskView: State.taskView
                     };
                     if (State.currentUser.cloud && CloudAuth.ready) {
                         CloudAuth.saveCloudData(State.currentUser.id, data).catch(err => {
@@ -5520,6 +5766,7 @@
                         State.keyMap = merged.keys || State.keyMap;
                         if (merged.themeAccent) State.themeAccent = merged.themeAccent;
                         if (merged.themeMode) State.theme = merged.themeMode;
+                        if (merged.taskView) State.taskView = merged.taskView;
                     } else {
                         State.decks = [];
                         State.projects = [];
@@ -7080,26 +7327,7 @@
                     const p = State.projects[State.currP];
                     document.getElementById('proj-header').innerText = p ? p.name : 'No Project';
                     Tasks.updateDeleteButton();
-                    const container = document.getElementById('task-rows');
-                    if (!container) return;
-                    if (!State.projects.length) {
-                        container.innerHTML = '<div style="padding:40px 20px; text-align:center; color:var(--text-secondary)"><i class="fa-solid fa-inbox" style="font-size:3rem; margin-bottom:16px; opacity:0.5; display:block;"></i><div style="font-size:1.1rem; margin-bottom:8px;">No projects added yet</div><div style="font-size:0.9rem;">Create a new project using the <strong>+ New Project</strong> button in the sidebar to get started</div></div>';
-                        return;
-                    }
-                    if (!p || !p.tasks.length) {
-                        container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-secondary)">No tasks</div>';
-                        return;
-                    }
-                    container.innerHTML = p.tasks.map(t => `
-                        <div class="task-row ${t.done ? 'completed' : ''}" onclick="Tasks.openPanel(${t.id})">
-                            <div class="checkbox"><i class="fa-solid fa-check" style="font-size:10px; color:${t.done ? 'white' : 'transparent'}"></i></div>
-                            <div class="task-row-title">${t.title}</div>
-                            <div class="task-row-meta">
-                                <span class="task-meta-assignee">${t.assignee || 'Unassigned'}</span>
-                                <span class="task-meta-date" style="color:${t.done ? 'var(--text-secondary)' : '#EF4444'}">${t.date}</span>
-                                <span class="task-meta-priority">${t.priority}</span>
-                            </div>
-                        </div>`).join('');
+                    Tasks.render();
                 },
 
                 addTask: () => {
@@ -7304,6 +7532,108 @@
                         Nav.to('flashcards', fcNav);
                         FC.openOverview(deckIdx);
                     }
+                },
+
+                toggleView: (view) => {
+                    State.taskView = view;
+                    DB.saveCurrentData();
+
+                    // Update button states
+                    document.getElementById('btn-view-kanban')?.classList.toggle('active', view === 'kanban');
+                    document.getElementById('btn-view-list')?.classList.toggle('active', view === 'list');
+
+                    // Toggle container visibility
+                    const kanbanEl = document.getElementById('tasks-kanban');
+                    const listEl = document.getElementById('tasks-list');
+                    if (kanbanEl) kanbanEl.classList.toggle('hidden', view !== 'kanban');
+                    if (listEl) listEl.classList.toggle('hidden', view !== 'list');
+
+                    Tasks.render();
+                },
+
+                render: () => {
+                    const view = State.taskView || 'kanban';
+                    if (view === 'kanban') {
+                        Tasks.renderKanban();
+                    } else {
+                        Tasks.renderList();
+                    }
+                },
+
+                renderKanban: () => {
+                    const p = State.projects[State.currP];
+                    if (!p) return;
+
+                    const container = document.getElementById('tasks-kanban');
+                    if (!container) return;
+
+                    if (!State.projects.length) {
+                        container.innerHTML = '<div style="padding:40px 20px; text-align:center; color:var(--text-secondary); grid-column:1/-1;"><i class="fa-solid fa-inbox" style="font-size:3rem; margin-bottom:16px; opacity:0.5; display:block;"></i><div style="font-size:1.1rem; margin-bottom:8px;">No projects added yet</div></div>';
+                        return;
+                    }
+
+                    const statuses = ['To Do', 'In Progress', 'Done'];
+                    const columns = statuses.map(status => {
+                        const tasksInStatus = p.tasks.filter(t => (t.status || 'To Do') === status);
+
+                        const tasksHTML = tasksInStatus.map(t => {
+                            const bgColor = t.priority === 'High' ? 'rgba(239, 68, 68, 0.1)' : t.priority === 'Med' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)';
+                            return `
+                                <div class="kanban-task-card ${t.done ? 'completed' : ''}" onclick="Tasks.openPanel(${t.id})">
+                                    <div class="kanban-task-title">${t.title}</div>
+                                    <div class="kanban-task-meta">
+                                        <span class="kanban-task-priority ${t.priority.toLowerCase()}">${t.priority}</span>
+                                        ${t.assignee ? `<span class="kanban-task-assignee">${t.assignee}</span>` : ''}
+                                        ${t.date ? `<span class="kanban-task-date">${t.date}</span>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+
+                        return `
+                            <div class="kanban-column">
+                                <div class="kanban-column-header">
+                                    <h3 class="kanban-column-title">${status}</h3>
+                                    <div class="kanban-column-count">${tasksInStatus.length}</div>
+                                </div>
+                                <div class="kanban-tasks">
+                                    ${tasksHTML || '<div class="kanban-empty-state">No tasks</div>'}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    container.innerHTML = columns;
+                },
+
+                renderList: () => {
+                    const p = State.projects[State.currP];
+                    document.getElementById('proj-header').innerText = p ? p.name : 'No Project';
+                    Tasks.updateDeleteButton();
+
+                    const container = document.getElementById('tasks-list');
+                    if (!container) return;
+
+                    if (!State.projects.length) {
+                        container.innerHTML = '<div style="padding:40px 20px; text-align:center; color:var(--text-secondary)"><i class="fa-solid fa-inbox" style="font-size:3rem; margin-bottom:16px; opacity:0.5; display:block;"></i><div style="font-size:1.1rem; margin-bottom:8px;">No projects added yet</div></div>';
+                        return;
+                    }
+
+                    if (!p || !p.tasks.length) {
+                        container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-secondary)">No tasks</div>';
+                        return;
+                    }
+
+                    container.innerHTML = p.tasks.map(t => `
+                        <div class="task-row ${t.done ? 'completed' : ''}" onclick="Tasks.openPanel(${t.id})">
+                            <div class="checkbox"><i class="fa-solid fa-check" style="font-size:10px; color:${t.done ? 'white' : 'transparent'}"></i></div>
+                            <div class="task-row-title">${t.title}</div>
+                            <div class="task-row-meta">
+                                <span class="task-meta-assignee">${t.assignee || 'Unassigned'}</span>
+                                <span class="task-meta-date" style="color:${t.done ? 'var(--text-secondary)' : '#EF4444'}">${t.date}</span>
+                                <span class="task-meta-priority">${t.priority}</span>
+                            </div>
+                        </div>`).join('');
                 },
 
                 share: () => Shared.share('project', State.projects[State.currP])
