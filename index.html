@@ -1156,6 +1156,7 @@
                 touch-action: manipulation;
                 user-select: none;
                 transition: transform 0.07s var(--ease-bounce), box-shadow 0.07s, filter 0.07s;
+                overflow: visible;
             }
 
             .key-white {
@@ -1206,23 +1207,29 @@
 
             .key-label {
                 position: absolute;
-                bottom: 28px;
-                font-size: 9px;
                 font-weight: 800;
                 text-transform: uppercase;
                 pointer-events: none;
-                padding: 3px 6px;
-                border-radius: 5px;
+                padding: 2px 4px;
+                border-radius: 3px;
                 background: rgba(0, 0, 0, 0.05);
                 color: #64748b;
-                z-index: 3;
+                z-index: 100;
+                line-height: 1;
+                white-space: nowrap;
+                max-width: 95%;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
-            .key-black .key-label {
-                bottom: 20px;
-                color: rgba(255, 255, 255, 0.75);
-                background: rgba(255, 255, 255, 0.12);
-                font-size: 8px;
+            .key-label[style*="top"] {
+                top: 4px;
+                font-size: 9px;
+            }
+
+            .key-label[style*="bottom"] {
+                bottom: 4px;
+                font-size: 7px;
             }
 
             @keyframes pianoGlowDrift {
@@ -4057,10 +4064,11 @@
             .keys-wrapper { height: clamp(130px, 32vh, 180px); }
             .key-white { width: clamp(28px, 10vw, 40px) !important; min-width: 28px; }
             .key-black { height: 58%; }
-            .key { touch-action: manipulation; -webkit-user-select: none; }
+            .key { touch-action: manipulation; -webkit-user-select: none; overflow: visible; }
             .btn-icon-sm { padding: 8px; font-size: 0.9rem; }
             #app-shell > main { overflow: hidden !important; }
-            .key-label { bottom: 16px; font-size: 11px; padding: 3px 6px; border-radius: 6px; }
+            .key-label { font-size: 8px; padding: 2px 4px; border-radius: 3px; line-height: 1; max-width: 95%; }
+            .key-black .key-label { color: rgba(255, 255, 255, 0.85); background: rgba(255, 255, 255, 0.15); font-size: 7px; }
 
             /* Flashcards mobile */
             .fc-header {
@@ -4247,6 +4255,11 @@
                                         <button type="submit" class="btn btn-primary w-full">Login</button>
                                     </form>
                                     <p id="auth-backend-status" class="auth-backend-hint"></p>
+                                    <p id="auth-resend-row" style="text-align: center; margin-top: 14px; display: none;">
+                                        <span style="color: var(--text-secondary); font-size: 0.88rem;">Email not confirmed?</span>
+                                        <a href="#" onclick="Auth.resendConfirmation(); return false;"
+                                            style="color: var(--accent-color); font-weight: 700; font-size: 0.88rem; margin-left: 6px;">Resend link</a>
+                                    </p>
                                     <p style="text-align: center; margin-top: 20px; color: var(--text-secondary);">
                                         No account? <a onclick="Auth.toggle('signup')"
                                             style="color: var(--accent-color); cursor: pointer; font-weight: 700;">Sign Up</a>
@@ -4416,7 +4429,14 @@
                                                     <select id="wave-type" class="input-std sound-select">
                                                         <option value="stay" selected>Stay · Resonant</option>
                                                         <option value="grand">Concert Grand</option>
-                                                        <option value="warm">Warm Studio</option>
+                                                        <option value="resonance">Warm Ether</option>
+                                                        <option value="letgo">Ethereal Lift</option>
+                                                        <option value="roi">Crystalline Shimmer</option>
+                                                        <option value="lofi">Lofi Chill</option>
+                                                        <option value="bright">Bright Pop</option>
+                                                        <option value="deepbass">Deep Bass</option>
+                                                        <option value="vintage">Vintage Warmth</option>
+                                                        <option value="digital">Digital Modern</option>
                                                         <option value="soft">Soft Felt</option>
                                                         <option value="electric">Electric EP</option>
                                                         <option value="bell">Glass Bell</option>
@@ -4793,7 +4813,13 @@
 
                     <div id="modal-keybinds" class="modal-overlay">
                         <div class="modal-box">
-                            <h2 style="font-size:1.5rem; margin-bottom:15px;">Piano Keybinds</h2>
+                            <h2 style="font-size:1.5rem; margin-bottom:10px;">Piano Keybinds</h2>
+                            <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:15px;">
+                                <strong>Left column:</strong> Piano notes (C3, C#3, D3, etc.) | <strong>Right column:</strong> Type the keyboard key to bind (e.g., 'z', 's', 'x', etc.)
+                            </p>
+                            <div style="background:var(--hover-bg); padding:10px; border-radius:6px; margin-bottom:15px; font-size:0.85rem; color:var(--text-secondary);">
+                                <strong>Quick tip:</strong> Usually mapped like a piano keyboard layout on your computer (z=C3, s=C#3, x=D3, d=D#3, etc.)
+                            </div>
                             <div id="binds-list" class="bind-grid"></div>
                             <div class="flex justify-between"
                                 style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
@@ -5299,14 +5325,52 @@
                     };
                 },
 
+                authRedirectUrl: () => window.location.origin,
+
+                isUnconfirmedError: (err) => {
+                    const msg = (err?.message || '').toLowerCase();
+                    const code = (err?.code || '').toLowerCase();
+                    return msg.includes('email not confirmed') || code.includes('email_not_confirmed');
+                },
+
+                isRateLimitError: (err) => {
+                    const msg = (err?.message || '').toLowerCase();
+                    const code = (err?.code || '').toLowerCase();
+                    return msg.includes('rate limit') || msg.includes('too many') ||
+                        code.includes('rate_limit') || code === 'over_email_send_rate_limit';
+                },
+
+                formatAuthError: (err) => {
+                    if (!err) return 'Something went wrong';
+                    if (CloudAuth.isRateLimitError(err)) {
+                        return 'Email limit reached (Supabase free tier). Wait ~1 hour, stop clicking Resend, or in Supabase: Authentication → Email → turn OFF Confirm email, then sign up again or confirm user under Authentication → Users.';
+                    }
+                    if (CloudAuth.isUnconfirmedError(err)) {
+                        return 'Email not confirmed — use the link in your inbox, or Resend link below (after rate limit clears).';
+                    }
+                    return err.message || 'Something went wrong';
+                },
+
                 signUp: async (name, email, password) => {
                     const { data, error } = await CloudAuth.client.auth.signUp({
                         email,
                         password,
-                        options: { data: { full_name: name, name } }
+                        options: {
+                            data: { full_name: name, name },
+                            emailRedirectTo: CloudAuth.authRedirectUrl()
+                        }
                     });
                     if (error) throw error;
                     return data;
+                },
+
+                resendConfirmation: async (email) => {
+                    const { error } = await CloudAuth.client.auth.resend({
+                        type: 'signup',
+                        email,
+                        options: { emailRedirectTo: CloudAuth.authRedirectUrl() }
+                    });
+                    if (error) throw error;
                 },
 
                 signIn: async (email, password) => {
@@ -5535,6 +5599,26 @@
                     ['form-login', 'form-signup', 'form-forgot'].forEach(id => document.getElementById(id).classList.add('hidden'));
                     document.getElementById('form-' + mode).classList.remove('hidden');
                     if (mode === 'forgot') Auth.setForgotStep(1);
+                    Auth.setResendLinkVisible(mode === 'login' && CloudAuth.isEnabled());
+                },
+
+                setResendLinkVisible: (show) => {
+                    const row = document.getElementById('auth-resend-row');
+                    if (row) row.style.display = show ? 'block' : 'none';
+                },
+
+                resendConfirmation: async () => {
+                    const email = (document.getElementById('log-email')?.value || '').trim();
+                    if (!email) return Notify.show('Enter your email above first', 'error');
+                    if (!CloudAuth.isEnabled() || !CloudAuth.ready) {
+                        return Notify.show('Cloud login is not ready', 'error');
+                    }
+                    try {
+                        await CloudAuth.resendConfirmation(email);
+                        Notify.show('Confirmation email sent — check inbox and spam');
+                    } catch (err) {
+                        Notify.show(CloudAuth.formatAuthError(err), 'error');
+                    }
                 },
 
                 setForgotStep: (step) => {
@@ -5575,11 +5659,21 @@
 
                     if (CloudAuth.isEnabled() && CloudAuth.ready) {
                         try {
-                            await CloudAuth.signUp(name, email, pass);
-                            Notify.show('Check your email to confirm, then log in.');
+                            const data = await CloudAuth.signUp(name, email, pass);
+                            if (data?.session) {
+                                const u = await CloudAuth.sessionUser();
+                                if (u) {
+                                    Auth.enterApp({ ...u, cloud: true });
+                                    Notify.show('Welcome, ' + u.name);
+                                    return;
+                                }
+                            }
+                            Notify.show('Account created — open the confirmation link in your email, then log in.');
                             Auth.toggle('login');
+                            document.getElementById('log-email').value = email;
+                            Auth.setResendLinkVisible(true);
                         } catch (err) {
-                            Notify.show(err.message || 'Sign up failed', 'error');
+                            Notify.show(CloudAuth.formatAuthError(err), 'error');
                         }
                         return;
                     }
@@ -5607,7 +5701,8 @@
                             Auth.enterApp({ ...u, cloud: true });
                             Notify.show('Welcome back, ' + u.name);
                         } catch (err) {
-                            Notify.show(err.message || 'Invalid credentials', 'error');
+                            if (CloudAuth.isUnconfirmedError(err)) Auth.setResendLinkVisible(true);
+                            Notify.show(CloudAuth.formatAuthError(err), 'error');
                         }
                         return;
                     }
@@ -5637,7 +5732,7 @@
                         Auth.setForgotStep(2);
                         Notify.show('Verification code sent to your email');
                     } catch (err) {
-                        Notify.show(err.message || 'Could not send code', 'error');
+                        Notify.show(CloudAuth.formatAuthError(err), 'error');
                     }
                 },
 
@@ -5674,7 +5769,7 @@
                         document.getElementById('forgot-code').value = '';
                         Auth.toggle('login');
                     } catch (err) {
-                        Notify.show(err.message || 'Could not update password', 'error');
+                        Notify.show(CloudAuth.formatAuthError(err), 'error');
                     }
                 },
 
@@ -5952,20 +6047,43 @@
                     Piano.connectVoices(voices, dry, wet, now);
                 },
 
-                playWarm: (freq, vol, now, dry, wet) => {
-                    const filter = State.audioCtx.createBiquadFilter();
-                    filter.type = 'lowpass';
-                    filter.frequency.value = 2400;
-                    const v = Piano.voice(freq, 'sine', 0, vol * 0.22, 0.02, 2.2);
-                    v.osc.frequency.value = freq;
-                    v.gain.connect(filter);
-                    filter.connect(dry);
-                    filter.connect(wet);
-                    v.gain.gain.setValueAtTime(0, now);
-                    v.gain.gain.linearRampToValueAtTime(vol * 0.22, now + 0.02);
-                    v.gain.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
-                    v.osc.start(now);
-                    v.osc.stop(now + 2.3);
+                playResonance: (freq, vol, now, dry, wet) => {
+                    // HOME - Resonance inspired: Warm analog pad with rich harmonics
+                    const partials = [
+                        { m: 1, g: 1, d: 0 }, { m: 1, g: 0.5, d: 10 }, { m: 1, g: 0.48, d: -9 },
+                        { m: 2, g: 0.32, d: 5 }, { m: 3, g: 0.18, d: 3 }, { m: 0.5, g: 0.12, d: -4 }
+                    ];
+                    const voices = partials.map(p => {
+                        const v = Piano.voice(freq * p.m, 'sine', p.d, p.g * vol * 0.17, 0.04, 5.2);
+                        v.osc.frequency.value = freq * p.m;
+                        v.osc.detune.value = p.d;
+                        return v;
+                    });
+                    Piano.connectVoices(voices, dry, wet, now);
+                },
+
+                playLetGo: (freq, vol, now, dry, wet) => {
+                    // Ark Patrol & Veronika Redd - Let Go: Ethereal, uplifting, airy
+                    const v1 = Piano.voice(freq, 'sine', 1, vol * 0.2, 0.04, 3.5);
+                    const v2 = Piano.voice(freq * 0.5, 'sine', -2, vol * 0.1, 0.05, 3.2);
+                    const v3 = Piano.voice(freq * 2, 'sine', 3, vol * 0.06, 0.03, 2.8);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 0.5;
+                    v3.osc.frequency.value = freq * 2;
+                    const voices = [v1, v2, v3];
+                    Piano.connectVoices(voices, dry, wet, now);
+                },
+
+                playROI: (freq, vol, now, dry, wet) => {
+                    // Videoclub - ROI: Crystalline, bright, clear digital character
+                    const v1 = Piano.voice(freq, 'sine', 2, vol * 0.22, 0.005, 1.8);
+                    const v2 = Piano.voice(freq * 2.4, 'sine', -3, vol * 0.12, 0.007, 1.4);
+                    const v3 = Piano.voice(freq * 3.8, 'sine', 1, vol * 0.06, 0.009, 1.1);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 2.4;
+                    v3.osc.frequency.value = freq * 3.8;
+                    const voices = [v1, v2, v3];
+                    Piano.connectVoices(voices, dry, wet, now);
                 },
 
                 playSoft: (freq, vol, now, dry, wet) => {
@@ -6008,6 +6126,59 @@
                     const v = Piano.voice(freq, 'sawtooth', 0, vol * 0.07, 0.08, 2.5);
                     v.osc.frequency.value = freq;
                     Piano.connectVoices([v], dry, wet, now);
+                },
+
+                playLofi: (freq, vol, now, dry, wet) => {
+                    // Lofi Chill: Warm, compressed, slightly saturated
+                    const v1 = Piano.voice(freq, 'sine', 0, vol * 0.28, 0.02, 2.2);
+                    const v2 = Piano.voice(freq * 1.9, 'sine', 1, vol * 0.14, 0.025, 1.8);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 1.9;
+                    Piano.connectVoices([v1, v2], dry, wet, now);
+                },
+
+                playBright: (freq, vol, now, dry, wet) => {
+                    // Bright Pop: Sharp attack, clear highs
+                    const v1 = Piano.voice(freq, 'square', 0, vol * 0.26, 0.002, 1.5);
+                    const v2 = Piano.voice(freq * 2.1, 'sine', 0, vol * 0.14, 0.003, 1.2);
+                    const v3 = Piano.voice(freq * 3.2, 'sine', 2, vol * 0.08, 0.004, 0.9);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 2.1;
+                    v3.osc.frequency.value = freq * 3.2;
+                    Piano.connectVoices([v1, v2, v3], dry, wet, now);
+                },
+
+                playDeepBass: (freq, vol, now, dry, wet) => {
+                    // Deep Bass: Rich lows, powerful fundamentals
+                    const v1 = Piano.voice(freq, 'sine', 0, vol * 0.35, 0.035, 3.2);
+                    const v2 = Piano.voice(freq * 0.5, 'sine', -2, vol * 0.18, 0.04, 3.5);
+                    const v3 = Piano.voice(freq * 2, 'sine', 1, vol * 0.09, 0.02, 2.0);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 0.5;
+                    v3.osc.frequency.value = freq * 2;
+                    Piano.connectVoices([v1, v2, v3], dry, wet, now);
+                },
+
+                playVintage: (freq, vol, now, dry, wet) => {
+                    // Vintage Warmth: Mellow, analog character
+                    const v1 = Piano.voice(freq, 'triangle', 0, vol * 0.24, 0.03, 2.8);
+                    const v2 = Piano.voice(freq * 1.5, 'sine', 3, vol * 0.12, 0.032, 2.4);
+                    const v3 = Piano.voice(freq * 0.7, 'sine', -2, vol * 0.1, 0.035, 2.6);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 1.5;
+                    v3.osc.frequency.value = freq * 0.7;
+                    Piano.connectVoices([v1, v2, v3], dry, wet, now);
+                },
+
+                playDigital: (freq, vol, now, dry, wet) => {
+                    // Digital Modern: Bright, clinical, futuristic
+                    const v1 = Piano.voice(freq, 'sine', 1, vol * 0.26, 0.004, 1.6);
+                    const v2 = Piano.voice(freq * 2.8, 'sine', -1, vol * 0.15, 0.005, 1.2);
+                    const v3 = Piano.voice(freq * 4.2, 'sine', 2, vol * 0.1, 0.006, 0.8);
+                    v1.osc.frequency.value = freq;
+                    v2.osc.frequency.value = freq * 2.8;
+                    v3.osc.frequency.value = freq * 4.2;
+                    Piano.connectVoices([v1, v2, v3], dry, wet, now);
                 },
 
                 initKeys: () => {
@@ -6068,15 +6239,15 @@
                         el.dataset.note = k.n;
                         el.style.setProperty('--key-i', keyIndex++);
                         el.classList.add('key-enter');
-                        const labelText = (State.keyMap[k.n] || '').toUpperCase();
+                        const keyBindLabel = (State.keyMap[k.n] || '').toUpperCase();
                         const octave = k.n.replace(/[^0-9]/g, '');
                         if (k.t === 'w') {
                             el.className = 'key key-white';
                             if (octave !== lastOctave) {
                                 lastOctave = octave;
-                                el.innerHTML = `<span class="key-label">${labelText}</span><span class="octave-marker" style="left:4px;">C${octave}</span>`;
+                                el.innerHTML = `<span class="key-label" style="top:8px;font-size:10px;font-weight:700;">${k.n}</span><span class="key-label" style="bottom:8px;font-size:8px;">${keyBindLabel}</span>`;
                             } else {
-                                el.innerHTML = `<span class="key-label">${labelText}</span>`;
+                                el.innerHTML = `<span class="key-label" style="top:8px;font-size:10px;font-weight:700;">${k.n}</span><span class="key-label" style="bottom:8px;font-size:8px;">${keyBindLabel}</span>`;
                             }
                             box.appendChild(el);
                             const w = el.offsetWidth || lastWhiteW;
@@ -6087,7 +6258,7 @@
                             const blackW = Math.round(lastWhiteW * 0.58);
                             el.style.width = blackW + 'px';
                             el.style.left = (pos - Math.round(lastWhiteW * 0.29)) + 'px';
-                            el.innerHTML = `<span class="key-label">${labelText}</span>`;
+                            el.innerHTML = `<span class="key-label" style="top:6px;font-size:9px;font-weight:700;">${k.n}</span><span class="key-label" style="bottom:6px;font-size:7px;">${keyBindLabel}</span>`;
                             box.appendChild(el);
                         }
                         let touchX = 0;
@@ -6109,19 +6280,28 @@
                     Piano.initAudio();
                     Piano.keyFx(el);
                     const freq = Piano.noteToFreq(note);
+                    // Normalize volume for equal loudness: boost low frequencies
+                    const freqNorm = Math.max(1, Math.min(2, 200 / Math.max(40, freq)));
                     const preset = document.getElementById('wave-type').value;
                     const now = State.audioCtx.currentTime;
-                    const vol = document.getElementById('vol-slider').value / 100;
+                    const vol = (document.getElementById('vol-slider').value / 100) * freqNorm;
                     const dry = State.audioCtx.createGain();
                     const wet = State.audioCtx.createGain();
-                    dry.gain.value = 0.65 * vol;
-                    wet.gain.value = (preset === 'stay' || preset === 'grand' || preset === 'warm') ? 0.45 * vol : 0.2 * vol;
+                    dry.gain.value = 0.8 * vol;
+                    wet.gain.value = (preset === 'stay' || preset === 'grand' || preset === 'resonance' || preset === 'letgo' || preset === 'roi' || preset === 'lofi' || preset === 'bright' || preset === 'deepbass' || preset === 'vintage' || preset === 'digital') ? 0.55 * vol : 0.3 * vol;
                     dry.connect(Piano.masterGain);
                     wet.connect(Piano.reverb);
                     const engines = {
                         stay: Piano.playStay,
                         grand: Piano.playGrand,
-                        warm: Piano.playWarm,
+                        resonance: Piano.playResonance,
+                        letgo: Piano.playLetGo,
+                        roi: Piano.playROI,
+                        lofi: Piano.playLofi,
+                        bright: Piano.playBright,
+                        deepbass: Piano.playDeepBass,
+                        vintage: Piano.playVintage,
+                        digital: Piano.playDigital,
                         soft: Piano.playSoft,
                         electric: Piano.playElectric,
                         bell: Piano.playBell,
@@ -6769,6 +6949,10 @@
                     Tasks.updateDeleteButton();
                     const container = document.getElementById('task-rows');
                     if (!container) return;
+                    if (!State.projects.length) {
+                        container.innerHTML = '<div style="padding:40px 20px; text-align:center; color:var(--text-secondary)"><i class="fa-solid fa-inbox" style="font-size:3rem; margin-bottom:16px; opacity:0.5; display:block;"></i><div style="font-size:1.1rem; margin-bottom:8px;">No projects added yet</div><div style="font-size:0.9rem;">Create a new project using the <strong>+ New Project</strong> button in the sidebar to get started</div></div>';
+                        return;
+                    }
                     if (!p || !p.tasks.length) {
                         container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-secondary)">No tasks</div>';
                         return;
@@ -6786,6 +6970,7 @@
                 },
 
                 addTask: () => {
+                    if (!State.projects.length) return Notify.show('No projects added. Create a project first!', 'error');
                     const p = State.projects[State.currP];
                     if (!p) return;
                     if (p.role === 'viewer') return Notify.show('Read-only project', 'error');
@@ -6975,6 +7160,10 @@
                 },
 
                 jumpToFlashcards: () => {
+                    if (!State.decks || State.decks.length === 0) {
+                        Notify.show('No flashcard decks created yet. Add one to get started!', 'error');
+                        return;
+                    }
                     const deckIdx = State.decks.findIndex(d => d.id === State.projects[State.currP].id);
                     if (deckIdx !== -1) {
                         Tasks.returnTo = null;
@@ -7142,6 +7331,7 @@
                 await loadAppConfig();
                 await CloudAuth.init();
                 await Auth.updateBackendHint();
+                Auth.setResendLinkVisible(CloudAuth.isEnabled());
                 await Auth.tryRestoreSession();
             })();
 
