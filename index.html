@@ -5999,6 +5999,82 @@
                     if (navItems[0]) navItems[0].textContent = Lang.t('pianoLab');
                     if (navItems[1]) navItems[1].textContent = Lang.t('knowledgeHub');
                     if (navItems[2]) navItems[2].textContent = Lang.t('taskArena');
+
+                    // Update auth form headers and buttons
+                    const loginHeader = document.querySelector('#form-login .auth-header h2');
+                    if (loginHeader) loginHeader.textContent = Lang.t('welcomeBack');
+                    
+                    const loginBtn = document.querySelector('#form-login button[type="submit"]');
+                    if (loginBtn) loginBtn.textContent = Lang.t('login');
+                    
+                    const signupLink = document.querySelector('#form-login p:last-child a');
+                    if (signupLink) signupLink.textContent = Lang.t('signUp');
+                    
+                    const signupHeader = document.querySelector('#form-signup .auth-header h2');
+                    if (signupHeader) signupHeader.textContent = Lang.t('createAccount');
+                    
+                    const signupBtn = document.querySelector('#form-signup button[type="submit"]');
+                    if (signupBtn) signupBtn.textContent = Lang.t('createAccount');
+                    
+                    const forgotLink = document.querySelector('#form-login a[onclick*="forgot"]');
+                    if (forgotLink) forgotLink.textContent = Lang.t('forgotPassword');
+                    
+                    const forgotHeader = document.querySelector('#form-forgot .auth-header h2');
+                    if (forgotHeader) forgotHeader.textContent = Lang.t('resetPassword');
+                    
+                    const sendCodeBtn = document.querySelector('#forgot-step-email button');
+                    if (sendCodeBtn) sendCodeBtn.textContent = Lang.t('sendCode');
+                    
+                    const verifyCodeBtn = document.querySelector('#forgot-step-code button');
+                    if (verifyCodeBtn) verifyCodeBtn.textContent = Lang.t('verifyCode');
+                    
+                    const savePassBtn = document.querySelector('#forgot-step-newpass button');
+                    if (savePassBtn) savePassBtn.textContent = Lang.t('saveNewPassword');
+                    
+                    // Update placeholders
+                    const emailInput = document.getElementById('log-email');
+                    if (emailInput) emailInput.placeholder = Lang.t('emailAddress');
+                    
+                    const passInput = document.getElementById('log-pass');
+                    if (passInput) passInput.placeholder = Lang.t('password');
+                    
+                    const regNameInput = document.getElementById('reg-name');
+                    if (regNameInput) regNameInput.placeholder = Lang.t('displayName');
+                    
+                    const regEmailInput = document.getElementById('reg-email');
+                    if (regEmailInput) regEmailInput.placeholder = Lang.t('email');
+                    
+                    const regPassInput = document.getElementById('reg-pass');
+                    if (regPassInput) regPassInput.placeholder = Lang.t('password');
+                    
+                    const forgotEmailInput = document.getElementById('forgot-email');
+                    if (forgotEmailInput) forgotEmailInput.placeholder = Lang.t('emailAddress');
+                    
+                    const forgotCodeInput = document.getElementById('forgot-code');
+                    if (forgotCodeInput) forgotCodeInput.placeholder = '000000';
+                    
+                    const forgotNewPassInput = document.getElementById('forgot-new-pass');
+                    if (forgotNewPassInput) forgotNewPassInput.placeholder = Lang.t('newPassword');
+                    
+                    const forgotConfirmPassInput = document.getElementById('forgot-confirm-pass');
+                    if (forgotConfirmPassInput) forgotConfirmPassInput.placeholder = Lang.t('confirmPassword');
+                    
+                    // Update back links
+                    const backToLoginLinks = document.querySelectorAll('a[onclick*="toggle(\'login\')"]');
+                    backToLoginLinks.forEach(link => {
+                        link.textContent = Lang.t('backToLogin');
+                    });
+                    
+                    // Update "No account" text and links
+                    const noAccountText = document.querySelector('#form-login p:last-child');
+                    if (noAccountText) {
+                        noAccountText.innerHTML = `${Lang.t('noAccount')} <a onclick="Auth.toggle('signup')" style="color: var(--accent-color); cursor: pointer; font-weight: 700;">${Lang.t('signUp')}</a>`;
+                    }
+                    
+                    const hasAccountText = document.querySelector('#form-signup p:last-child');
+                    if (hasAccountText) {
+                        hasAccountText.innerHTML = `${Lang.t('noAccount')} <a onclick="Auth.toggle('login')" style="color: var(--accent-color); cursor: pointer; font-weight: 700;">${Lang.t('login')}</a>`;
+                    }
                 }
             };
 
