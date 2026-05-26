@@ -5466,8 +5466,9 @@
                     if (DB.stripPrebuiltData()) DB.saveCurrentData();
                     State.currD = State.decks.length ? Math.min(State.currD, State.decks.length - 1) : 0;
                     State.currP = State.projects.length ? Math.min(State.currP, State.projects.length - 1) : 0;
-                    if (savedTheme.accent) State.themeAccent = savedTheme.accent;
-                    if (savedTheme.mode) State.theme = savedTheme.mode;
+                    // For cloud accounts: use cloud theme, fallback to local only if cloud has nothing
+                    if (!merged?.themeAccent && savedTheme.accent) State.themeAccent = savedTheme.accent;
+                    if (!merged?.themeMode && savedTheme.mode) State.theme = savedTheme.mode;
                     document.body.className = 'theme-' + State.theme;
                     Piano.render();
                     FC.renderHub();
